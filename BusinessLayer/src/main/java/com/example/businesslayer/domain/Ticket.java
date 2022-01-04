@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,5 +26,9 @@ public class Ticket {
     @ManyToOne(optional = false)
     @JoinColumn(name = "flight_id", insertable = false, updatable = false)
     private Flight flight;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
 
 }
