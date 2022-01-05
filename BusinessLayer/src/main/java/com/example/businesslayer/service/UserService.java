@@ -12,12 +12,13 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class UserService implements TicketRegistrationService<User, Long>{
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public void create(User user) {
+    public User create(User user) {
         userRepository.save(user);
+        return user;
     }
 
     @Override
@@ -32,8 +33,9 @@ public class UserService implements TicketRegistrationService<User, Long>{
 
     @Override
     @Transactional
-    public void update(User user) {
+    public User update(User user) {
         userRepository.save(user);
+        return user;
     }
 
     @Override

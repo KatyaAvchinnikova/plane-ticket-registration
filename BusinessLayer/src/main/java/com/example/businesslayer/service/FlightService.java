@@ -12,12 +12,13 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class FlightService implements TicketRegistrationService<Flight, Long>{
 
-    private FlightRepository flightRepository;
+    private final FlightRepository flightRepository;
 
     @Override
     @Transactional
-    public void create(Flight flight) {
+    public Flight create(Flight flight) {
         flightRepository.save(flight);
+        return flight;
     }
 
     @Override
@@ -32,8 +33,9 @@ public class FlightService implements TicketRegistrationService<Flight, Long>{
 
     @Override
     @Transactional
-    public void update(Flight flight) {
+    public Flight update(Flight flight) {
         flightRepository.save(flight);
+        return flight;
     }
 
     @Override

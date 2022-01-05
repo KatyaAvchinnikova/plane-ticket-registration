@@ -13,12 +13,13 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class AirportService implements TicketRegistrationService<Airport, Long>{
 
-    private AirportRepository airportRepository;
+    private final AirportRepository airportRepository;
 
     @Override
     @Transactional
-    public void create(Airport airport) {
+    public Airport create(Airport airport) {
         airportRepository.save(airport);
+        return airport;
     }
 
     @Override
@@ -33,8 +34,9 @@ public class AirportService implements TicketRegistrationService<Airport, Long>{
 
     @Override
     @Transactional
-    public void update(Airport airport) {
+    public Airport update(Airport airport) {
         airportRepository.save(airport);
+        return airport;
     }
 
     @Override
