@@ -4,33 +4,33 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.bytebuddy.agent.builder.AgentBuilder.LambdaInstrumentationStrategy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Airport {
+@Table(name="ticket")
+public class TicketEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String name;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "flight_id", insertable = false, updatable = false)
+    private FlightEntity flight;
 
-    @OneToMany(mappedBy = "airportFrom")
-    private Set<Flight> flightsFrom;
-
-    @OneToMany(mappedBy = "airportTo")
-    private Set<Flight> flightsTo;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private UserEntity user;
 
 }

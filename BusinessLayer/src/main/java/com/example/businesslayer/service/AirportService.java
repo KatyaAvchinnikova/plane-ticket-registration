@@ -1,9 +1,8 @@
 package com.example.businesslayer.service;
 
-import com.example.businesslayer.domain.Airport;
+import com.example.businesslayer.domain.AirportEntity;
 import com.example.businesslayer.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,37 +10,37 @@ import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AirportService implements TicketRegistrationService<Airport, Long>{
+public class AirportService implements TicketRegistrationService<AirportEntity, Long>{
 
     private final AirportRepository airportRepository;
 
     @Override
     @Transactional
-    public Airport create(Airport airport) {
+    public AirportEntity create(AirportEntity airport) {
         airportRepository.save(airport);
         return airport;
     }
 
     @Override
-    public Airport readById(Long id) {
+    public AirportEntity readById(Long id) {
         return airportRepository.getById(id);
     }
 
     @Override
-    public List<Airport> readAll() {
+    public List<AirportEntity> readAll() {
         return airportRepository.findAll();
     }
 
     @Override
     @Transactional
-    public Airport update(Airport airport) {
+    public AirportEntity update(AirportEntity airport) {
         airportRepository.save(airport);
         return airport;
     }
 
     @Override
     @Transactional
-    public void delete(Airport airport) {
+    public void delete(AirportEntity airport) {
         airportRepository.delete(airport);
     }
 

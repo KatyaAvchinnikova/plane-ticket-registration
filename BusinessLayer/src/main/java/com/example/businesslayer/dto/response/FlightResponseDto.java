@@ -1,8 +1,8 @@
-package com.example.businesslayer.dto.request;
+package com.example.businesslayer.dto.response;
 
 import java.util.Date;
 
-public class RequestFlightDto {
+public class FlightResponseDto {
 
     private Long id;
 

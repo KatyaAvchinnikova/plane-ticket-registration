@@ -1,11 +1,10 @@
 package com.example.businesslayer.repository;
 
-import com.example.businesslayer.domain.Airport;
-import com.example.businesslayer.domain.Ticket;
+import com.example.businesslayer.domain.TicketEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository extends JpaRepository<TicketEntity, Long> {
 
 }

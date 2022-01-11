@@ -2,7 +2,7 @@ package com.example.businesslayer.dto.response;
 
 import java.util.Date;
 
-public class ResponseUserDto {
+public class UserResponseDto {
 
     private Long id;
 

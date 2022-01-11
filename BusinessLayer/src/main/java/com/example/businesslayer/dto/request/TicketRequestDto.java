@@ -1,6 +1,6 @@
 package com.example.businesslayer.dto.request;
 
-public class RequestTicketDto {
+public class TicketRequestDto {
 
     private Long id;
 

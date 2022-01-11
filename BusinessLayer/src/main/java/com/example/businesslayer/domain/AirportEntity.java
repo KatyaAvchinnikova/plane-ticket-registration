@@ -5,30 +5,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Ticket {
-
+@Table(name="airport")
+public class AirportEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "flight_id", insertable = false, updatable = false)
-    private Flight flight;
+    private String name;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;
+    @OneToMany(mappedBy = "airportFrom")
+    private Set<FlightEntity> flightsFrom;
+
+    @OneToMany(mappedBy = "airportTo")
+    private Set<FlightEntity> flightsTo;
 
 }

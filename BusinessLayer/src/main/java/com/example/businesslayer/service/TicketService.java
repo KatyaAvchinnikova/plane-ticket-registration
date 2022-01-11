@@ -1,6 +1,6 @@
 package com.example.businesslayer.service;
 
-import com.example.businesslayer.domain.Ticket;
+import com.example.businesslayer.domain.TicketEntity;
 import com.example.businesslayer.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,37 +10,37 @@ import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TicketService implements TicketRegistrationService<Ticket, Long>{
+public class TicketService implements TicketRegistrationService<TicketEntity, Long>{
 
     private final TicketRepository ticketRepository;
 
     @Override
     @Transactional
-    public Ticket create(Ticket ticket) {
+    public TicketEntity create(TicketEntity ticket) {
         ticketRepository.save(ticket);
         return ticket;
     }
 
     @Override
-    public Ticket readById(Long id) {
+    public TicketEntity readById(Long id) {
         return ticketRepository.getById(id);
     }
 
     @Override
-    public List<Ticket> readAll() {
+    public List<TicketEntity> readAll() {
         return ticketRepository.findAll();
     }
 
     @Override
     @Transactional
-    public Ticket update(Ticket ticket) {
+    public TicketEntity update(TicketEntity ticket) {
         ticketRepository.save(ticket);
         return ticket;
     }
 
     @Override
     @Transactional
-    public void delete(Ticket ticket) {
+    public void delete(TicketEntity ticket) {
         ticketRepository.delete(ticket);
     }
 

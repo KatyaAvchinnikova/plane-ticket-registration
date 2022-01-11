@@ -1,8 +1,6 @@
 package com.example.businesslayer.dto.request;
 
-public class RequestAirportDto {
-
-    private Long id;
+public class AirportRequestDto {
 
     private String name;
 
