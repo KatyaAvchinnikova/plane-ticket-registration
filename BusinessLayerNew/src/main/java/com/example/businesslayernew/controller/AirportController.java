@@ -5,6 +5,8 @@ import com.example.businesslayernew.dto.response.AirportResponseDto;
 import com.example.businesslayernew.mapper.AirportEntityToAirportResponseDtoMapper;
 import com.example.businesslayernew.mapper.AirportRequestDtoToAirportEntityMapper;
 import com.example.businesslayernew.service.AirportService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,12 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @Getter
 @Setter
 @RequestMapping(value = "/api/airports")
+@Api("Airport controller")
 public class AirportController {
 
     private final AirportService airportService;
@@ -36,6 +40,7 @@ public class AirportController {
 
     //create new airport
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("Create new airport")
     public ResponseEntity<AirportResponseDto> create(@RequestBody AirportRequestDto request){
 
         AirportResponseDto airportResponseDto =
@@ -47,24 +52,29 @@ public class AirportController {
 
     //read all airports
     @GetMapping
+    @ApiOperation("read all airports")
     public List<AirportResponseDto> readAll(){
-        return airportService
+        /*return airportService
                 .readAll()
                 .stream()
                 .collect(ArrayList::new,
                         ((airportResponseDtoList, airport) -> airportResponseDtoList.add(airportEntityToAirportDtoMapper.map(airport))),
-                        ArrayList::addAll);
+                        ArrayList::addAll);*/
+        return airportService.readAll().stream().map((airportEntityToAirportDtoMapper::map)).collect(
+                Collectors.toList());
 
     }
 
     //read by id
     @GetMapping("{id}")
+    @ApiOperation("read airport by id")
     public ResponseEntity<AirportResponseDto> readById(@PathVariable("id") Long id){
         return new ResponseEntity<>(airportEntityToAirportDtoMapper.map(airportService.readById(id)), HttpStatus.OK);
     }
 
     //update airport
     @PutMapping("{id}")
+    @ApiOperation("update airport")
     public ResponseEntity<AirportResponseDto> update(@PathVariable("id") AirportRequestDto request){
         AirportResponseDto airportResponse =
                 airportEntityToAirportDtoMapper.map(airportService.update(airportDtoToAirportEntityMapper.map(request)));
@@ -73,6 +83,7 @@ public class AirportController {
 
     //delete airport
     @DeleteMapping("{id}")
+    @ApiOperation("delete airport")
     public ResponseEntity<AirportResponseDto> delete(@PathVariable("id") AirportRequestDto request){
 
         AirportResponseDto airportResponse =

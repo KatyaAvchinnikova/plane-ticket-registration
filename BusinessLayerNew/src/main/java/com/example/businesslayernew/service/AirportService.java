@@ -34,6 +34,7 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
 
     @Override
     public List<AirportEntity> readAll() {
+        List<AirportEntity> entityList = airportRepository.findAll();
         return airportRepository.findAll();
     }
 
