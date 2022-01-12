@@ -1,0 +1,35 @@
+server:
+  port: 8080
+#    TODO: пробелы между верхнеуровневыми тегами
+spring:
+  datasource:
+    username: postgres
+    password: 123
+    url: jdbc:postgresql://localhost:5432/ticketbase
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    url: jdbc:postgresql://localhost:5432/ticketbase
+    user: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: daniil.kahan002@gmail.com
+    password: qzsyhzypiczaskjd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  activemq:
+    broker-url: tcp://127.0.0.1:61616
+    user: admin
+    password: admin
+    packages:
+      trust-all: true
+    pool:
+      enabled: true
+      max-connections: 50
+    topic: audit-queue

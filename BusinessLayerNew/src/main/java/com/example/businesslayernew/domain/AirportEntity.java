@@ -1,0 +1,35 @@
+package com.example.businesslayernew.domain;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name="airport")
+public class AirportEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private String name;
+
+    @OneToMany(mappedBy = "airportFrom")
+    private Set<FlightEntity> flightsFrom;
+
+    @OneToMany(mappedBy = "airportTo")
+    private Set<FlightEntity> flightsTo;
+
+}
