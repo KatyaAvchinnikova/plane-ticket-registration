@@ -15,6 +15,8 @@ import javax.transaction.Transactional;
 public class AirportService implements TicketRegistrationService<AirportEntity, Long>{
 
     private final AirportRepository airportRepository;
+    private static final String RESOURSENAME= "Airport";
+    private static final String FIELDNAME = "Id";
 
     @Override
     @Transactional
@@ -26,11 +28,8 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
     @Override
     public AirportEntity readById(Long id) {
         Optional<AirportEntity> airport = Optional.of(airportRepository.getById(id));
-        if(airport.isPresent()){
-            return airport.get();
-        }else{
-            throw new ResourceNotFoundException("Airport", "id", id);
-        }
+        return airportRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
+                FIELDNAME, id));
     }
 
     @Override
@@ -42,7 +41,7 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
     @Transactional
     public AirportEntity update(AirportEntity airport) {
         Optional.of(airportRepository.getById(airport.getId())).orElseThrow(
-                () -> new ResourceNotFoundException("Airport", "id", airport.getId()));
+                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, airport.getId()));
         airportRepository.save(airport);
         return airport;
     }
@@ -51,7 +50,7 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
     @Transactional
     public void delete(AirportEntity airport) {
         Optional.of(airportRepository.getById(airport.getId())).orElseThrow(
-                () -> new ResourceNotFoundException("Airport", "id", airport.getId()));
+                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, airport.getId()));
         airportRepository.delete(airport);
     }
 
