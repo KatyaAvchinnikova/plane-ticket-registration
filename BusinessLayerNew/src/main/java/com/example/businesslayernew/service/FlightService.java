@@ -33,15 +33,15 @@ public class FlightService implements TicketRegistrationService<FlightEntity, Lo
 
     @Override
     @Transactional
-    public FlightEntity update(FlightEntity flight) {
+    public FlightEntity update(Long id, FlightEntity flight) {
         flightRepository.save(flight);
         return flight;
     }
 
     @Override
     @Transactional
-    public void delete(FlightEntity flight) {
-        flightRepository.delete(flight);
+    public void delete(Long id) {
+        flightRepository.deleteById(id);
     }
 
 }

@@ -33,15 +33,15 @@ public class TicketService implements TicketRegistrationService<TicketEntity, Lo
 
     @Override
     @Transactional
-    public TicketEntity update(TicketEntity ticket) {
+    public TicketEntity update(Long id, TicketEntity ticket) {
         ticketRepository.save(ticket);
         return ticket;
     }
 
     @Override
     @Transactional
-    public void delete(TicketEntity ticket) {
-        ticketRepository.delete(ticket);
+    public void delete(Long id) {
+        ticketRepository.deleteById(id);
     }
 
 }

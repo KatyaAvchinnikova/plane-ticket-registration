@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -73,24 +74,24 @@ public class AirportController {
     }
 
     //update airport
-    @PutMapping("{id}")
+    @PatchMapping("{id}")
     @ApiOperation("update airport")
-    public ResponseEntity<AirportResponseDto> update(@PathVariable("id") AirportRequestDto request){
-        AirportResponseDto airportResponse =
-                airportEntityToAirportDtoMapper.map(airportService.update(airportDtoToAirportEntityMapper.map(request)));
+    public ResponseEntity<AirportResponseDto> update(@PathVariable("id") Long id, @RequestBody AirportRequestDto request){
+        AirportResponseDto airportResponse = airportEntityToAirportDtoMapper.map(airportService.update(id,
+                                             airportDtoToAirportEntityMapper.map(request)));
         return new ResponseEntity<>(airportResponse, HttpStatus.OK);
     }
 
     //delete airport
     @DeleteMapping("{id}")
     @ApiOperation("delete airport")
-    public ResponseEntity<AirportResponseDto> delete(@PathVariable("id") AirportRequestDto request){
+    public ResponseEntity<AirportResponseDto> delete(@PathVariable("id") Long id){
 
-        AirportResponseDto airportResponse =
-                airportEntityToAirportDtoMapper.map(airportService.readById(airportDtoToAirportEntityMapper.map(request).getId()));
+//        AirportResponseDto airportResponse =
+//                airportEntityToAirportDtoMapper.map(airportService.readById(airportDtoToAirportEntityMapper.map(request).getId()));
 
-        airportService.delete(airportDtoToAirportEntityMapper.map(request));
-        return new ResponseEntity<>(airportResponse, HttpStatus.OK);
+        airportService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

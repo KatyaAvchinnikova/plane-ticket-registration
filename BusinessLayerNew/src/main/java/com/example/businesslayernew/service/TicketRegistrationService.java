@@ -7,6 +7,6 @@ public interface TicketRegistrationService<Entity,Key>{
     Entity create(Entity entity);
     Entity readById(Key key);
     List<Entity> readAll();
-    Entity update(Entity entity);
-    void delete(Entity entity);
+    Entity update(Key key, Entity entity);
+    void delete(Key key);
 }

@@ -33,15 +33,15 @@ public class UserService implements TicketRegistrationService<UserEntity, Long>{
 
     @Override
     @Transactional
-    public UserEntity update(UserEntity user) {
+    public UserEntity update(Long id, UserEntity user) {
         userRepository.save(user);
         return user;
     }
 
     @Override
     @Transactional
-    public void delete(UserEntity user) {
-        userRepository.delete(user);
+    public void delete(Long id) {
+        userRepository.deleteById(id);
     }
 
 }

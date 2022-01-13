@@ -4,6 +4,7 @@ import com.example.businesslayernew.domain.AirportEntity;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
 
     @Override
     public AirportEntity readById(Long id) {
-        Optional<AirportEntity> airport = Optional.of(airportRepository.getById(id));
+
         return airportRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
     }
@@ -39,20 +40,20 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
     }
 
     @Override
-    @Transactional
-    public AirportEntity update(AirportEntity airport) {
-        Optional.of(airportRepository.getById(airport.getId())).orElseThrow(
-                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, airport.getId()));
+    public AirportEntity update(Long id, AirportEntity airport) {
+        Optional.of(airportRepository.getById(id)).orElseThrow(
+                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+        airport.setId(id);
         airportRepository.save(airport);
         return airport;
     }
 
     @Override
     @Transactional
-    public void delete(AirportEntity airport) {
-        Optional.of(airportRepository.getById(airport.getId())).orElseThrow(
-                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, airport.getId()));
-        airportRepository.delete(airport);
+    public void delete(Long id) {
+        Optional.of(airportRepository.getById(id)).orElseThrow(
+                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+        airportRepository.deleteById(id);
     }
 
 }
