@@ -9,8 +9,6 @@ import java.util.Date;
 @Setter
 public class FlightResponseDto {
 
-    private Long id;
-
     private Date date;
 
     private Long airportTo;
