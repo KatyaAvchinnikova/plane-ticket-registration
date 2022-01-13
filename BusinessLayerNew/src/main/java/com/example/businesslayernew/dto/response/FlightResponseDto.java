@@ -11,8 +11,8 @@ public class FlightResponseDto {
 
     private Date date;
 
-    private Long airportTo;
+    private String airportTo;
 
-    private Long airportFrom;
+    private String airportFrom;
 
 }

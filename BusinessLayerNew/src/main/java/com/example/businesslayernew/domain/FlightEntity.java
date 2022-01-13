@@ -34,6 +34,11 @@ public class FlightEntity {
     @JoinColumn(name = "airport_from_id", insertable = false, updatable = false)
     private AirportEntity airportFrom;
 
+    @Column(name = "airport_from_id", nullable = false)
+    private Long airportFromId;
+
+    @Column(name = "airport_to_id", nullable = false)
+    private Long airportToId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airport_to_id", insertable = false, updatable = false)
