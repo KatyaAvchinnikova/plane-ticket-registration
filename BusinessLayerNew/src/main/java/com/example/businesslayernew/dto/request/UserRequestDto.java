@@ -5,15 +5,18 @@ import lombok.Setter;
 
 import java.util.Date;
 
-
+@Getter
+@Setter
 public class UserRequestDto {
-
-    private Long id;
 
     private String firstName;
 
     private String lastName;
 
     private Date dateOfBirth;
+
+    private String email;
+
+    private String password;
 
 }
