@@ -3,11 +3,12 @@ package com.example.businesslayernew.dto.request;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Setter
+@Getter
 public class TicketRequestDto {
 
-    private Long id;
+    private Long flightId;
 
-    private Long flightDto;
+    private Long userId;
 
 }

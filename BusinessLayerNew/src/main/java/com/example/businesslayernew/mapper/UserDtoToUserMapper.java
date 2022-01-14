@@ -9,10 +9,10 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface UserDtoToUserMapper {
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "tickets", ignore = true),
-            @Mapping(target = "deleted", ignore = true),
-            @Mapping(target = "role", ignore = true)
+            @Mapping(target = "id",         ignore = true),
+            @Mapping(target = "tickets",    ignore = true),
+            @Mapping(target = "deleted",    ignore = true),
+            @Mapping(target = "role",       ignore = true)
     })
     UserEntity map(UserRequestDto requestDto);
 }

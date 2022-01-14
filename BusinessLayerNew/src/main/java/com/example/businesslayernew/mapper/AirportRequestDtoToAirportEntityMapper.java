@@ -10,9 +10,9 @@ import org.mapstruct.Mappings;
 public interface AirportRequestDtoToAirportEntityMapper {
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "flightsFrom", ignore = true),
-            @Mapping(target = "flightsTo", ignore = true)})
+            @Mapping(target = "id",             ignore = true),
+            @Mapping(target = "flightsFrom",    ignore = true),
+            @Mapping(target = "flightsTo",      ignore = true)})
     AirportEntity map(AirportRequestDto requestDto);
 
 }
