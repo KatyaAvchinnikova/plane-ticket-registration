@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,8 +30,14 @@ public class TicketEntity {
     @JoinColumn(name = "flight_id", insertable = false, updatable = false)
     private FlightEntity flight;
 
+    @Column(name = "flight_id", nullable = false)
+    private Long flightId;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity user;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
 }
