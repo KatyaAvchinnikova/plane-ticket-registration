@@ -5,10 +5,14 @@ import com.example.businesslayernew.domain.UserEntity;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Service
@@ -16,9 +20,14 @@ import javax.transaction.Transactional;
 public class UserService implements TicketRegistrationService<UserEntity, Long>{
 
     private static final String RESOURSENAME= "User";
+
     private static final String FIELDNAME = "Id";
 
+    @Autowired
     private final UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Override
     @Transactional
@@ -39,7 +48,21 @@ public class UserService implements TicketRegistrationService<UserEntity, Long>{
 
     @Override
     public List<UserEntity> readAll() {
-          return userRepository.findAll();
+        return null;
+    }
+
+    public List<UserEntity> readAllWithFilter(boolean isDeleted) {
+
+        Session session = entityManager.unwrap(Session.class);
+
+        Filter filter = session.enableFilter("deletedUserFilter");
+        filter.setParameter("deletedOnly", isDeleted);
+
+        List<UserEntity> all = userRepository.findAll();
+
+        session.disableFilter("deletedUserFilter");
+
+        return all;
     }
 
     @Override

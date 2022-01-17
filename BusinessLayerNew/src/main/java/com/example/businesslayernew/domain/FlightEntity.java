@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.Column;
@@ -45,9 +46,15 @@ public class FlightEntity {
     @Column(name = "airport_to_id", nullable = false)
     private Long airportToId;
 
-    @Column(name = "flight_date", nullable = false)
+    @Column(name = "departure_time", nullable = false)
 //    TODO: LocalDateTime/ZonedDateTime, никаких Date
-    private Date date;
+    private LocalDateTime departureTime;
+
+    @Column(name = "arrival_time", nullable = false)
+    private LocalDateTime arrivalTime;
+
+    @Column(name = "number_of_free_seats")
+    private LocalDateTime numberOfFreeSeats;
 
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     private Set<TicketEntity> tickets;

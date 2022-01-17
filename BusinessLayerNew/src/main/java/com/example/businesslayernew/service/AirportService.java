@@ -5,6 +5,7 @@ import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,18 +15,18 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AirportService implements TicketRegistrationService<AirportEntity, Long>{
-
+    @Autowired
     private final AirportRepository airportRepository;
 //    Слова разделяются _. Пустая строка между полями с разными назначениями. Константы над инжектируемыми полями
     private static final String RESOURSENAME= "Airport";
+
     private static final String FIELDNAME = "Id";
 
     @Override
     @Transactional
     public AirportEntity create(AirportEntity airport) {
-        airportRepository.save(airport);
-//        TODO: возвращаемое значение - результат сохранения
-        return airport;
+        //        TODO: возвращаемое значение - результат сохранения
+        return airportRepository.save(airport);
     }
 
     @Override

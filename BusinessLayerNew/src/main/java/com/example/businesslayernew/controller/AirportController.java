@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 //TODO: здесь и далее: зачем геттеры и сеттеры для классов бизнес-логики?
 @RestController
 @RequiredArgsConstructor
-@Getter
-@Setter
 @RequestMapping(value = "/api/airports")
 @Api("Airport controller")
 public class AirportController {
@@ -40,64 +38,56 @@ public class AirportController {
     private final AirportRequestDtoToAirportEntityMapper airportDtoToAirportEntityMapper;
     private final AirportEntityToAirportResponseDtoMapper airportEntityToAirportDtoMapper;
 
-//    TODO: зачем коммент? Если делаем комменты с описанием метода - пишем как доку. Здесь и далее
-    //create new airport
+
+    //    TODO: зачем коммент? Если делаем комменты с описанием метода - пишем как доку. Здесь и далее
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new airport")
-    public ResponseEntity<AirportResponseDto> create(@RequestBody AirportRequestDto request){
+    public ResponseEntity<AirportResponseDto> create(@RequestBody AirportRequestDto request) {
 
         AirportResponseDto airportResponseDto =
-                airportEntityToAirportDtoMapper.map(airportService.create(airportDtoToAirportEntityMapper.map(request)));
+                airportEntityToAirportDtoMapper.map(
+                        airportService.create(airportDtoToAirportEntityMapper.map(request)));
 
 //        TODO: лишние пробелы. Юзаем ctrl+alt+L
-        return new ResponseEntity<>( airportResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(airportResponseDto, HttpStatus.CREATED);
 
     }
 
-    //read all airports
     @GetMapping
     @ApiOperation("read all airports")
-    public List<AirportResponseDto> readAll(){
-        /*return airportService
-                .readAll()
-                .stream()
-                .collect(ArrayList::new,
-                        ((airportResponseDtoList, airport) -> airportResponseDtoList.add(airportEntityToAirportDtoMapper.map(airport))),
-                        ArrayList::addAll);*/
-//        TODO: одна строчка - одна точка
-        return airportService.readAll().stream().map((airportEntityToAirportDtoMapper::map)).collect(
-                Collectors.toList());
-
+    public List<AirportResponseDto> readAll() {
+        //    TODO: одна строчка - одна точка
+        return airportService.readAll()
+                             .stream()
+                             .map((airportEntityToAirportDtoMapper::map))
+                             .collect(
+                                     Collectors.toList());
     }
 
-    //read by id
-//    TODO: потерян слеш
-    @GetMapping("{id}")
+    //    TODO: потерян слеш
+    @GetMapping("/{id}")
     @ApiOperation("read airport by id")
 //    TODO: Вроде как можно не указывать литерал переменной, если он совпадает с наименованием параметра
-    public ResponseEntity<AirportResponseDto> readById(@PathVariable("id") Long id){
-        return new ResponseEntity<>(airportEntityToAirportDtoMapper.map(airportService.readById(id)), HttpStatus.OK);
+    public ResponseEntity<AirportResponseDto> readById(@PathVariable Long id) {
+        return new ResponseEntity<>(airportEntityToAirportDtoMapper
+                .map(airportService.readById(id)), HttpStatus.OK);
     }
 
-    //update airport
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
     @ApiOperation("update airport")
-    public ResponseEntity<AirportResponseDto> update(@PathVariable("id") Long id, @RequestBody AirportRequestDto request){
+    public ResponseEntity<AirportResponseDto> update(@PathVariable Long id,
+            @RequestBody AirportRequestDto request) {
 //        TODO: что это за чудо кодочитабельности?
-        AirportResponseDto airportResponse = airportEntityToAirportDtoMapper.map(airportService.update(id,
-                                             airportDtoToAirportEntityMapper.map(request)));
+        AirportResponseDto airportResponse = airportEntityToAirportDtoMapper
+                        .map(airportService.update(id, airportDtoToAirportEntityMapper
+                        .map(request)));
         return new ResponseEntity<>(airportResponse, HttpStatus.OK);
     }
 
-    //delete airport
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
 //    TODO: описания методов с большой буквы
     @ApiOperation("delete airport")
-    public ResponseEntity<AirportResponseDto> delete(@PathVariable("id") Long id){
-
-//        AirportResponseDto airportResponse =
-//                airportEntityToAirportDtoMapper.map(airportService.readById(airportDtoToAirportEntityMapper.map(request).getId()));
-
+    public ResponseEntity<AirportResponseDto> delete(@PathVariable Long id) {
         airportService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

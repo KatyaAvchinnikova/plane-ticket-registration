@@ -5,24 +5,26 @@ create table "user"
     last_name           varchar                             not null,
     date_of_birth       date                                not null,
 --     TODO: ограничение по символам у varchar
-    email               varchar                             not null        unique,
-    password            varchar                             not null,
-    deleted             date                                not null,
-    role                varchar                             not null
+    email               varchar(50)                         not null        unique,
+    password            varchar(50)                         not null,
+    deleted             timestamp,
+    role                varchar(20)                         not null
 );
 -- TODO: зачем таблица?
-create table role
-(
-    role                varchar         primary key         not null
-);
+-- create table role
+-- (
+--     role                varchar         primary key         not null
+-- );
 
 create table flight
 (
-    id                  bigserial       primary key         not null,
-    airport_from_id     bigint                              not null,
-    airport_to_id       bigint                              not null,
+    id                          bigserial       primary key         not null,
+    airport_from_id             bigint                              not null,
+    airport_to_id               bigint                              not null,
 --     TODO: почему не timestamp?
-    flight_date         date                                not null
+    departure_time              timestamp                           not null,
+    arrival_time                timestamp                           not null,
+    number_of_free_seats        char
 );
 
 create table airport
