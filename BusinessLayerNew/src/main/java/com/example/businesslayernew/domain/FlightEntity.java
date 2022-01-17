@@ -34,6 +34,7 @@ public class FlightEntity {
     @JoinColumn(name = "airport_from_id", insertable = false, updatable = false)
     private AirportEntity airportFrom;
 
+//    TODO: доступность сеттера - NONE для таких полей
     @Column(name = "airport_from_id", nullable = false)
     private Long airportFromId;
 
@@ -45,6 +46,7 @@ public class FlightEntity {
     private Long airportToId;
 
     @Column(name = "flight_date", nullable = false)
+//    TODO: LocalDateTime/ZonedDateTime, никаких Date
     private Date date;
 
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)

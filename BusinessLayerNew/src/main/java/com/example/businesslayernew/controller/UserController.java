@@ -38,6 +38,7 @@ public class UserController {
     private final UserDtoToUserMapper userDtoToUserMapper;
     private final UserEntityToUserDtoMapper userEntityToUserDtoMapper;
 
+//    TODO: допустимо ли создание без регистрации?
     //create new user
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
@@ -50,6 +51,7 @@ public class UserController {
 
     }
 
+//    TODO: здесь и в остальных контроллерах: корректно ли дергать readAll без пагинации? Как насчет 1_000_000 записей в таблице?
     //read all users
     @GetMapping
     @ApiOperation("read all users")

@@ -6,5 +6,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AirportEntityToAirportResponseDtoMapper {
+//    TODO: рекомендую маппинги одной сущности ограничивать одним маппером с методами вида mapAirportDto, mapAirport
     AirportResponseDto map(AirportEntity airport);
 }

@@ -7,7 +7,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class FlightRequestDto {
-
+//    TODO: ZonedDateTime
     private Date date;
 
     private Long airportToId;

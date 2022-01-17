@@ -18,6 +18,7 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//TODO: Здесь и далее: зачем слово Entity? Убираем и даже @Table  yt ye;ty
 @Table(name="airport")
 public class AirportEntity {
     @Id

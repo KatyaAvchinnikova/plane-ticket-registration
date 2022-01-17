@@ -10,6 +10,7 @@ import org.mapstruct.Mappings;
 public interface AirportRequestDtoToAirportEntityMapper {
 
     @Mappings({
+//            TODO: разве игнор необходим в таких кейсах?
             @Mapping(target = "id",             ignore = true),
             @Mapping(target = "flightsFrom",    ignore = true),
             @Mapping(target = "flightsTo",      ignore = true)})

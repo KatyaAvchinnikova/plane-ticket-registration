@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 public class AirportService implements TicketRegistrationService<AirportEntity, Long>{
 
     private final AirportRepository airportRepository;
+//    Слова разделяются _. Пустая строка между полями с разными назначениями. Константы над инжектируемыми полями
     private static final String RESOURSENAME= "Airport";
     private static final String FIELDNAME = "Id";
 
@@ -23,10 +24,12 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
     @Transactional
     public AirportEntity create(AirportEntity airport) {
         airportRepository.save(airport);
+//        TODO: возвращаемое значение - результат сохранения
         return airport;
     }
 
     @Override
+//    TODO: getById. read->get
     public AirportEntity readById(Long id) {
 
         return airportRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
@@ -41,6 +44,9 @@ public class AirportService implements TicketRegistrationService<AirportEntity, 
 
     @Override
     public AirportEntity update(Long id, AirportEntity airport) {
+//       TODO:  почему не
+//        return Optional.of(airportRepository.getById(id)).map(airportRepository::save).orElseThrow(
+//                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id)); ?
         Optional.of(airportRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
         airport.setId(id);

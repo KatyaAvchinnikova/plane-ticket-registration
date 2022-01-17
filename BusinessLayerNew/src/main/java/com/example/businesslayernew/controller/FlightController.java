@@ -76,6 +76,7 @@ public class FlightController {
     @DeleteMapping("{id}")
     @ApiOperation("delete flight")
     public ResponseEntity<FlightResponseDto> delete(@PathVariable("id") Long id){
+//        TODO: лишние пустые строчки
 
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
