@@ -14,44 +14,43 @@ import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class FlightService implements TicketRegistrationService<FlightEntity, Long>{
+public class FlightService {
 
-    private static final String RESOURSENAME= "Flight";
+    private static final String RESOURSENAME = "Flight";
     private static final String FIELDNAME = "Id";
 
     private final FlightRepository flightRepository;
 
-    @Override
     @Transactional
     public FlightEntity create(FlightEntity flight) {
         flightRepository.save(flight);
         return flight;
     }
 
-    @Override
-    public FlightEntity readById(Long id) {
+    public FlightEntity getById(Long id) {
 
         return flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
 
     }
 
-    @Override
-    public List<FlightEntity> readAll() {
+    public List<FlightEntity> getAll() {
+
         return flightRepository.findAll();
+
     }
 
-    @Override
     @Transactional
     public FlightEntity update(Long id, @NotNull FlightEntity flight) {
+
         Optional.of(flightRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
         flight.setId(id);
         flightRepository.save(flight);
         return flight;
+
     }
 
-    @Override
     @Transactional
     public void delete(Long id) {
         Optional.of(flightRepository.getById(id)).orElseThrow(

@@ -2,7 +2,7 @@ package com.example.businesslayernew.controller;
 
 import com.example.businesslayernew.dto.airport.AirportRequest;
 import com.example.businesslayernew.dto.airport.AirportResponse;
-import com.example.businesslayernew.mapper.AirportEntityToAirportResponseDtoMapper;
+import com.example.businesslayernew.mapper.AirportMapper;
 import com.example.businesslayernew.mapper.AirportRequestDtoToAirportEntityMapper;
 import com.example.businesslayernew.service.AirportService;
 import io.swagger.annotations.Api;
@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
 public class AirportController {
 
     private final AirportService airportService;
-    private final AirportRequestDtoToAirportEntityMapper airportDtoToAirportEntityMapper;
-    private final AirportEntityToAirportResponseDtoMapper airportEntityToAirportDtoMapper;
+    private final AirportMapper airportMapper;
 
     //    TODO: зачем коммент? Если делаем комменты с описанием метода - пишем как доку. Здесь и далее
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,8 +39,8 @@ public class AirportController {
     public ResponseEntity<AirportResponse> create(@RequestBody AirportRequest request) {
 
         AirportResponse airportResponseDto =
-                airportEntityToAirportDtoMapper.map(
-                        airportService.create(airportDtoToAirportEntityMapper.map(request)));
+                airportMapper.mapAirportDto(
+                        airportService.create(airportMapper.mapAirport(request)));
 
 //        TODO: лишние пробелы. Юзаем ctrl+alt+L
         return new ResponseEntity<>(airportResponseDto, HttpStatus.CREATED);
@@ -54,7 +53,7 @@ public class AirportController {
         //    TODO: одна строчка - одна точка
         return airportService.getAll()
                              .stream()
-                             .map((airportEntityToAirportDtoMapper::map))
+                             .map((airportMapper::mapAirportDto))
                              .collect(
                                      Collectors.toList());
     }
@@ -64,8 +63,8 @@ public class AirportController {
     @ApiOperation("Read airport by id")
 //    TODO: Вроде как можно не указывать литерал переменной, если он совпадает с наименованием параметра
     public ResponseEntity<AirportResponse> readById(@PathVariable Long id) {
-        return new ResponseEntity<>(airportEntityToAirportDtoMapper
-                .map(airportService.getById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(airportMapper
+                .mapAirportDto(airportService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
@@ -73,9 +72,9 @@ public class AirportController {
     public ResponseEntity<AirportResponse> update(@PathVariable Long id,
             @RequestBody AirportRequest request) {
 //        TODO: что это за чудо кодочитабельности?
-        AirportResponse airportResponse = airportEntityToAirportDtoMapper
-                        .map(airportService.update(id, airportDtoToAirportEntityMapper
-                        .map(request)));
+        AirportResponse airportResponse = airportMapper
+                        .mapAirportDto(airportService.update(id, airportMapper
+                        .mapAirport(request)));
         return new ResponseEntity<>(airportResponse, HttpStatus.OK);
     }
 

@@ -30,6 +30,15 @@ public class FlightEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "departure_time", nullable = false)
+//    TODO: LocalDateTime/ZonedDateTime, никаких Date
+    private LocalDateTime departureTime;
+
+    @Column(name = "arrival_time", nullable = false)
+    private LocalDateTime arrivalTime;
+
+    @Column(name = "number_of_free_seats")
+    private int numberOfFreeSeats;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airport_from_id", insertable = false, updatable = false)
@@ -46,19 +55,7 @@ public class FlightEntity {
     @Column(name = "airport_to_id", nullable = false)
     private Long airportToId;
 
-    @Column(name = "departure_time", nullable = false)
-//    TODO: LocalDateTime/ZonedDateTime, никаких Date
-    private LocalDateTime departureTime;
-
-    @Column(name = "arrival_time", nullable = false)
-    private LocalDateTime arrivalTime;
-
-    @Column(name = "number_of_free_seats")
-    private LocalDateTime numberOfFreeSeats;
-
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     private Set<TicketEntity> tickets;
-
-
 
 }

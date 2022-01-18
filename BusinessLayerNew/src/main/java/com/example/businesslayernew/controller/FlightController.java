@@ -36,7 +36,6 @@ public class FlightController {
     private final FlightEntityToFlightResponseDtoMapper flightEntityToFlightResponseDtoMapper;
     private final FlightRequestDtoToFlightEntityMapper flightRequestDtoToFlightEntityMapper;
 
-    //create new flight
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new flight")
     public ResponseEntity<FlightResponse> create(@RequestBody FlightRequest request){
