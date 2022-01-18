@@ -45,10 +45,10 @@ public class AirportService {
 //                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id)); ?
 //        Optional.of(airportRepository.getById(id)).orElseThrow(
 //                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
-//        airport.setId(id);
-//        airportRepository.save(airport);
-        return Optional.of(airportRepository.getById(id)).map(airportRepository::save).orElseThrow(
-                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+        airport.setId(id);
+        return airportRepository.save(airport);
+//        return Optional.of(airportRepository.getById(id)).map(airportRepository::save).orElseThrow(
+//                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
     }
 
     @Transactional

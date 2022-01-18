@@ -14,33 +14,29 @@ import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TicketService implements TicketRegistrationService<TicketEntity, Long>{
-    private static final String RESOURSENAME= "Ticket";
+public class TicketService {
+
+    private static final String RESOURSENAME = "Ticket";
+
     private static final String FIELDNAME = "Id";
 
     private final TicketRepository ticketRepository;
 
-    @Override
     @Transactional
     public TicketEntity create(TicketEntity ticket) {
         ticketRepository.save(ticket);
         return ticket;
     }
 
-    @Override
     public TicketEntity readById(Long id) {
-
         return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
     }
 
-    @Override
     public List<TicketEntity> readAll() {
-
         return ticketRepository.findAll();
     }
 
-    @Override
     @Transactional
     public TicketEntity update(Long id, TicketEntity ticket) {
         Optional.of(ticketRepository.getById(id)).orElseThrow(
@@ -50,7 +46,6 @@ public class TicketService implements TicketRegistrationService<TicketEntity, Lo
         return ticket;
     }
 
-    @Override
     @Transactional
     public void delete(Long id) {
         Optional.of(ticketRepository.getById(id)).orElseThrow(

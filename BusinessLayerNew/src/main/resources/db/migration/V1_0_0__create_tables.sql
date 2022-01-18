@@ -1,3 +1,9 @@
+create table airport
+(
+    id                  bigserial       primary key         not null,
+    name                varchar                             not null
+);
+
 create table "user"
 (
     id                  bigserial        primary key        not null,
@@ -18,24 +24,23 @@ create table "user"
 
 create table flight
 (
-    id                          bigserial       primary key         not null,
-    airport_from_id             bigint                              not null,
-    airport_to_id               bigint                              not null,
+    id                          bigserial       primary key                 not null,
+    airport_from_id             bigint          references  airport (id)    not null,
+    airport_to_id               bigint          references  airport (id)    not null,
 --     TODO: почему не timestamp?
-    departure_time              timestamp                           not null,
-    arrival_time                timestamp                           not null,
-    number_of_free_seats        char
-);
-
-create table airport
-(
-    id                  bigserial       primary key         not null,
-    name                varchar                             not null
+    departure_time              timestamp                                   not null,
+    arrival_time                timestamp                                   not null,
+    number_of_free_seats        int
 );
 
 create table ticket
 (
-    id                  bigserial       primary key         not null,
-    flight_id           bigint                              not null,
-    user_id             bigint                              not null
+    id                  bigserial       primary key             not null,
+    flight_id           bigint          references flight(id)   not null,
+    user_id             bigint          references "user"(id)                       not null
 );
+
+
+
+
+

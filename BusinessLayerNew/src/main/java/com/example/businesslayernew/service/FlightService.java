@@ -2,6 +2,7 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.FlightEntity;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
+import com.example.businesslayernew.exception.TimeFlightException;
 import com.example.businesslayernew.repository.AirportRepository;
 import com.example.businesslayernew.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +18,20 @@ import javax.transaction.Transactional;
 public class FlightService {
 
     private static final String RESOURSENAME = "Flight";
+
     private static final String FIELDNAME = "Id";
 
     private final FlightRepository flightRepository;
 
     @Transactional
     public FlightEntity create(FlightEntity flight) {
-        flightRepository.save(flight);
-        return flight;
+       flightRepository.save(flight);
+       return flight;
     }
 
     public FlightEntity getById(Long id) {
-
         return flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
-
     }
 
     public List<FlightEntity> getAll() {
@@ -42,13 +42,11 @@ public class FlightService {
 
     @Transactional
     public FlightEntity update(Long id, @NotNull FlightEntity flight) {
-
         Optional.of(flightRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
         flight.setId(id);
         flightRepository.save(flight);
         return flight;
-
     }
 
     @Transactional

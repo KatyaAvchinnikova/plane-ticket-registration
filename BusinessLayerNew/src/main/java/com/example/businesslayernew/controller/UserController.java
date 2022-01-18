@@ -2,8 +2,7 @@ package com.example.businesslayernew.controller;
 
 import com.example.businesslayernew.dto.user.UserRequest;
 import com.example.businesslayernew.dto.user.UserResponse;
-import com.example.businesslayernew.mapper.UserDtoToUserMapper;
-import com.example.businesslayernew.mapper.UserEntityToUserDtoMapper;
+import com.example.businesslayernew.mapper.UserMapper;
 import com.example.businesslayernew.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,52 +32,46 @@ import java.util.stream.Collectors;
 @Api("Users controller")
 public class UserController {
     private final UserService userService;
-    private final UserDtoToUserMapper userDtoToUserMapper;
-    private final UserEntityToUserDtoMapper userEntityToUserDtoMapper;
+    private final UserMapper userMapper;
 
 //    TODO: допустимо ли создание без регистрации?
-    //create new user
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
     public ResponseEntity<UserResponse> create(@RequestBody UserRequest request){
 
         UserResponse userResponseDto =
-                userEntityToUserDtoMapper.map(userService.create(userDtoToUserMapper.map(request)));
+                userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
 
         return new ResponseEntity<>( userResponseDto, HttpStatus.CREATED);
 
     }
 
 //    TODO: здесь и в остальных контроллерах: корректно ли дергать readAll без пагинации? Как насчет 1_000_000 записей в таблице?
-    //read all users
     @GetMapping
-    @ApiOperation("read all users")
-    public List<UserResponse> readAll(){
+    @ApiOperation("Read all users")
+    public List<UserResponse> readAll(@PathVariable("isDeleted") Boolean isDeleted){
 
-        return userService.readAll().stream().map((userEntityToUserDtoMapper::map)).collect(
+        return userService.getAll(isDeleted).stream().map((userMapper::mapToUserDto)).collect(
                 Collectors.toList());
 
     }
 
-    //read by id
-    @GetMapping("{id}")
-    @ApiOperation("read user by id")
+    @GetMapping("*/{id}")
+    @ApiOperation("Read user by id")
     public ResponseEntity<UserResponse> readById(@PathVariable("id") Long id){
-        return new ResponseEntity<>(userEntityToUserDtoMapper.map(userService.readById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);
     }
 
-    //update user
-    @PatchMapping("{id}")
-    @ApiOperation("update user")
+    @PatchMapping("/{id}")
+    @ApiOperation("Update user")
     public ResponseEntity<UserResponse> update(@PathVariable("id") Long id, @RequestBody UserRequest request){
-        UserResponse userResponseDto = userEntityToUserDtoMapper.map(userService.update(id,
-                userDtoToUserMapper.map(request)));
+        UserResponse userResponseDto = userMapper.mapToUserDto(userService.update(id,
+                userMapper.mapToUser(request)));
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
-    //delete user
-    @DeleteMapping("{id}")
-    @ApiOperation("delete user")
+    @DeleteMapping("/{id}")
+    @ApiOperation("Delete user")
     public ResponseEntity<UserResponse> delete(@PathVariable("id") Long id){
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

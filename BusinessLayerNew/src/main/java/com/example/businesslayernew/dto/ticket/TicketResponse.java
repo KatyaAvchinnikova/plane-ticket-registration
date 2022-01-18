@@ -3,6 +3,7 @@ package com.example.businesslayernew.dto.ticket;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -17,6 +18,8 @@ public class TicketResponse {
 
     private String userLastName;
 
-    private Date date;
+    private LocalDateTime departureTime;
+
+    private LocalDateTime arrivalTime;
 
 }

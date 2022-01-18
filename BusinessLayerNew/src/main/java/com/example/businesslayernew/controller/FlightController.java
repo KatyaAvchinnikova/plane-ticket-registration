@@ -2,8 +2,7 @@ package com.example.businesslayernew.controller;
 
 import com.example.businesslayernew.dto.flight.FlightRequest;
 import com.example.businesslayernew.dto.flight.FlightResponse;
-import com.example.businesslayernew.mapper.FlightEntityToFlightResponseDtoMapper;
-import com.example.businesslayernew.mapper.FlightRequestDtoToFlightEntityMapper;
+import com.example.businesslayernew.mapper.FlightMapper;
 import com.example.businesslayernew.service.FlightService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,54 +31,48 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/flights")
 @Api("Flights controller")
 public class FlightController {
+
     private final FlightService flightService;
-    private final FlightEntityToFlightResponseDtoMapper flightEntityToFlightResponseDtoMapper;
-    private final FlightRequestDtoToFlightEntityMapper flightRequestDtoToFlightEntityMapper;
+
+    private final FlightMapper flightMapper;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new flight")
-    public ResponseEntity<FlightResponse> create(@RequestBody FlightRequest request){
+    public ResponseEntity<FlightResponse> create(@RequestBody FlightRequest request) {
         FlightResponse flightResponse =
-                flightEntityToFlightResponseDtoMapper.map(flightService.create(
-                        flightRequestDtoToFlightEntityMapper.map(request)));
+                flightMapper.mapToFlightDto(flightService.create(
+                        flightMapper.mapToFlight(request)));
 
         return new ResponseEntity<>(flightResponse, HttpStatus.CREATED);
     }
 
-    //read all airports
     @GetMapping
-    @ApiOperation("read all flights")
-    public List<FlightResponse> readAll(){
-       return flightService.readAll().stream().map((flightEntityToFlightResponseDtoMapper::map)).collect(
+    @ApiOperation("Read all flights")
+    public List<FlightResponse> readAll() {
+        return flightService.getAll().stream().map((flightMapper::mapToFlightDto)).collect(
                 Collectors.toList());
-
     }
 
-    //read by id
     @GetMapping("{id}")
-    @ApiOperation("read flight by id")
-    public ResponseEntity<FlightResponse> readById(@PathVariable("id") Long id){
-        return new ResponseEntity<>(flightEntityToFlightResponseDtoMapper.map(flightService.readById(id)), HttpStatus.OK);
+    @ApiOperation("Read flight by id")
+    public ResponseEntity<FlightResponse> readById(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(flightMapper.mapToFlightDto(flightService.getById(id)), HttpStatus.OK);
     }
 
-    //update flight
     @PatchMapping("{id}")
-    @ApiOperation("update flight")
-    public ResponseEntity<FlightResponse> update(@PathVariable("id") Long id, @RequestBody FlightRequest request){
-        FlightResponse flightResponse = flightEntityToFlightResponseDtoMapper.map(flightService.update(id,
-                flightRequestDtoToFlightEntityMapper.map(request)));
+    @ApiOperation("Update flight")
+    public ResponseEntity<FlightResponse> update(@PathVariable("id") Long id, @RequestBody FlightRequest request) {
+        FlightResponse flightResponse = flightMapper.mapToFlightDto(flightService.update(id,
+                flightMapper.mapToFlight(request)));
         return new ResponseEntity<>(flightResponse, HttpStatus.OK);
     }
 
-    //delete airport
     @DeleteMapping("{id}")
-    @ApiOperation("delete flight")
-    public ResponseEntity<FlightResponse> delete(@PathVariable("id") Long id){
+    @ApiOperation("Delete flight")
+    public ResponseEntity<FlightResponse> delete(@PathVariable("id") Long id) {
 //        TODO: лишние пустые строчки
-
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 }

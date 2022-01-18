@@ -3,7 +3,6 @@ package com.example.businesslayernew.controller;
 import com.example.businesslayernew.dto.airport.AirportRequest;
 import com.example.businesslayernew.dto.airport.AirportResponse;
 import com.example.businesslayernew.mapper.AirportMapper;
-import com.example.businesslayernew.mapper.AirportRequestDtoToAirportEntityMapper;
 import com.example.businesslayernew.service.AirportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

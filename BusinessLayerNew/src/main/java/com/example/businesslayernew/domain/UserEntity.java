@@ -29,12 +29,11 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE \"user\" SET deleted = current_timestamp  WHERE id=?")
-@FilterDef(name = "deletedUsers", parameters = @ParamDef(name = "deletedOnly", type = "LocalDate"))
-@Filter(name = "deletedUserFilter", condition = "deleted = :deletedOnly")
+//@SQLDelete(sql = "UPDATE \"user\" SET deleted = current_timestamp  WHERE id=?")
+//@FilterDef(name = "deletedUsers", parameters = @ParamDef(name = "deletedOnly", type = "LocalDate"))
+//@Filter(name = "deletedUserFilter", condition = "deleted = :deletedOnly")
 @Table(name = "\"user\"")
 public class UserEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -61,5 +60,4 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<TicketEntity> tickets;
-
 }

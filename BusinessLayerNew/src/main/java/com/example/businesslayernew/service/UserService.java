@@ -11,76 +11,71 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements TicketRegistrationService<UserEntity, Long>{
+public class UserService {
 
-    private static final String RESOURSENAME= "User";
+    private static final String RESOURSENAME = "User";
 
     private static final String FIELDNAME = "Id";
 
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private EntityManager entityManager;
+//    @Autowired
+//    private EntityManager entityManager;
 
-    @Override
     @Transactional
     public UserEntity create(UserEntity user) {
-        if(user.getRole() == null){
+        if (user.getRole() == null) {
             user.setRole(Role.USER);
         }
         userRepository.save(user);
         return user;
     }
 
-    @Override
-    public UserEntity readById(Long id) {
+    public UserEntity getById(Long id) {
 
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
     }
 
-    @Override
-    public List<UserEntity> readAll() {
+    public List<UserEntity> getAll(Boolean isDeleted) {
+
+//        Session session = entityManager.unwrap(Session.class);
+
+//        Filter filter = session.enableFilter("deletedUserFilter");
+////        filter.setParameter("deletedOnly", isDeleted);
+////
+////        List<UserEntity> all = userRepository.findAll();
+////
+////        session.disableFilter("deletedUserFilter");
+////
+////        return all;
+        Filter filter = new Filter();
         return null;
     }
 
-    public List<UserEntity> readAllWithFilter(boolean isDeleted) {
-
-        Session session = entityManager.unwrap(Session.class);
-
-        Filter filter = session.enableFilter("deletedUserFilter");
-        filter.setParameter("deletedOnly", isDeleted);
-
-        List<UserEntity> all = userRepository.findAll();
-
-        session.disableFilter("deletedUserFilter");
-
-        return all;
-    }
-
-    @Override
     @Transactional
     public UserEntity update(Long id, @NotNull UserEntity user) {
         user.setId(id);
-        if(user.getRole() == null){
+        if (user.getRole() == null) {
             user.setRole(Role.USER);
         }
         userRepository.save(user);
         return user;
     }
 
-    @Override
     @Transactional
     public void delete(Long id) {
-
-        userRepository.deleteById(id);
+        UserEntity user = userRepository.getById(id);
+        user.setDeleted(LocalDate.now());
+        userRepository.save(user);
     }
 
 }
