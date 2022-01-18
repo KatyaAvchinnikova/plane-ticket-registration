@@ -1,7 +1,7 @@
 package com.example.businesslayernew.mapper;
 
 import com.example.businesslayernew.domain.FlightEntity;
-import com.example.businesslayernew.dto.response.FlightResponseDto;
+import com.example.businesslayernew.dto.flight.FlightResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -13,5 +13,5 @@ public interface FlightEntityToFlightResponseDtoMapper {
             @Mapping(target = "airportFrom", source = "airportFrom.name"),
             @Mapping(target = "airportTo", source = "airportTo.name")
     })
-    FlightResponseDto map(FlightEntity flight);
+    FlightResponse map(FlightEntity flight);
 }

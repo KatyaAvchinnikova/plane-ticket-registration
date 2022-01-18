@@ -1,7 +1,7 @@
 package com.example.businesslayernew.mapper;
 
 import com.example.businesslayernew.domain.UserEntity;
-import com.example.businesslayernew.dto.request.UserRequestDto;
+import com.example.businesslayernew.dto.user.UserRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -14,5 +14,5 @@ public interface UserDtoToUserMapper {
             @Mapping(target = "deleted",    ignore = true),
             @Mapping(target = "role",       ignore = true)
     })
-    UserEntity map(UserRequestDto requestDto);
+    UserEntity map(UserRequest requestDto);
 }

@@ -1,7 +1,7 @@
 package com.example.businesslayernew.mapper;
 
 import com.example.businesslayernew.domain.TicketEntity;
-import com.example.businesslayernew.dto.response.TicketResponseDto;
+import com.example.businesslayernew.dto.ticket.TicketResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -15,5 +15,5 @@ public interface TicketToTicketDtoMapper {
             @Mapping(target = "userLastName",       source = "user.lastName"),
             @Mapping(target = "date",               source = "flight.date")
     })
-    TicketResponseDto map(TicketEntity ticket);
+    TicketResponse map(TicketEntity ticket);
 }

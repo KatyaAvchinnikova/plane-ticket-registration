@@ -1,11 +1,11 @@
-package com.example.businesslayernew.dto.request;
+package com.example.businesslayernew.dto.ticket;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class TicketRequestDto {
+public class TicketRequest {
 
     private Long flightId;
 

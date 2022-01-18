@@ -1,4 +1,4 @@
-package com.example.businesslayernew.dto.response;
+package com.example.businesslayernew.dto.ticket;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class TicketResponseDto {
+public class TicketResponse {
 
     private String airportFromName;
 

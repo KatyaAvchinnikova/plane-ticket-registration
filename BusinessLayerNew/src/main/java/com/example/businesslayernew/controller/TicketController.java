@@ -1,15 +1,10 @@
 package com.example.businesslayernew.controller;
 
-import com.example.businesslayernew.dto.request.TicketRequestDto;
-import com.example.businesslayernew.dto.request.UserRequestDto;
-import com.example.businesslayernew.dto.response.TicketResponseDto;
-import com.example.businesslayernew.dto.response.UserResponseDto;
+import com.example.businesslayernew.dto.ticket.TicketRequest;
+import com.example.businesslayernew.dto.ticket.TicketResponse;
 import com.example.businesslayernew.mapper.TicketDtoToTicketEntityMapper;
 import com.example.businesslayernew.mapper.TicketToTicketDtoMapper;
-import com.example.businesslayernew.mapper.UserDtoToUserMapper;
-import com.example.businesslayernew.mapper.UserEntityToUserDtoMapper;
 import com.example.businesslayernew.service.TicketService;
-import com.example.businesslayernew.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
@@ -44,9 +39,9 @@ public class TicketController {
     //create new ticket
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new ticket")
-    public ResponseEntity<TicketResponseDto> create(@RequestBody TicketRequestDto request){
+    public ResponseEntity<TicketResponse> create(@RequestBody TicketRequest request){
 
-        TicketResponseDto ticketResponseDto =
+        TicketResponse ticketResponseDto =
                 ticketToTicketDtoMapper.map(ticketService.create(ticketDtoToTicketEntityMapper.map(request)));
 
         return new ResponseEntity<>( ticketResponseDto, HttpStatus.CREATED);
@@ -56,7 +51,7 @@ public class TicketController {
     //read all tickets
     @GetMapping
     @ApiOperation("read all tickets")
-    public List<TicketResponseDto> readAll(){
+    public List<TicketResponse> readAll(){
 
         return ticketService.readAll().stream().map((ticketToTicketDtoMapper::map)).collect(
                 Collectors.toList());
@@ -66,15 +61,15 @@ public class TicketController {
     //read by id
     @GetMapping("{id}")
     @ApiOperation("read ticket by id")
-    public ResponseEntity<TicketResponseDto> readById(@PathVariable("id") Long id){
+    public ResponseEntity<TicketResponse> readById(@PathVariable("id") Long id){
         return new ResponseEntity<>(ticketToTicketDtoMapper.map(ticketService.readById(id)), HttpStatus.OK);
     }
 
     //update ticket
     @PatchMapping("{id}")
     @ApiOperation("update ticket")
-    public ResponseEntity<TicketResponseDto> update(@PathVariable("id") Long id, @RequestBody TicketRequestDto request){
-        TicketResponseDto ticketResponseDto = ticketToTicketDtoMapper.map(ticketService.update(id,
+    public ResponseEntity<TicketResponse> update(@PathVariable("id") Long id, @RequestBody TicketRequest request){
+        TicketResponse ticketResponseDto = ticketToTicketDtoMapper.map(ticketService.update(id,
                 ticketDtoToTicketEntityMapper.map(request)));
         return new ResponseEntity<>(ticketResponseDto, HttpStatus.OK);
     }
@@ -82,7 +77,7 @@ public class TicketController {
     //delete ticket
     @DeleteMapping("{id}")
     @ApiOperation("delete ticket")
-    public ResponseEntity<TicketResponseDto> delete(@PathVariable("id") Long id){
+    public ResponseEntity<TicketResponse> delete(@PathVariable("id") Long id){
         ticketService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
