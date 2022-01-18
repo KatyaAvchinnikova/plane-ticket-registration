@@ -41,14 +41,12 @@ public class AirportService {
 
     public AirportEntity update(Long id, AirportEntity airport) {
 //       TODO:  почему не
-//        return Optional.of(airportRepository.getById(id)).map(airportRepository::save).orElseThrow(
+        //Потому что в параметры метода save будет передан не смапенный из реквеста объект, а существующий в базе
+//      return Optional.of(airportRepository.(id)).map(airportRepository::save).orElseThrow(
 //                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id)); ?
-//        Optional.of(airportRepository.getById(id)).orElseThrow(
-//                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+
         airport.setId(id);
         return airportRepository.save(airport);
-//        return Optional.of(airportRepository.getById(id)).map(airportRepository::save).orElseThrow(
-//                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.example.businesslayernew.controller;
 
+import com.example.businesslayernew.domain.AirportEntity;
 import com.example.businesslayernew.dto.airport.AirportRequest;
 import com.example.businesslayernew.dto.airport.AirportResponse;
 import com.example.businesslayernew.mapper.AirportMapper;
@@ -72,8 +73,7 @@ public class AirportController {
             @RequestBody AirportRequest request) {
 //        TODO: что это за чудо кодочитабельности?
         AirportResponse airportResponse = airportMapper
-                        .mapAirportDto(airportService.update(id, airportMapper
-                        .mapAirport(request)));
+                        .mapAirportDto(airportService.update(id,  airportMapper.mapAirport(request)));
         return new ResponseEntity<>(airportResponse, HttpStatus.OK);
     }
 

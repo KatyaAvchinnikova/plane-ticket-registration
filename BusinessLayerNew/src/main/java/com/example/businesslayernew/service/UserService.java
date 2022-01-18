@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -47,18 +48,15 @@ public class UserService {
 
     public List<UserEntity> getAll(Boolean isDeleted) {
 
-//        Session session = entityManager.unwrap(Session.class);
-
-//        Filter filter = session.enableFilter("deletedUserFilter");
-////        filter.setParameter("deletedOnly", isDeleted);
-////
-////        List<UserEntity> all = userRepository.findAll();
-////
-////        session.disableFilter("deletedUserFilter");
-////
-////        return all;
-        Filter filter = new Filter();
-        return null;
+        List<UserEntity> list = new ArrayList<>();
+        if (isDeleted == null) {
+            list = userRepository.findAll();
+        } else if (isDeleted == false) {
+            list = userRepository.findAllByDeletedIsNull();
+        } else if (isDeleted == true) {
+            list = userRepository.findAllByDeletedNotNull();
+        }
+        return list;
     }
 
     @Transactional

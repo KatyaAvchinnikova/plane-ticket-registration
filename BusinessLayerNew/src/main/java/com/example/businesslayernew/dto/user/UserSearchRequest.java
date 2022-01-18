@@ -9,6 +9,6 @@ import java.util.Date;
 @Setter
 public class UserSearchRequest {
 
-   private Boolean isDeleted;
+   private boolean isDeleted;
 
 }
