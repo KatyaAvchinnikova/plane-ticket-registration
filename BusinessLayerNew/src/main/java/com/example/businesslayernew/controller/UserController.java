@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,40 +34,42 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/users")
 @Api("Users controller")
 public class UserController {
+
     private final UserService userService;
+
     private final UserMapper userMapper;
 
-//    TODO: допустимо ли создание без регистрации?
+    //    TODO: допустимо ли создание без регистрации?
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
-    public ResponseEntity<UserResponse> create(@RequestBody UserRequest request){
+    public ResponseEntity<UserResponse> create(@RequestBody UserRequest request) {
 
         UserResponse userResponseDto =
                 userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
 
-        return new ResponseEntity<>( userResponseDto, HttpStatus.CREATED);
-
+        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
-//    TODO: здесь и в остальных контроллерах: корректно ли дергать readAll без пагинации? Как насчет 1_000_000 записей в таблице?
-    @GetMapping
+    //    TODO: здесь и в остальных контроллерах: корректно ли дергать readAll без пагинации? Как насчет 1_000_000 записей в таблице?
+    @GetMapping(params = {"page", "size", "isDeleted"})
     @ApiOperation("Read all users")
-    public List<UserResponse> readAll(@PathVariable("isDeleted") Boolean isDeleted){
+    public List<UserResponse> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
 
-        return userService.getAll(isDeleted).stream().map((userMapper::mapToUserDto)).collect(
+        return userService.getAll(isDeleted, page, size).stream().map((userMapper::mapToUserDto)).collect(
                 Collectors.toList());
-
     }
 
     @GetMapping("*/{id}")
     @ApiOperation("Read user by id")
-    public ResponseEntity<UserResponse> readById(@PathVariable("id") Long id){
+    public ResponseEntity<UserResponse> readById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Update user")
-    public ResponseEntity<UserResponse> update(@PathVariable("id") Long id, @RequestBody UserRequest request){
+    public ResponseEntity<UserResponse> update(@PathVariable("id") Long id, @RequestBody UserRequest request) {
         UserResponse userResponseDto = userMapper.mapToUserDto(userService.update(id,
                 userMapper.mapToUser(request)));
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
@@ -72,7 +77,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete user")
-    public ResponseEntity<UserResponse> delete(@PathVariable("id") Long id){
+    public ResponseEntity<UserResponse> delete(@PathVariable("id") Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -5,16 +5,14 @@ import com.example.businesslayernew.domain.UserEntity;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Filter;
-import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Service
@@ -27,9 +25,6 @@ public class UserService {
 
     @Autowired
     private final UserRepository userRepository;
-
-//    @Autowired
-//    private EntityManager entityManager;
 
     @Transactional
     public UserEntity create(UserEntity user) {
@@ -46,17 +41,11 @@ public class UserService {
                 FIELDNAME, id));
     }
 
-    public List<UserEntity> getAll(Boolean isDeleted) {
+    public List<UserEntity> getAll(Boolean isDeleted, int page, int size) {
+        Pageable pageSize = PageRequest.of(page - 1, size);
 
-        List<UserEntity> list = new ArrayList<>();
-        if (isDeleted == null) {
-            list = userRepository.findAll();
-        } else if (isDeleted == false) {
-            list = userRepository.findAllByDeletedIsNull();
-        } else if (isDeleted == true) {
-            list = userRepository.findAllByDeletedNotNull();
-        }
-        return list;
+        return isDeleted == false ? userRepository.findAllByDeletedNotNull(pageSize).toList() :
+               userRepository.findAllByDeletedIsNull(pageSize).toList();
     }
 
     @Transactional
@@ -71,9 +60,13 @@ public class UserService {
 
     @Transactional
     public void delete(Long id) {
-        UserEntity user = userRepository.getById(id);
-        user.setDeleted(LocalDate.now());
-        userRepository.save(user);
+        if (userRepository.getById(id) == null) {
+            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
+        } else {
+            UserEntity user = userRepository.getById(id);
+            user.setDeleted(LocalDate.now());
+            userRepository.save(user);
+        }
     }
 
 }
