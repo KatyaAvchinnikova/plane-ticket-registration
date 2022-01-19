@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -47,11 +48,12 @@ public class AirportController {
 
     }
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     @ApiOperation("Read all airports")
-    public List<AirportResponse> readAll() {
+    public List<AirportResponse> readAll(@RequestParam("page") int page,
+            @RequestParam("size") int size) {
         //    TODO: одна строчка - одна точка
-        return airportService.getAll()
+        return airportService.getAll(page, size)
                              .stream()
                              .map((airportMapper::mapAirportDto))
                              .collect(
@@ -73,7 +75,7 @@ public class AirportController {
             @RequestBody AirportRequest request) {
 //        TODO: что это за чудо кодочитабельности?
         AirportResponse airportResponse = airportMapper
-                        .mapAirportDto(airportService.update(id,  airportMapper.mapAirport(request)));
+                .mapAirportDto(airportService.update(id, airportMapper.mapAirport(request)));
         return new ResponseEntity<>(airportResponse, HttpStatus.OK);
     }
 

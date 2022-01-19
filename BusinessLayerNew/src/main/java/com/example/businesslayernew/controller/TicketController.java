@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -47,10 +48,11 @@ public class TicketController {
 
     }
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     @ApiOperation("Read all tickets")
-    public List<TicketResponse> readAll(){
-        return ticketService.readAll().stream().map((ticketMapper::mapToTicketDto)).collect(
+    public List<TicketResponse> readAll(@RequestParam("page") int page,
+            @RequestParam("size") int size){
+        return ticketService.readAll(page, size).stream().map((ticketMapper::mapToTicketDto)).collect(
                 Collectors.toList());
     }
 

@@ -6,6 +6,8 @@ import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.FlightRepository;
 import com.example.businesslayernew.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +35,11 @@ public class TicketService {
                 FIELDNAME, id));
     }
 
-    public List<TicketEntity> readAll() {
-        return ticketRepository.findAll();
+    public List<TicketEntity> readAll(int page, int size) {
+
+        Pageable pageSize = PageRequest.of(page - 1, size);
+
+        return ticketRepository.findAll(pageSize).toList();
     }
 
     @Transactional

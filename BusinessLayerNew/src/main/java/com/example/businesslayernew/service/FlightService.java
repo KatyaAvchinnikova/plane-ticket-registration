@@ -7,6 +7,8 @@ import com.example.businesslayernew.repository.AirportRepository;
 import com.example.businesslayernew.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,9 +36,11 @@ public class FlightService {
                 FIELDNAME, id));
     }
 
-    public List<FlightEntity> getAll() {
+    public List<FlightEntity> getAll(int page, int size) {
 
-        return flightRepository.findAll();
+        Pageable pageSize = PageRequest.of(page - 1, size);
+
+        return flightRepository.findAll(pageSize).toList();
 
     }
 

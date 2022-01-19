@@ -5,6 +5,8 @@ import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,9 +36,11 @@ public class AirportService {
                 FIELDNAME, id));
     }
 
-    public List<AirportEntity> getAll() {
-        List<AirportEntity> entityList = airportRepository.findAll();
-        return airportRepository.findAll();
+    public List<AirportEntity> getAll(int page, int size) {
+
+        Pageable pageSize = PageRequest.of(page - 1, size);
+
+        return airportRepository.findAll(pageSize).toList();
     }
 
     public AirportEntity update(Long id, AirportEntity airport) {

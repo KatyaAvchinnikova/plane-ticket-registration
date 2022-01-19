@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -46,10 +47,11 @@ public class FlightController {
         return new ResponseEntity<>(flightResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     @ApiOperation("Read all flights")
-    public List<FlightResponse> readAll() {
-        return flightService.getAll().stream().map((flightMapper::mapToFlightDto)).collect(
+    public List<FlightResponse> readAll(@RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return flightService.getAll(page, size).stream().map((flightMapper::mapToFlightDto)).collect(
                 Collectors.toList());
     }
 
