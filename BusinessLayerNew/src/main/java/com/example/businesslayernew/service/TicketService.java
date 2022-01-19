@@ -24,9 +24,15 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
 
+    private final FlightRepository flightRepository;
+
     @Transactional
     public TicketEntity create(TicketEntity ticket) {
+
+        decreaseNumberOfFreeSeats(ticket);
+
         ticketRepository.save(ticket);
+
         return ticket;
     }
 
@@ -44,10 +50,12 @@ public class TicketService {
 
     @Transactional
     public TicketEntity update(Long id, TicketEntity ticket) {
-        Optional.of(ticketRepository.getById(id)).orElseThrow(
-                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+//        Optional.of(ticketRepository.getById(id)).orElseThrow(
+//                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+        increaseNumberOfFreeSeats(id);
         ticket.setId(id);
         ticketRepository.save(ticket);
+        decreaseNumberOfFreeSeats(ticket);
         return ticket;
     }
 
@@ -56,6 +64,36 @@ public class TicketService {
         Optional.of(ticketRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
         ticketRepository.deleteById(id);
+    }
+
+    public void decreaseNumberOfFreeSeats(TicketEntity ticket) {
+
+        FlightEntity flight = flightRepository.findById(ticket
+                                                      .getFlightId())
+                                                      .get();
+
+        int numberOfFreeSeats = flight.getNumberOfFreeSeats();
+
+        if (numberOfFreeSeats == 0) {
+            //Exception
+        } else {
+            flight.setNumberOfFreeSeats(numberOfFreeSeats - 1);
+
+            flightRepository.save(flight);
+        }
+    }
+
+    public void increaseNumberOfFreeSeats(Long id) {
+
+        FlightEntity flight = flightRepository.getById(ticketRepository
+                .getById(id)
+                .getFlightId());
+
+        int numberOfFreeSeats = flight.getNumberOfFreeSeats();
+
+        flight.setNumberOfFreeSeats(numberOfFreeSeats + 1);
+
+        flightRepository.save(flight);
     }
 
 }
