@@ -2,6 +2,7 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.FlightEntity;
 import com.example.businesslayernew.domain.TicketEntity;
+import com.example.businesslayernew.exception.NoFreeSeatsException;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.FlightRepository;
 import com.example.businesslayernew.repository.TicketRepository;
@@ -50,12 +51,14 @@ public class TicketService {
 
     @Transactional
     public TicketEntity update(Long id, TicketEntity ticket) {
-//        Optional.of(ticketRepository.getById(id)).orElseThrow(
-//                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
-        increaseNumberOfFreeSeats(id);
-        ticket.setId(id);
-        ticketRepository.save(ticket);
-        decreaseNumberOfFreeSeats(ticket);
+        if (ticketRepository.findById(id) == null) {
+            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
+        } else {
+            increaseNumberOfFreeSeats(id);
+            ticket.setId(id);
+            ticketRepository.save(ticket);
+            decreaseNumberOfFreeSeats(ticket);
+        }
         return ticket;
     }
 
@@ -68,14 +71,13 @@ public class TicketService {
 
     public void decreaseNumberOfFreeSeats(TicketEntity ticket) {
 
-        FlightEntity flight = flightRepository.findById(ticket
-                                                      .getFlightId())
-                                                      .get();
+        FlightEntity flight = flightRepository.findById(ticket.getFlightId()).get();
 
         int numberOfFreeSeats = flight.getNumberOfFreeSeats();
 
         if (numberOfFreeSeats == 0) {
-            //Exception
+            throw new NoFreeSeatsException(flight.getAirportFrom().getName(), flight.getAirportTo().getName(),
+                    flight.getDepartureTime());
         } else {
             flight.setNumberOfFreeSeats(numberOfFreeSeats - 1);
 
@@ -85,9 +87,7 @@ public class TicketService {
 
     public void increaseNumberOfFreeSeats(Long id) {
 
-        FlightEntity flight = flightRepository.getById(ticketRepository
-                .getById(id)
-                .getFlightId());
+        FlightEntity flight = flightRepository.getById(ticketRepository.getById(id).getFlightId());
 
         int numberOfFreeSeats = flight.getNumberOfFreeSeats();
 

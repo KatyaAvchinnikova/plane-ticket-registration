@@ -16,10 +16,11 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AirportService {
+
     @Autowired
     private final AirportRepository airportRepository;
-//    Слова разделяются _. Пустая строка между полями с разными назначениями. Константы над инжектируемыми полями
-    private static final String RESOURSENAME= "Airport";
+    //    Слова разделяются _. Пустая строка между полями с разными назначениями. Константы над инжектируемыми полями
+    private static final String RESOURSENAME = "Airport";
 
     private static final String FIELDNAME = "Id";
 
@@ -31,7 +32,6 @@ public class AirportService {
 
     //    TODO: getById. read->get
     public AirportEntity getById(Long id) {
-
         return airportRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
     }
@@ -48,8 +48,11 @@ public class AirportService {
         //Потому что в параметры метода save будет передан не смапенный из реквеста объект, а существующий в базе
 //      return Optional.of(airportRepository.(id)).map(airportRepository::save).orElseThrow(
 //                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id)); ?
-
-        airport.setId(id);
+        if (airportRepository.findById(id) == null) {
+            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
+        } else {
+            airport.setId(id);
+        }
         return airportRepository.save(airport);
     }
 
@@ -58,7 +61,6 @@ public class AirportService {
         Optional.of(airportRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
         airportRepository.deleteById(id);
-
     }
 
 }

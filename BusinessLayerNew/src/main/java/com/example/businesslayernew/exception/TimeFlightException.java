@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
-@Setter
-@Getter
 public class TimeFlightException extends RuntimeException {
 
     public TimeFlightException(String airportFrom, String airportTo) {
