@@ -2,7 +2,7 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.FlightEntity;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
-import com.example.businesslayernew.exception.TimeFlightException;
+import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
 import com.example.businesslayernew.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public class FlightService {
     @Transactional
     public FlightEntity create(FlightEntity flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
-            throw new TimeFlightException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
+            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
         }
         flightRepository.save(flight);
         return flight;
@@ -48,7 +48,7 @@ public class FlightService {
     @Transactional
     public FlightEntity update(Long id, @NotNull FlightEntity flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
-            throw new TimeFlightException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
+            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
         } else if (flightRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {
