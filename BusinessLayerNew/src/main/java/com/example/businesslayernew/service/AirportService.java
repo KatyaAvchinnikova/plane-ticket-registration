@@ -5,6 +5,9 @@ import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,12 +28,14 @@ public class AirportService {
     private static final String FIELDNAME = "Id";
 
     @Transactional
+    @Cacheable(value = "airports")
     public AirportEntity create(AirportEntity airport) {
         //        TODO: возвращаемое значение - результат сохранения
         return airportRepository.save(airport);
     }
 
     //    TODO: getById. read->get
+    @Cacheable(value = "airports")
     public AirportEntity getById(Long id) {
         return airportRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
@@ -43,6 +48,7 @@ public class AirportService {
         return airportRepository.findAll(pageSize).toList();
     }
 
+    @CachePut(value = "airports", key = "#airport.id")
     public AirportEntity update(Long id, AirportEntity airport) {
 //       TODO:  почему не
         //Потому что в параметры метода save будет передан не смапенный из реквеста объект, а существующий в базе
@@ -57,6 +63,7 @@ public class AirportService {
     }
 
     @Transactional
+    @CacheEvict(value = "airports")
     public void delete(Long id) {
         Optional.of(airportRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));

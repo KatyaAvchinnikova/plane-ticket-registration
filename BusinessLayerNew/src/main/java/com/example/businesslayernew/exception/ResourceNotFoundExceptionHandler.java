@@ -12,8 +12,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ResourceNotFoundExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({ResourceNotFoundException.class, NoFreeSeatsException.class,
-                       ArrivalTimeBeforeDepartureTimeException.class})
+    @ExceptionHandler({
+            ResourceNotFoundException.class, NoFreeSeatsException.class,
+            ArrivalTimeBeforeDepartureTimeException.class
+    })
     protected ResponseEntity<Object> handleConflict(ResourceNotFoundException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);

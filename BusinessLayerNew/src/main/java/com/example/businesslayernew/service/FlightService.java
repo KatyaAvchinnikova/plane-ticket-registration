@@ -6,6 +6,9 @@ import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeExce
 import com.example.businesslayernew.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ public class FlightService {
     private final FlightRepository flightRepository;
 
     @Transactional
+    @Cacheable(value = "flights")
     public FlightEntity create(FlightEntity flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
@@ -33,6 +37,7 @@ public class FlightService {
         return flight;
     }
 
+    @Cacheable(value = "flights")
     public FlightEntity getById(Long id) {
         return flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
@@ -46,6 +51,7 @@ public class FlightService {
     }
 
     @Transactional
+    @CachePut(value = "flights", key = "#flight.id")
     public FlightEntity update(Long id, @NotNull FlightEntity flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
@@ -58,6 +64,7 @@ public class FlightService {
     }
 
     @Transactional
+    @CacheEvict(value = "flights")
     public void delete(Long id) {
         Optional.of(flightRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));

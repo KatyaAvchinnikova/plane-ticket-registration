@@ -7,6 +7,9 @@ import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.FlightRepository;
 import com.example.businesslayernew.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class TicketService {
     private final FlightRepository flightRepository;
 
     @Transactional
+    @Cacheable(value = "tickets")
     public TicketEntity create(TicketEntity ticket) {
 
         decreaseNumberOfFreeSeats(ticket);
@@ -37,6 +41,7 @@ public class TicketService {
         return ticket;
     }
 
+    @Cacheable(value = "tickets")
     public TicketEntity readById(Long id) {
         return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
@@ -50,6 +55,7 @@ public class TicketService {
     }
 
     @Transactional
+    @CachePut(value = "tickets", key = "#ticket.id")
     public TicketEntity update(Long id, TicketEntity ticket) {
         if (ticketRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
@@ -63,6 +69,7 @@ public class TicketService {
     }
 
     @Transactional
+    @CacheEvict(value = "tickets")
     public void delete(Long id) {
         Optional.of(ticketRepository.getById(id)).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));

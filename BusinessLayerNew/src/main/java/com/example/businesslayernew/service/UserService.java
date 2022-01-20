@@ -7,6 +7,9 @@ import com.example.businesslayernew.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
+    @Cacheable(value = "users")
     public UserEntity create(UserEntity user) {
         if (user.getRole() == null) {
             user.setRole(Role.USER);
@@ -35,6 +39,7 @@ public class UserService {
         return user;
     }
 
+    @Cacheable(value = "users")
     public UserEntity getById(Long id) {
 
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
@@ -49,6 +54,7 @@ public class UserService {
     }
 
     @Transactional
+    @CachePut(value = "users", key = "#user.id")
     public UserEntity update(Long id, @NotNull UserEntity user) {
         user.setId(id);
         if (user.getRole() == null) {
@@ -59,6 +65,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "users")
     public void delete(Long id) {
         if (userRepository.getById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
