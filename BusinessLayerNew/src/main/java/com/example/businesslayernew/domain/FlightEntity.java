@@ -18,6 +18,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -38,6 +42,8 @@ public class FlightEntity {
     private LocalDateTime arrivalTime;
 
     @Column(name = "number_of_free_seats")
+    @Max(120)
+    @Min(1)
     private int numberOfFreeSeats;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,6 +52,7 @@ public class FlightEntity {
 
 //    TODO: доступность сеттера - NONE для таких полей
     @Column(name = "airport_from_id", nullable = false)
+    @NotNull
     private Long airportFromId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,6 +60,7 @@ public class FlightEntity {
     private AirportEntity airportTo;
 
     @Column(name = "airport_to_id", nullable = false)
+    @NotNull
     private Long airportToId;
 
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)

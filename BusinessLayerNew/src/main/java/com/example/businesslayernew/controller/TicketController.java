@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,32 +40,33 @@ public class TicketController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new ticket")
-    public ResponseEntity<TicketResponse> create(@RequestBody TicketRequest request){
+    public ResponseEntity<TicketResponse> create(@Valid @RequestBody TicketRequest request) {
 
         TicketResponse ticketResponseDto =
                 ticketMapper.mapToTicketDto(ticketService.create(ticketMapper.mapToTicket(request)));
 
-        return new ResponseEntity<>( ticketResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(ticketResponseDto, HttpStatus.CREATED);
 
     }
 
     @GetMapping(params = {"page", "size"})
     @ApiOperation("Read all tickets")
     public List<TicketResponse> readAll(@RequestParam("page") int page,
-            @RequestParam("size") int size){
+            @RequestParam("size") int size) {
         return ticketService.readAll(page, size).stream().map((ticketMapper::mapToTicketDto)).collect(
                 Collectors.toList());
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Read ticket by id")
-    public ResponseEntity<TicketResponse> readById(@PathVariable("id") Long id){
+    public ResponseEntity<TicketResponse> readById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(ticketMapper.mapToTicketDto(ticketService.readById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("update ticket")
-    public ResponseEntity<TicketResponse> update(@PathVariable("id") Long id, @RequestBody TicketRequest request){
+    public ResponseEntity<TicketResponse> update(@Valid @PathVariable("id") Long id,
+            @RequestBody TicketRequest request) {
         TicketResponse ticketResponseDto = ticketMapper.mapToTicketDto(ticketService.update(id,
                 ticketMapper.mapToTicket(request)));
         return new ResponseEntity<>(ticketResponseDto, HttpStatus.OK);
@@ -72,8 +74,9 @@ public class TicketController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("delete ticket")
-    public ResponseEntity<TicketResponse> delete(@PathVariable("id") Long id){
+    public ResponseEntity<TicketResponse> delete(@PathVariable("id") Long id) {
         ticketService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

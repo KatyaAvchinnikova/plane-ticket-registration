@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -33,6 +34,7 @@ public class TicketEntity {
 
 //    TODO: хиб тебе сам не перебьет подобный нэйминг?
     @Column(name = "flight_id", nullable = false)
+    @NotBlank
     private Long flightId;
 
     @ManyToOne(optional = false)
@@ -40,6 +42,7 @@ public class TicketEntity {
     private UserEntity user;
 
     @Column(name = "user_id")
+    @NotBlank
     private Long userId;
 
 }

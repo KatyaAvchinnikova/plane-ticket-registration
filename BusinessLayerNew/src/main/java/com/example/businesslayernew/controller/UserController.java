@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class UserController {
     //    TODO: допустимо ли создание без регистрации?
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
-    public ResponseEntity<UserResponse> create(@RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> create(@Valid  @RequestBody UserRequest request) {
 
         UserResponse userResponseDto =
                 userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
@@ -69,7 +70,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @ApiOperation("Update user")
-    public ResponseEntity<UserResponse> update(@PathVariable("id") Long id, @RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> update(@Valid @PathVariable("id") Long id, @RequestBody UserRequest request) {
         UserResponse userResponseDto = userMapper.mapToUserDto(userService.update(id,
                 userMapper.mapToUser(request)));
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class FlightController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new flight")
-    public ResponseEntity<FlightResponse> create(@RequestBody FlightRequest request) {
+    public ResponseEntity<FlightResponse> create(@Valid @RequestBody FlightRequest request) {
         FlightResponse flightResponse =
                 flightMapper.mapToFlightDto(flightService.create(
                         flightMapper.mapToFlight(request)));
@@ -63,7 +64,8 @@ public class FlightController {
 
     @PatchMapping("{id}")
     @ApiOperation("Update flight")
-    public ResponseEntity<FlightResponse> update(@PathVariable("id") Long id, @RequestBody FlightRequest request) {
+    public ResponseEntity<FlightResponse> update(@PathVariable("id") Long id,
+            @Valid @RequestBody FlightRequest request) {
         FlightResponse flightResponse = flightMapper.mapToFlightDto(flightService.update(id,
                 flightMapper.mapToFlight(request)));
         return new ResponseEntity<>(flightResponse, HttpStatus.OK);
