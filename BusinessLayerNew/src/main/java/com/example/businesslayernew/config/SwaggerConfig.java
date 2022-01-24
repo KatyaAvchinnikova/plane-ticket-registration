@@ -21,7 +21,9 @@ public class SwaggerConfig {
 
     private SecurityContext securityContext() {
 //        TODO: одна строчка - одна точка
-        return SecurityContext.builder().securityReferences(defaultAuth()).build();
+        return SecurityContext.builder()
+                              .securityReferences(defaultAuth())
+                              .build();
     }
 
     private List<SecurityReference> defaultAuth() {
