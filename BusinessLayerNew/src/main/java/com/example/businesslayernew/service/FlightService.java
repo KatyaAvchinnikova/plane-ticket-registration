@@ -31,7 +31,8 @@ public class FlightService {
     @Cacheable(value = "flights")
     public FlightEntity create(FlightEntity flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
-            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
+            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
+                    flight.getAirportTo().getName());
         }
         flightRepository.save(flight);
         return flight;
@@ -39,8 +40,8 @@ public class FlightService {
 
     @Cacheable(value = "flights")
     public FlightEntity getById(Long id) {
-        return flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
-                FIELDNAME, id));
+        return flightRepository.findById(id)
+                               .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
     }
 
     public List<FlightEntity> getAll(int page, int size) {
@@ -54,7 +55,8 @@ public class FlightService {
     @CachePut(value = "flights", key = "#flight.id")
     public FlightEntity update(Long id, @NotNull FlightEntity flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
-            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(), flight.getAirportTo().getName());
+            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
+                    flight.getAirportTo().getName());
         } else if (flightRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {
@@ -66,9 +68,11 @@ public class FlightService {
     @Transactional
     @CacheEvict(value = "flights")
     public void delete(Long id) {
-        Optional.of(flightRepository.getById(id)).orElseThrow(
-                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
-        flightRepository.deleteById(id);
+        if (flightRepository.findById(id) == null) {
+            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
+        } else {
+            flightRepository.deleteById(id);
+        }
     }
 
 }

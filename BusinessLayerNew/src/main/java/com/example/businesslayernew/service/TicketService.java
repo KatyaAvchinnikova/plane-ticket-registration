@@ -71,14 +71,20 @@ public class TicketService {
     @Transactional
     @CacheEvict(value = "tickets")
     public void delete(Long id) {
-        Optional.of(ticketRepository.getById(id)).orElseThrow(
-                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
-        ticketRepository.deleteById(id);
+        if (ticketRepository.findById(id) == null) {
+            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
+        } else {
+            increaseNumberOfFreeSeats(id);
+            ticketRepository.deleteById(id);
+        }
     }
 
     public void decreaseNumberOfFreeSeats(TicketEntity ticket) {
 
         FlightEntity flight = flightRepository.findById(ticket.getFlightId()).get();
+        if (flight == null) {
+            throw new ResourceNotFoundException("Flight", "id", ticketRepository.getById(ticket.getId()).getFlightId());
+        }
 
         int numberOfFreeSeats = flight.getNumberOfFreeSeats();
 
@@ -87,7 +93,6 @@ public class TicketService {
                     flight.getDepartureTime());
         } else {
             flight.setNumberOfFreeSeats(numberOfFreeSeats - 1);
-
             flightRepository.save(flight);
         }
     }
@@ -96,11 +101,13 @@ public class TicketService {
 
         FlightEntity flight = flightRepository.getById(ticketRepository.getById(id).getFlightId());
 
-        int numberOfFreeSeats = flight.getNumberOfFreeSeats();
-
-        flight.setNumberOfFreeSeats(numberOfFreeSeats + 1);
-
-        flightRepository.save(flight);
+        if (flight == null) {
+            throw new ResourceNotFoundException("Flight", "id", ticketRepository.getById(id).getFlightId());
+        } else {
+            int numberOfFreeSeats = flight.getNumberOfFreeSeats();
+            flight.setNumberOfFreeSeats(numberOfFreeSeats + 1);
+            flightRepository.save(flight);
+        }
     }
 
 }

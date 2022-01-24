@@ -43,7 +43,7 @@ public class FlightEntity {
 
     @Column(name = "number_of_free_seats")
     @Max(120)
-    @Min(1)
+    @Min(0)
     private int numberOfFreeSeats;
 
     @ManyToOne(fetch = FetchType.LAZY)

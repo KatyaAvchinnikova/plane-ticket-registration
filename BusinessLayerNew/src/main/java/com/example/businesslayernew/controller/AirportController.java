@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 //TODO: здесь и далее: зачем геттеры и сеттеры для классов бизнес-логики?
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/airports")
+@RequestMapping("/api/airports")
 @Api("Airport controller")
 public class AirportController {
 
@@ -36,33 +37,32 @@ public class AirportController {
 
     //    TODO: зачем коммент? Если делаем комменты с описанием метода - пишем как доку. Здесь и далее
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Create new airport")
-    public ResponseEntity<AirportResponse> create(@RequestBody AirportRequest request) {
+    public AirportResponse create(@RequestBody AirportRequest request) {
 
-        AirportResponse airportResponseDto =
-                airportMapper.mapAirportDto(
-                        airportService.create(airportMapper.mapAirport(request)));
-
+        AirportResponse airportResponseDto = airportMapper.mapAirportDto(airportService
+                .create(airportMapper.mapAirport(request)));
 //        TODO: лишние пробелы. Юзаем ctrl+alt+L
-        return new ResponseEntity<>(airportResponseDto, HttpStatus.CREATED);
-
+        return airportResponseDto;
     }
 
     @GetMapping(params = {"page", "size"})
     @ApiOperation("Read all airports")
+    @ResponseStatus(HttpStatus.OK)
     public List<AirportResponse> readAll(@RequestParam("page") int page,
             @RequestParam("size") int size) {
         //    TODO: одна строчка - одна точка
         return airportService.getAll(page, size)
                              .stream()
                              .map((airportMapper::mapAirportDto))
-                             .collect(
-                                     Collectors.toList());
+                             .collect(Collectors.toList());
     }
 
     //    TODO: потерян слеш
     @GetMapping("/{id}")
     @ApiOperation("Read airport by id")
+    @ResponseStatus(HttpStatus.OK)
 //    TODO: Вроде как можно не указывать литерал переменной, если он совпадает с наименованием параметра
     public ResponseEntity<AirportResponse> readById(@PathVariable Long id) {
         return new ResponseEntity<>(airportMapper
@@ -71,20 +71,21 @@ public class AirportController {
 
     @PatchMapping("/{id}")
     @ApiOperation("Update airport")
-    public ResponseEntity<AirportResponse> update(@PathVariable Long id,
+    @ResponseStatus(HttpStatus.CREATED)
+    public AirportResponse update(@PathVariable Long id,
             @RequestBody AirportRequest request) {
 //        TODO: что это за чудо кодочитабельности?
         AirportResponse airportResponse = airportMapper
                 .mapAirportDto(airportService.update(id, airportMapper.mapAirport(request)));
-        return new ResponseEntity<>(airportResponse, HttpStatus.OK);
+        return airportResponse;
     }
 
     @DeleteMapping("/{id}")
 //    TODO: описания методов с большой буквы
     @ApiOperation("Delete airport")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AirportResponse> delete(@PathVariable Long id) {
         airportService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

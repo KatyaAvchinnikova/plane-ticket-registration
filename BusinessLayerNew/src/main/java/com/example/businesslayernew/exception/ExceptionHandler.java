@@ -30,11 +30,11 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<Object> onValidationException(ConstraintViolationException ex,
             WebRequest request) {
-        String bodyOfResponse = "";
+        StringBuffer bodyOfResponse = new StringBuffer();
         for (ConstraintViolation violation : ex.getConstraintViolations()) {
-            bodyOfResponse = violation.getPropertyPath().toString() + " " + violation.getMessage();
+            bodyOfResponse = bodyOfResponse.append(violation.getPropertyPath() + " " + violation.getMessage());
         }
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, bodyOfResponse.toString(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
 }

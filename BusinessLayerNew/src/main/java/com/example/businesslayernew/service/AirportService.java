@@ -65,9 +65,10 @@ public class AirportService {
     @Transactional
     @CacheEvict(value = "airports")
     public void delete(Long id) {
-        Optional.of(airportRepository.getById(id)).orElseThrow(
-                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
-        airportRepository.deleteById(id);
-    }
-
+        if (airportRepository.findById(id) == null) {
+            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
+        } else {
+            airportRepository.deleteById(id);
+        }
+     }
 }

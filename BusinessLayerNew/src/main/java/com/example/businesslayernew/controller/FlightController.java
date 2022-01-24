@@ -30,7 +30,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@RequestMapping(value = "/api/flights")
+@RequestMapping( "/api/flights")
 @Api("Flights controller")
 public class FlightController {
 
@@ -58,13 +58,13 @@ public class FlightController {
 
     @GetMapping("{id}")
     @ApiOperation("Read flight by id")
-    public ResponseEntity<FlightResponse> readById(@PathVariable("id") Long id) {
+    public ResponseEntity<FlightResponse> readById(@PathVariable Long id) {
         return new ResponseEntity<>(flightMapper.mapToFlightDto(flightService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("{id}")
     @ApiOperation("Update flight")
-    public ResponseEntity<FlightResponse> update(@PathVariable("id") Long id,
+    public ResponseEntity<FlightResponse> update(@PathVariable Long id,
             @Valid @RequestBody FlightRequest request) {
         FlightResponse flightResponse = flightMapper.mapToFlightDto(flightService.update(id,
                 flightMapper.mapToFlight(request)));
@@ -73,10 +73,9 @@ public class FlightController {
 
     @DeleteMapping("{id}")
     @ApiOperation("Delete flight")
-    public ResponseEntity<FlightResponse> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<FlightResponse> delete(@PathVariable Long id) {
 //        TODO: лишние пустые строчки
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,7 +33,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@RequestMapping(value = "/api/users")
+@RequestMapping("/api/users")
 @Api("Users controller")
 public class UserController {
 
@@ -43,17 +44,15 @@ public class UserController {
     //    TODO: допустимо ли создание без регистрации?
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
-    public ResponseEntity<UserResponse> create(@Valid  @RequestBody UserRequest request) {
-
-        UserResponse userResponseDto =
-                userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
-
-        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse create(@Valid @RequestBody UserRequest request) {
+        return userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
     }
 
     //    TODO: здесь и в остальных контроллерах: корректно ли дергать readAll без пагинации? Как насчет 1_000_000 записей в таблице?
     @GetMapping(params = {"page", "size", "isDeleted"})
     @ApiOperation("Read all users")
+    @ResponseStatus(HttpStatus.OK)
     public List<UserResponse> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
             @RequestParam("page") int page,
             @RequestParam("size") int size) {
@@ -64,21 +63,22 @@ public class UserController {
 
     @GetMapping("*/{id}")
     @ApiOperation("Read user by id")
-    public ResponseEntity<UserResponse> readById(@PathVariable("id") Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponse> readById(@PathVariable Long id) {
         return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Update user")
-    public ResponseEntity<UserResponse> update(@Valid @PathVariable("id") Long id, @RequestBody UserRequest request) {
-        UserResponse userResponseDto = userMapper.mapToUserDto(userService.update(id,
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
+        return userMapper.mapToUserDto(userService.update(id,
                 userMapper.mapToUser(request)));
-        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete user")
-    public ResponseEntity<UserResponse> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<UserResponse> delete(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
