@@ -5,6 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AirportRequest {
+public class AirportDto {
+
+    private Long id;
+
     private String name;
+
 }

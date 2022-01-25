@@ -1,7 +1,7 @@
 package com.example.businesslayernew.controller;
 
+import com.example.businesslayernew.dto.user.UserDto;
 import com.example.businesslayernew.dto.user.UserRequest;
-import com.example.businesslayernew.dto.user.UserResponse;
 import com.example.businesslayernew.mapper.UserMapper;
 import com.example.businesslayernew.service.UserService;
 import io.swagger.annotations.Api;
@@ -9,8 +9,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,40 +46,36 @@ public class UserController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse create(@Valid @RequestBody UserRequest request) {
+    public UserDto create(@Valid @RequestBody UserRequest request) {
         return userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
     }
 
-    //    TODO: здесь и в остальных контроллерах: корректно ли дергать readAll без пагинации? Как насчет 1_000_000 записей в таблице?
     @GetMapping(params = {"page", "size", "isDeleted"})
     @ApiOperation("Read all users")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserResponse> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size) {
-
-        return userService.getAll(isDeleted, page, size).stream().map((userMapper::mapToUserDto)).collect(
-                Collectors.toList());
+    public Page<UserDto> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return userService.getAll(isDeleted, pageable).map(userMapper::mapToUserDto);
     }
 
     @GetMapping("*/{id}")
     @ApiOperation("Read user by id")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserResponse> readById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> readById(@PathVariable Long id) {
         return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Update user")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
+    public UserDto update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
         return userMapper.mapToUserDto(userService.update(id,
                 userMapper.mapToUser(request)));
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete user")
-    public ResponseEntity<UserResponse> delete(@PathVariable Long id) {
+    public ResponseEntity<UserDto> delete(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

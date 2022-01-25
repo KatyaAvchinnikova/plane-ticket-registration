@@ -1,7 +1,6 @@
 package com.example.businesslayernew.repository;
 
-import com.example.businesslayernew.domain.AirportEntity;
-import com.example.businesslayernew.domain.UserEntity;
+import com.example.businesslayernew.domain.Airport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +11,8 @@ import java.util.Optional;
 
 //TODO: Что за чудеса читабельности? JpaRepository наследует PagingAndSortingRepository
 @Repository
-public interface AirportRepository extends JpaRepository<AirportEntity, Long>,
-        PagingAndSortingRepository <AirportEntity, Long>{
-        Page<AirportEntity> findAll(Pageable pageable);
+public interface AirportRepository extends JpaRepository<Airport, Long> {
+
+    Page<Airport> findAll(Pageable pageable);
+
 }

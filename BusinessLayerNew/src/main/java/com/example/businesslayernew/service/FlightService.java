@@ -1,6 +1,6 @@
 package com.example.businesslayernew.service;
 
-import com.example.businesslayernew.domain.FlightEntity;
+import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
 import com.example.businesslayernew.repository.FlightRepository;
@@ -9,12 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
 
 @Service
@@ -30,7 +30,7 @@ public class FlightService {
     @Transactional
 //    TODO: точно та анноташка?
     @Cacheable(value = "flights")
-    public FlightEntity create(FlightEntity flight) {
+    public Flight create(Flight flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
                     flight.getAirportTo().getName());
@@ -40,21 +40,19 @@ public class FlightService {
     }
 
     @Cacheable(value = "flights")
-    public FlightEntity getById(Long id) {
+    public Flight getById(Long id) {
         return flightRepository.findById(id)
                                .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
     }
 
-    public List<FlightEntity> getAll(int page, int size) {
+    public Page<Flight> getAll(Pageable pageable) {
 
-        Pageable pageSize = PageRequest.of(page - 1, size);
-
-        return flightRepository.findAll(pageSize).toList();
+        return flightRepository.findAll(pageable);
     }
 
     @Transactional
     @CachePut(value = "flights", key = "#flight.id")
-    public FlightEntity update(Long id, @NotNull FlightEntity flight) {
+    public Flight update(Long id, @NotNull Flight flight) {
 //        TODO: валидация должна быт ьна уровне контроллера
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
@@ -72,6 +70,9 @@ public class FlightService {
     @CacheEvict(value = "flights")
     public void delete(Long id) {
 //        TODO: опшнл из репы
+//        var d = flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME,
+//                id))
+//                .
         if (flightRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {

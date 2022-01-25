@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -29,42 +27,35 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="flight")
-public class FlightEntity {
+public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "departure_time", nullable = false)
-//    TODO: LocalDateTime/ZonedDateTime, никаких Date
     private LocalDateTime departureTime;
 
     @Column(name = "arrival_time", nullable = false)
     private LocalDateTime arrivalTime;
 
-//    TODO: валидации на уровне дто, здесь не стоит
     @Column(name = "number_of_free_seats")
-    @Max(120)
-    @Min(0)
     private int numberOfFreeSeats;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airport_from_id", insertable = false, updatable = false)
-    private AirportEntity airportFrom;
+    private Airport airportFrom;
 
 //    TODO: доступность сеттера - NONE для таких полей
     @Column(name = "airport_from_id", nullable = false)
-    @NotNull
     private Long airportFromId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airport_to_id", insertable = false, updatable = false)
-    private AirportEntity airportTo;
+    private Airport airportTo;
 
     @Column(name = "airport_to_id", nullable = false)
-    @NotNull
     private Long airportToId;
 
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
-    private Set<TicketEntity> tickets;
-//    TODO: лишняя пустая строка
+    private Set<Ticket> tickets;
 }

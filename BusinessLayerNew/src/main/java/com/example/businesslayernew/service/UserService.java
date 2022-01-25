@@ -1,7 +1,7 @@
 package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.Role;
-import com.example.businesslayernew.domain.UserEntity;
+import com.example.businesslayernew.domain.User;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,13 @@ public class UserService {
     private static final String RESOURSENAME = "User";
 
     private static final String FIELDNAME = "Id";
-//TODO:  зачем автовайред?
+    //TODO:  зачем автовайред?
     @Autowired
     private final UserRepository userRepository;
 
     @Transactional
     @Cacheable(value = "users")
-    public UserEntity create(UserEntity user) {
+    public User create(User user) {
         if (user.getRole() == null) {
             user.setRole(Role.USER);
         }
@@ -40,22 +41,20 @@ public class UserService {
     }
 
     @Cacheable(value = "users")
-    public UserEntity getById(Long id) {
+    public User getById(Long id) {
 
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
     }
 
-    public List<UserEntity> getAll(Boolean isDeleted, int page, int size) {
-        Pageable pageSize = PageRequest.of(page - 1, size);
-
-        return isDeleted == false ? userRepository.findAllByDeletedNotNull(pageSize).toList() :
-               userRepository.findAllByDeletedIsNull(pageSize).toList();
+    public Page<User> getAll(Boolean isDeleted, Pageable pageable) {
+        return !isDeleted ? userRepository.findAllByDeletedNotNull(pageable)
+                          : userRepository.findAllByDeletedIsNull(pageable);
     }
 
     @Transactional
     @CachePut(value = "users", key = "#user.id")
-    public UserEntity update(Long id, @NotNull UserEntity user) {
+    public User update(Long id, @NotNull User user) {
         user.setId(id);
         if (user.getRole() == null) {
             user.setRole(Role.USER);
@@ -70,7 +69,7 @@ public class UserService {
         if (userRepository.getById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {
-            UserEntity user = userRepository.getById(id);
+            User user = userRepository.getById(id);
             user.setDeleted(LocalDate.now());
             userRepository.save(user);
         }

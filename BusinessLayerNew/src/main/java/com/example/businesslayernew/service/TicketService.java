@@ -1,7 +1,7 @@
 package com.example.businesslayernew.service;
 
-import com.example.businesslayernew.domain.FlightEntity;
-import com.example.businesslayernew.domain.TicketEntity;
+import com.example.businesslayernew.domain.Flight;
+import com.example.businesslayernew.domain.Ticket;
 import com.example.businesslayernew.exception.NoFreeSeatsException;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.FlightRepository;
@@ -10,12 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
 
 @Service
@@ -32,7 +32,7 @@ public class TicketService {
 
     @Transactional
     @Cacheable(value = "tickets")
-    public TicketEntity create(TicketEntity ticket) {
+    public Ticket create(Ticket ticket) {
 
         decreaseNumberOfFreeSeats(ticket);
 
@@ -42,21 +42,18 @@ public class TicketService {
     }
 
     @Cacheable(value = "tickets")
-    public TicketEntity readById(Long id) {
+    public Ticket readById(Long id) {
         return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
     }
 
-    public List<TicketEntity> readAll(int page, int size) {
-
-        Pageable pageSize = PageRequest.of(page - 1, size);
-
-        return ticketRepository.findAll(pageSize).toList();
+    public Page<Ticket> readAll(Pageable pageable) {
+        return ticketRepository.findAll(pageable);
     }
 
     @Transactional
     @CachePut(value = "tickets", key = "#ticket.id")
-    public TicketEntity update(Long id, TicketEntity ticket) {
+    public Ticket update(Long id, Ticket ticket) {
         if (ticketRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {
@@ -79,9 +76,9 @@ public class TicketService {
         }
     }
 
-    public void decreaseNumberOfFreeSeats(TicketEntity ticket) {
+    public void decreaseNumberOfFreeSeats(Ticket ticket) {
 //TODO: что за чудеса обработки опшнл?
-        FlightEntity flight = flightRepository.findById(ticket.getFlightId()).get();
+        Flight flight = flightRepository.findById(ticket.getFlightId()).get();
         if (flight == null) {
             throw new ResourceNotFoundException("Flight", "id", ticketRepository.getById(ticket.getId()).getFlightId());
         }
@@ -99,7 +96,7 @@ public class TicketService {
 
     public void increaseNumberOfFreeSeats(Long id) {
 
-        FlightEntity flight = flightRepository.getById(ticketRepository.getById(id).getFlightId());
+        Flight flight = flightRepository.getById(ticketRepository.getById(id).getFlightId());
 
         if (flight == null) {
             throw new ResourceNotFoundException("Flight", "id", ticketRepository.getById(id).getFlightId());

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ import javax.persistence.Table;
 //TODO: Здесь и далее: зачем слово Entity? Убираем и даже @Table  yt ye;ty
 //TODO: Здесь и далее: зачем слово Entity? (х2)
 @Table(name="airport")
-public class AirportEntity {
+public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -29,10 +30,8 @@ public class AirportEntity {
     private String name;
 
     @OneToMany(mappedBy = "airportFrom")
-    private Set<FlightEntity> flightsFrom;
+    private Set<Flight> flightsFrom;
 
     @OneToMany(mappedBy = "airportTo")
-    private Set<FlightEntity> flightsTo;
-//    TODO: лишняя пустая строка
-
+    private Set<Flight> flightsTo;
 }

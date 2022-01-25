@@ -1,7 +1,7 @@
 package com.example.businesslayernew.controller;
 
+import com.example.businesslayernew.dto.flight.FlightDto;
 import com.example.businesslayernew.dto.flight.FlightRequest;
-import com.example.businesslayernew.dto.flight.FlightResponse;
 import com.example.businesslayernew.mapper.FlightMapper;
 import com.example.businesslayernew.service.FlightService;
 import io.swagger.annotations.Api;
@@ -9,6 +9,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,7 +34,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@RequestMapping( "/api/flights")
+@RequestMapping("/api/flights")
 @Api("Flights controller")
 public class FlightController {
 
@@ -38,49 +42,42 @@ public class FlightController {
 
     private final FlightMapper flightMapper;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new flight")
-    public ResponseEntity<FlightResponse> create(@Valid @RequestBody FlightRequest request) {
-        FlightResponse flightResponse =
-                flightMapper.mapToFlightDto(flightService.create(
-                        flightMapper.mapToFlight(request)));
-
-        return new ResponseEntity<>(flightResponse, HttpStatus.CREATED);
-    }
-
-    @GetMapping(params = {"page", "size"})
-    @ApiOperation("Read all flights")
-    public List<FlightResponse> readAll(@RequestParam("page") int page,
-            @RequestParam("size") int size) {
-        return flightService.getAll(page, size).stream().map((flightMapper::mapToFlightDto)).collect(
-                Collectors.toList());
-    }
-
-//    TODO: ты точно здесь слеши не теряешь? /{id}
-    @GetMapping("{id}")
-    @ApiOperation("Read flight by id")
-    public ResponseEntity<FlightResponse> readById(@PathVariable Long id) {
-        return new ResponseEntity<>(flightMapper.mapToFlightDto(flightService.getById(id)), HttpStatus.OK);
-    }
-
-    @PatchMapping("{id}")
-    @ApiOperation("Update flight")
-//    TODO: зачем перенос на новую строку?
-    public ResponseEntity<FlightResponse> update(@PathVariable Long id,
-            @Valid @RequestBody FlightRequest request) {
-//        TODO: лучше уж так
-//        FlightResponse flightResponse = flightMapper.mapToFlightDto(
-//                flightService.update(id, flightMapper.mapToFlight(request)));
-        FlightResponse flightResponse = flightMapper.mapToFlightDto(flightService.update(id,
+    public FlightDto create(@Valid @RequestBody FlightRequest request) {
+        return flightMapper.mapToFlightDto(flightService.create(
                 flightMapper.mapToFlight(request)));
-        return new ResponseEntity<>(flightResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
+    @GetMapping
+    @ApiOperation("Read all flights")
+    public Page<FlightDto> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return flightService.getAll(pageable)
+                            .map(flightMapper::mapToFlightDto);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    @ApiOperation("Read flight by id")
+    public FlightDto readById(@PathVariable Long id) {
+
+        return flightMapper.mapToFlightDto(flightService.getById(id));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/{id}")
+    @ApiOperation("Update flight")
+    public FlightDto update(@PathVariable Long id, @Valid @RequestBody FlightRequest request) {
+        return flightMapper.mapToFlightDto(flightService.update(id,
+                flightMapper.mapToFlight(request)));
+    }
+
+    @DeleteMapping("/{id}")
     @ApiOperation("Delete flight")
-    public ResponseEntity<FlightResponse> delete(@PathVariable Long id) {
-//        TODO: лишние пустые строчки
+    public ResponseEntity<FlightDto> delete(@PathVariable Long id) {
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

@@ -4,11 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -32,33 +27,26 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@SQLDelete(sql = "UPDATE \"user\" SET deleted = current_timestamp  WHERE id=?")
-//@FilterDef(name = "deletedUsers", parameters = @ParamDef(name = "deletedOnly", type = "LocalDate"))
-//@Filter(name = "deletedUserFilter", condition = "deleted = :deletedOnly")
 @Table(name = "\"user\"")
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "first_name")
-    @NotEmpty
     private String firstName;
 
     @Column(name = "last_name")
-    @NotEmpty
     private String lastName;
 
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
     @Column(name = "email")
-    @Email
     private String email;
 
     @Column(name = "password")
-    @Size(min = 8)
     private String password;
 
     private LocalDate deleted;
@@ -67,6 +55,6 @@ public class UserEntity {
     private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<TicketEntity> tickets;
+    private Set<Ticket> tickets;
 
 }

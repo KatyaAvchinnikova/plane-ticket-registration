@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
-public class FlightResponse {
+public class FlightDto {
     private LocalDateTime arrivalTime;
 
     private LocalDateTime departureTime;

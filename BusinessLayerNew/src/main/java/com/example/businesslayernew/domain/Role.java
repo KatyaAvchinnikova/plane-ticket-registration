@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-
 public enum Role {
 //    TODO: зачем поле? Role.USER.name() недостаточно?
     //    TODO: зачем поле? Role.USER.name() недостаточно?(х2)

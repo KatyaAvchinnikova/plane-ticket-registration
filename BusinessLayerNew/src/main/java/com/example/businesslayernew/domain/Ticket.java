@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -22,7 +21,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="ticket")
-public class TicketEntity {
+public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,16 +30,15 @@ public class TicketEntity {
 //    TODO: в чем смысл optional = false? х2
     @ManyToOne(optional = false)
     @JoinColumn(name = "flight_id", insertable = false, updatable = false)
-    private FlightEntity flight;
+    private Flight flight;
 
 //    TODO: хиб тебе сам не перебьет подобный нэйминг? х2
     @Column(name = "flight_id", nullable = false)
-    @NotNull
     private Long flightId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private UserEntity user;
+    private User user;
 
     @Column(name = "user_id")
 //    TODO: про валидации уже указал выше

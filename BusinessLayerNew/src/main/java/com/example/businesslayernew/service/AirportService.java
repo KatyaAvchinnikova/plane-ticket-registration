@@ -1,6 +1,6 @@
 package com.example.businesslayernew.service;
 
-import com.example.businesslayernew.domain.AirportEntity;
+import com.example.businesslayernew.domain.Airport;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,48 +20,36 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AirportService {
-
     @Autowired
     private final AirportRepository airportRepository;
-    //    TODO: Слова разделяются _. Пустая строка между полями с разными назначениями. Константы над инжектируемыми полями
+
     private static final String RESOURSENAME = "Airport";
 
     private static final String FIELDNAME = "Id";
 
     @Transactional
     @Cacheable(value = "airports")
-    public AirportEntity create(AirportEntity airport) {
-        //        TODO: возвращаемое значение - результат сохранения
+    public Airport create(Airport airport) {
         return airportRepository.save(airport);
     }
 
-    //    TODO: getById. read->get
     @Cacheable(value = "airports")
-    public AirportEntity getById(Long id) {
-        return airportRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
-                FIELDNAME, id));
+    public Airport getById(Long id) {
+        return airportRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
     }
 
-//    TODO: изобрела велосипед. На выход должна уходить страница, а не список
-    public List<AirportEntity> getAll(int page, int size) {
+    public Page<Airport> getAll(Pageable pageable) {
 
-        Pageable pageSize = PageRequest.of(page - 1, size);
-
-        return airportRepository.findAll(pageSize).toList();
+        return airportRepository.findAll(pageable);
     }
 
     @CachePut(value = "airports", key = "#airport.id")
-    public AirportEntity update(Long id, AirportEntity airport) {
-//       TODO:  почему не
-        //Потому что в параметры метода save будет передан не смапенный из реквеста объект, а существующий в базе
-//      return Optional.of(airportRepository.(id)).map(airportRepository::save).orElseThrow(
-//                () -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id)); ?
-        if (airportRepository.findById(id) == null) {
-            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
-        } else {
-            airport.setId(id);
-        }
-        return airportRepository.save(airport);
+    public Airport update(Long id, Airport airport) {
+        return Optional.of(airportRepository.findById(id))
+                       .map(it -> buildOnUpdate(id, airport))
+                       .map(airportRepository::save)
+                       .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
     }
 
     @Transactional
@@ -71,5 +60,11 @@ public class AirportService {
         } else {
             airportRepository.deleteById(id);
         }
-     }
+    }
+
+    public Airport buildOnUpdate(Long id, Airport airport) {
+        airport.setId(id);
+        return airport;
+    }
+
 }
