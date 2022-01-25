@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AirportService {
+
     @Autowired
     private final AirportRepository airportRepository;
 
@@ -45,26 +46,25 @@ public class AirportService {
     }
 
     @CachePut(value = "airports", key = "#airport.id")
+    @Transactional
     public Airport update(Long id, Airport airport) {
-        return Optional.of(airportRepository.findById(id))
-                       .map(it -> buildOnUpdate(id, airport))
-                       .map(airportRepository::save)
-                       .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+        return airportRepository.findById(id)
+                                .map(dbAirport -> buildOnUpdate(dbAirport, airport))
+                                .map(airportRepository::save)
+                                .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
     }
 
     @Transactional
     @CacheEvict(value = "airports")
     public void delete(Long id) {
-        if (airportRepository.findById(id) == null) {
-            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
-        } else {
-            airportRepository.deleteById(id);
-        }
+
+        airportRepository.deleteById(id);
+
     }
 
-    public Airport buildOnUpdate(Long id, Airport airport) {
-        airport.setId(id);
-        return airport;
+    public Airport buildOnUpdate(Airport dbAirport, Airport requestAirport) {
+        dbAirport.setName(requestAirport.getName());
+        return dbAirport;
     }
 
 }

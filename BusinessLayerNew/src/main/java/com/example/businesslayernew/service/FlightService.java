@@ -58,7 +58,8 @@ public class FlightService {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
                     flight.getAirportTo().getName());
 //            TODO: у тебя метод возващает опшнл, тут не мб налл
-        } else if (flightRepository.findById(id) == null) {
+        }
+        if (flightRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {
             flight.setId(id);

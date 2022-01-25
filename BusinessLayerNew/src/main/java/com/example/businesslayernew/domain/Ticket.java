@@ -41,8 +41,6 @@ public class Ticket {
     private User user;
 
     @Column(name = "user_id")
-//    TODO: про валидации уже указал выше
-    @NotNull
     private Long userId;
 
 }

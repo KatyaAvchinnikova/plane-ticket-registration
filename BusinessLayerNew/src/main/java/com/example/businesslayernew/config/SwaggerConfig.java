@@ -10,29 +10,27 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+
     private ApiKey apiKey() {
         return new ApiKey("JWT", "Authorization", "header");
     }
 
     private SecurityContext securityContext() {
-//TODO: поправленные туду можешь удалять
-//        TODO: одна строчка - одна точка
+
         return SecurityContext.builder()
                               .securityReferences(defaultAuth())
                               .build();
     }
 
     private List<SecurityReference> defaultAuth() {
+
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-//        TODO: return List.of(new SecurityReference("JWT", new AuthorizationScope[]{authorizationScope}));
-        return List.of(new SecurityReference("JWT", authorizationScopes));
+
+        return List.of(new SecurityReference("JWT", new AuthorizationScope[]{authorizationScope}));
     }
 
     @Bean
@@ -51,4 +49,5 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .build();
     }
+
 }
