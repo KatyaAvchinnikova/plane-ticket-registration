@@ -28,12 +28,12 @@ public class TicketEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-//    TODO: в чем смысл optional = false?
+//    TODO: в чем смысл optional = false? х2
     @ManyToOne(optional = false)
     @JoinColumn(name = "flight_id", insertable = false, updatable = false)
     private FlightEntity flight;
 
-//    TODO: хиб тебе сам не перебьет подобный нэйминг?
+//    TODO: хиб тебе сам не перебьет подобный нэйминг? х2
     @Column(name = "flight_id", nullable = false)
     @NotNull
     private Long flightId;
@@ -43,6 +43,7 @@ public class TicketEntity {
     private UserEntity user;
 
     @Column(name = "user_id")
+//    TODO: про валидации уже указал выше
     @NotNull
     private Long userId;
 

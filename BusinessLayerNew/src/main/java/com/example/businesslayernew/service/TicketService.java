@@ -64,7 +64,7 @@ public class TicketService {
             ticket.setId(id);
             ticketRepository.save(ticket);
             decreaseNumberOfFreeSeats(ticket);
-        }
+        }//TODO: пустая строка после иф-элз
         return ticket;
     }
 
@@ -80,14 +80,14 @@ public class TicketService {
     }
 
     public void decreaseNumberOfFreeSeats(TicketEntity ticket) {
-
+//TODO: что за чудеса обработки опшнл?
         FlightEntity flight = flightRepository.findById(ticket.getFlightId()).get();
         if (flight == null) {
             throw new ResourceNotFoundException("Flight", "id", ticketRepository.getById(ticket.getId()).getFlightId());
         }
 
         int numberOfFreeSeats = flight.getNumberOfFreeSeats();
-
+//TODO: про уровень валидации уже говорил
         if (numberOfFreeSeats == 0) {
             throw new NoFreeSeatsException(flight.getAirportFrom().getName(), flight.getAirportTo().getName(),
                     flight.getDepartureTime());

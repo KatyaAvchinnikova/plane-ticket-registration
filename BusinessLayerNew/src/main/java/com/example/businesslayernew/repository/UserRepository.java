@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long>, PagingAndSortingRepository<UserEntity, Long>{
+//    TODO: пустая трока между методами
     Page<UserEntity> findAllByDeletedIsNull(Pageable pageable);
     Page<UserEntity> findAllByDeletedNotNull(Pageable pageable);
 }

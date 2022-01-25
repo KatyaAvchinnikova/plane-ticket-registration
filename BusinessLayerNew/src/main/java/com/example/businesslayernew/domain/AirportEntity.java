@@ -19,6 +19,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 //TODO: Здесь и далее: зачем слово Entity? Убираем и даже @Table  yt ye;ty
+//TODO: Здесь и далее: зачем слово Entity? (х2)
 @Table(name="airport")
 public class AirportEntity {
     @Id
@@ -32,5 +33,6 @@ public class AirportEntity {
 
     @OneToMany(mappedBy = "airportTo")
     private Set<FlightEntity> flightsTo;
+//    TODO: лишняя пустая строка
 
 }

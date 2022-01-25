@@ -41,6 +41,7 @@ public class FlightEntity {
     @Column(name = "arrival_time", nullable = false)
     private LocalDateTime arrivalTime;
 
+//    TODO: валидации на уровне дто, здесь не стоит
     @Column(name = "number_of_free_seats")
     @Max(120)
     @Min(0)
@@ -65,5 +66,5 @@ public class FlightEntity {
 
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     private Set<TicketEntity> tickets;
-
+//    TODO: лишняя пустая строка
 }

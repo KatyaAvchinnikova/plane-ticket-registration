@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+//TODO: Что за чудеса читабельности? JpaRepository наследует PagingAndSortingRepository
 @Repository
 public interface AirportRepository extends JpaRepository<AirportEntity, Long>,
         PagingAndSortingRepository <AirportEntity, Long>{

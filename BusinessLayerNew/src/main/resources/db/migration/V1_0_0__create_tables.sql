@@ -3,7 +3,7 @@ create table airport
     id                  bigserial       primary key         not null,
     name                varchar                             not null
 );
-
+-- TODO: отступы к общему виду
 create table "user"
 (
     id                  bigserial        primary key        not null,

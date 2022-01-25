@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+//TODO: перенести в пакет контроллер
 @ControllerAdvice
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
 

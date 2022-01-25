@@ -20,7 +20,7 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class FlightService {
-
+//TODO: нэйминг
     private static final String RESOURSENAME = "Flight";
 
     private static final String FIELDNAME = "Id";
@@ -28,12 +28,13 @@ public class FlightService {
     private final FlightRepository flightRepository;
 
     @Transactional
+//    TODO: точно та анноташка?
     @Cacheable(value = "flights")
     public FlightEntity create(FlightEntity flight) {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
                     flight.getAirportTo().getName());
-        }
+        }//TODO: пустая строка, читабельность иф-блока+код после - околонулевая
         flightRepository.save(flight);
         return flight;
     }
@@ -54,9 +55,11 @@ public class FlightService {
     @Transactional
     @CachePut(value = "flights", key = "#flight.id")
     public FlightEntity update(Long id, @NotNull FlightEntity flight) {
+//        TODO: валидация должна быт ьна уровне контроллера
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
                     flight.getAirportTo().getName());
+//            TODO: у тебя метод возващает опшнл, тут не мб налл
         } else if (flightRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {
@@ -68,6 +71,7 @@ public class FlightService {
     @Transactional
     @CacheEvict(value = "flights")
     public void delete(Long id) {
+//        TODO: опшнл из репы
         if (flightRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
         } else {

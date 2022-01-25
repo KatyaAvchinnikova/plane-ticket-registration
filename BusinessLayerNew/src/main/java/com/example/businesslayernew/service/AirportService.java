@@ -22,7 +22,7 @@ public class AirportService {
 
     @Autowired
     private final AirportRepository airportRepository;
-    //    Слова разделяются _. Пустая строка между полями с разными назначениями. Константы над инжектируемыми полями
+    //    TODO: Слова разделяются _. Пустая строка между полями с разными назначениями. Константы над инжектируемыми полями
     private static final String RESOURSENAME = "Airport";
 
     private static final String FIELDNAME = "Id";
@@ -41,6 +41,7 @@ public class AirportService {
                 FIELDNAME, id));
     }
 
+//    TODO: изобрела велосипед. На выход должна уходить страница, а не список
     public List<AirportEntity> getAll(int page, int size) {
 
         Pageable pageSize = PageRequest.of(page - 1, size);

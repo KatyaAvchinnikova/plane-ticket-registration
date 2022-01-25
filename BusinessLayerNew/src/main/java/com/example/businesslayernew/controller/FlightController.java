@@ -56,6 +56,7 @@ public class FlightController {
                 Collectors.toList());
     }
 
+//    TODO: ты точно здесь слеши не теряешь? /{id}
     @GetMapping("{id}")
     @ApiOperation("Read flight by id")
     public ResponseEntity<FlightResponse> readById(@PathVariable Long id) {
@@ -64,8 +65,12 @@ public class FlightController {
 
     @PatchMapping("{id}")
     @ApiOperation("Update flight")
+//    TODO: зачем перенос на новую строку?
     public ResponseEntity<FlightResponse> update(@PathVariable Long id,
             @Valid @RequestBody FlightRequest request) {
+//        TODO: лучше уж так
+//        FlightResponse flightResponse = flightMapper.mapToFlightDto(
+//                flightService.update(id, flightMapper.mapToFlight(request)));
         FlightResponse flightResponse = flightMapper.mapToFlightDto(flightService.update(id,
                 flightMapper.mapToFlight(request)));
         return new ResponseEntity<>(flightResponse, HttpStatus.OK);

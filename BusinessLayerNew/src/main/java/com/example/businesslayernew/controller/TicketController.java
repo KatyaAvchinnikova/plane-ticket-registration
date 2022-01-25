@@ -47,6 +47,7 @@ public class TicketController {
 
     }
 
+//    Возвращаем респонсЕнтити, на вход Pageable с аннотацией @PageableDefault
     @GetMapping(params = {"page", "size"})
     @ApiOperation("Read all tickets")
     @ResponseStatus(HttpStatus.OK)
@@ -65,6 +66,7 @@ public class TicketController {
 
     @PatchMapping("/{id}")
     @ApiOperation("update ticket")
+//    TODO: к общему виду респонсы. Везде РеспонсЕнтити, если его юзаешь
     public TicketResponse update(@Valid @PathVariable Long id,
             @RequestBody TicketRequest request) {
         return ticketMapper.mapToTicketDto(ticketService.update(id,

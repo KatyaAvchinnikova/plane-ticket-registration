@@ -25,7 +25,7 @@ public class UserService {
     private static final String RESOURSENAME = "User";
 
     private static final String FIELDNAME = "Id";
-
+//TODO:  зачем автовайред?
     @Autowired
     private final UserRepository userRepository;
 

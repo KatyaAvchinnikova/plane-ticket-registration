@@ -1,5 +1,6 @@
 package com.example.businesslayernew.controller;
 
+//TODO: всегда перед коммитов приводи код в соответствие с код-стайлом и чисти импорты. ctrl+alt+L
 import com.example.businesslayernew.domain.AirportEntity;
 import com.example.businesslayernew.dto.airport.AirportRequest;
 import com.example.businesslayernew.dto.airport.AirportResponse;
@@ -65,6 +66,7 @@ public class AirportController {
     @ResponseStatus(HttpStatus.OK)
 //    TODO: Вроде как можно не указывать литерал переменной, если он совпадает с наименованием параметра
     public ResponseEntity<AirportResponse> readById(@PathVariable Long id) {
+//        TODO: выглядит не очень. Либо дто в переменную и ее в конструктор, либо в одну строку
         return new ResponseEntity<>(airportMapper
                 .mapAirportDto(airportService.getById(id)), HttpStatus.OK);
     }
@@ -75,6 +77,7 @@ public class AirportController {
     public AirportResponse update(@PathVariable Long id,
             @RequestBody AirportRequest request) {
 //        TODO: что это за чудо кодочитабельности?
+//        TODO: ни одной точки на строке:)
         AirportResponse airportResponse = airportMapper
                 .mapAirportDto(airportService.update(id, airportMapper.mapAirport(request)));
         return airportResponse;

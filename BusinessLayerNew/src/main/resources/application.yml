@@ -5,7 +5,7 @@ spring:
     datasource:
       username: postgres
       password: 123
-  #    TODO:ticket_base
+  #    TODO:ticket_base х2
       url: jdbc:postgresql://localhost:5432/ticketbase
       driver-class-name: org.postgresql.Driver
 
