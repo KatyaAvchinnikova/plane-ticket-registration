@@ -9,7 +9,9 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FlightRepository extends JpaRepository<FlightEntity, Long>, PagingAndSortingRepository <FlightEntity,
+public interface FlightRepository extends JpaRepository<FlightEntity, Long>, PagingAndSortingRepository<FlightEntity,
         Long> {
-        Page<FlightEntity> findAll(Pageable pageable);
+
+    Page<FlightEntity> findAll(Pageable pageable);
+
 }

@@ -31,7 +31,7 @@ public class TicketService {
     private final FlightRepository flightRepository;
 
     @Transactional
-    @Cacheable(value = "tickets")
+    @Cacheable(value = "ticket")
     public TicketEntity create(TicketEntity ticket) {
 
         decreaseNumberOfFreeSeats(ticket);
@@ -41,7 +41,7 @@ public class TicketService {
         return ticket;
     }
 
-    @Cacheable(value = "tickets")
+    @Cacheable(value = "ticket")
     public TicketEntity readById(Long id) {
         return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
                 FIELDNAME, id));
@@ -55,7 +55,7 @@ public class TicketService {
     }
 
     @Transactional
-    @CachePut(value = "tickets", key = "#ticket.id")
+    @CachePut(value = "ticket", key = "#ticket.id")
     public TicketEntity update(Long id, TicketEntity ticket) {
         if (ticketRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
@@ -69,7 +69,7 @@ public class TicketService {
     }
 
     @Transactional
-    @CacheEvict(value = "tickets")
+    @CacheEvict(value = "ticket")
     public void delete(Long id) {
         if (ticketRepository.findById(id) == null) {
             throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);

@@ -44,7 +44,6 @@ public class TicketController {
     @ResponseStatus(HttpStatus.CREATED)
     public TicketResponse create(@Valid @RequestBody TicketRequest request) {
         return ticketMapper.mapToTicketDto(ticketService.create(ticketMapper.mapToTicket(request)));
-
     }
 
 //    Возвращаем респонсЕнтити, на вход Pageable с аннотацией @PageableDefault

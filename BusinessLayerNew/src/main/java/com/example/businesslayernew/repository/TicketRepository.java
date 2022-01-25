@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketRepository extends JpaRepository<TicketEntity, Long>, PagingAndSortingRepository<TicketEntity,
         Long> {
-        Page<TicketEntity> findAll(Pageable pageable);
+
+    Page<TicketEntity> findAll(Pageable pageable);
+
 }

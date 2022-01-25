@@ -30,7 +30,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@RequestMapping( "/api/flights")
+@RequestMapping("/api/flights")
 @Api("Flights controller")
 public class FlightController {
 
@@ -83,4 +83,5 @@ public class FlightController {
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }
