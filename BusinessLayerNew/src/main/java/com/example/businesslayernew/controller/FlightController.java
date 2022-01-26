@@ -4,6 +4,7 @@ import com.example.businesslayernew.dto.flight.FlightDto;
 import com.example.businesslayernew.dto.flight.FlightRequest;
 import com.example.businesslayernew.mapper.FlightMapper;
 import com.example.businesslayernew.service.FlightService;
+import com.example.businesslayernew.validator.FlightTimeValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
@@ -15,8 +16,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 @RestController
@@ -40,6 +41,13 @@ public class FlightController {
     private final FlightService flightService;
 
     private final FlightMapper flightMapper;
+
+    private final FlightTimeValidator flightTimeValidator;
+
+    @InitBinder("flightRequest")
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(flightTimeValidator);
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,7 +68,6 @@ public class FlightController {
     @GetMapping("/{id}")
     @ApiOperation("Read flight by id")
     public FlightDto readById(@PathVariable Long id) {
-
         return flightMapper.mapToFlightDto(flightService.getById(id));
     }
 
