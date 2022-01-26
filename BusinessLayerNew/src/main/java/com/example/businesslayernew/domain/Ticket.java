@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,5 +43,7 @@ public class Ticket {
 
     @Column(name = "user_id")
     private Long userId;
+
+    private LocalDate deleted;
 
 }

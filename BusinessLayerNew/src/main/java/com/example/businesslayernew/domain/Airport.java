@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -32,4 +33,6 @@ public class Airport {
 
     @OneToMany(mappedBy = "airportTo")
     private Set<Flight> flightsTo;
+
+    private LocalDate deleted;
 }

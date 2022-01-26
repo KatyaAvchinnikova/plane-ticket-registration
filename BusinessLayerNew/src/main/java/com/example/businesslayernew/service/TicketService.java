@@ -2,7 +2,6 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.domain.Ticket;
-import com.example.businesslayernew.exception.NoFreeSeatsException;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.FlightRepository;
 import com.example.businesslayernew.repository.TicketRepository;
@@ -11,20 +10,19 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDate;
 import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class TicketService {
 
-    private static final String RESOURSENAME = "Ticket";
+    private static final String RESOURCE_NAME = "Ticket";
 
-    private static final String FIELDNAME = "Id";
+    private static final String FIELD_NAME = "Id";
 
     private final TicketRepository ticketRepository;
 
@@ -43,8 +41,8 @@ public class TicketService {
 
     @Cacheable(value = "tickets")
     public Ticket readById(Long id) {
-        return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME,
-                FIELDNAME, id));
+        return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME,
+                FIELD_NAME, id));
     }
 
     public Page<Ticket> readAll(Pageable pageable) {
@@ -54,57 +52,48 @@ public class TicketService {
     @Transactional
     @CachePut(value = "tickets", key = "#ticket.id")
     public Ticket update(Long id, Ticket ticket) {
-        if (ticketRepository.findById(id) == null) {
-            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
-        } else {
-            increaseNumberOfFreeSeats(id);
-            ticket.setId(id);
-            ticketRepository.save(ticket);
-            decreaseNumberOfFreeSeats(ticket);
-        }//TODO: пустая строка после иф-элз
-        return ticket;
+        return ticketRepository.findById(id)
+                               .map(this::increaseNumberOfFreeSeats)
+                               .map(t -> buildOnUpdate(t, ticket))
+                               .map(ticketRepository::save)
+                               .map(this::decreaseNumberOfFreeSeats)
+                               .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
 
     @Transactional
     @CacheEvict(value = "tickets")
     public void delete(Long id) {
-        if (ticketRepository.findById(id) == null) {
-            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
-        } else {
-            increaseNumberOfFreeSeats(id);
-            ticketRepository.deleteById(id);
-        }
+        ticketRepository.findById(id)
+                        .map(this::setDeleted)
+                        .map(ticketRepository::save)
+                        .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
 
-    public void decreaseNumberOfFreeSeats(Ticket ticket) {
-//TODO: что за чудеса обработки опшнл?
+    @Transactional
+    public Ticket decreaseNumberOfFreeSeats(Ticket ticket) {
         Flight flight = flightRepository.findById(ticket.getFlightId()).get();
-        if (flight == null) {
-            throw new ResourceNotFoundException("Flight", "id", ticketRepository.getById(ticket.getId()).getFlightId());
-        }
-
-        int numberOfFreeSeats = flight.getNumberOfFreeSeats();
-//TODO: про уровень валидации уже говорил
-        if (numberOfFreeSeats == 0) {
-            throw new NoFreeSeatsException(flight.getAirportFrom().getName(), flight.getAirportTo().getName(),
-                    flight.getDepartureTime());
-        } else {
-            flight.setNumberOfFreeSeats(numberOfFreeSeats - 1);
-            flightRepository.save(flight);
-        }
+        flight.setNumberOfFreeSeats(flight.getNumberOfFreeSeats() - 1);
+        flightRepository.save(flight);
+        return ticket;
     }
 
-    public void increaseNumberOfFreeSeats(Long id) {
+    @Transactional
+    public Ticket increaseNumberOfFreeSeats(Ticket ticket) {
+        Flight flight = flightRepository.findById(ticket.getFlightId()).get();
+        flight.setNumberOfFreeSeats(flight.getNumberOfFreeSeats() + 1);
+        flightRepository.save(flight);
+        return ticket;
+    }
 
-        Flight flight = flightRepository.getById(ticketRepository.getById(id).getFlightId());
+    public Ticket buildOnUpdate(Ticket dbTicket, Ticket requestTicket) {
+        dbTicket.setFlightId(requestTicket.getFlightId());
+        dbTicket.setUserId(requestTicket.getUserId());
+        return dbTicket;
+    }
 
-        if (flight == null) {
-            throw new ResourceNotFoundException("Flight", "id", ticketRepository.getById(id).getFlightId());
-        } else {
-            int numberOfFreeSeats = flight.getNumberOfFreeSeats();
-            flight.setNumberOfFreeSeats(numberOfFreeSeats + 1);
-            flightRepository.save(flight);
-        }
+    public Ticket setDeleted(Ticket ticket) {
+        ticket.setDeleted(LocalDate.now());
+        return ticket;
     }
 
 }

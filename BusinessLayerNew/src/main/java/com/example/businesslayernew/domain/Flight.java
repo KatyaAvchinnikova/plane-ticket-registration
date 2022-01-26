@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import javax.persistence.Column;
@@ -55,4 +56,6 @@ public class Flight {
 
     @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     private Set<Ticket> tickets;
+
+    private LocalDate deleted;
 }

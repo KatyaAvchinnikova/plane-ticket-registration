@@ -4,29 +4,25 @@ import com.example.businesslayernew.domain.Airport;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
 import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AirportService {
 
-    @Autowired
     private final AirportRepository airportRepository;
 
-    private static final String RESOURSENAME = "Airport";
+    private static final String RESOURCE_NAME = "Airport";
 
-    private static final String FIELDNAME = "Id";
+    private static final String FIELD_NAME = "Id";
 
     @Transactional
     @Cacheable(value = "airports")
@@ -37,7 +33,7 @@ public class AirportService {
     @Cacheable(value = "airports")
     public Airport getById(Long id) {
         return airportRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+                                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
 
     public Page<Airport> getAll(Pageable pageable) {
@@ -51,20 +47,27 @@ public class AirportService {
         return airportRepository.findById(id)
                                 .map(dbAirport -> buildOnUpdate(dbAirport, airport))
                                 .map(airportRepository::save)
-                                .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+                                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
 
     @Transactional
     @CacheEvict(value = "airports")
     public void delete(Long id) {
-
-        airportRepository.deleteById(id);
+        airportRepository.findById(id)
+                         .map(this::setDeleted)
+                         .map(airportRepository::save)
+                         .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
 
     }
 
     public Airport buildOnUpdate(Airport dbAirport, Airport requestAirport) {
         dbAirport.setName(requestAirport.getName());
         return dbAirport;
+    }
+
+    public Airport setDeleted(Airport airport) {
+        airport.setDeleted(LocalDate.now());
+        return airport;
     }
 
 }

@@ -16,7 +16,8 @@ public interface AirportMapper {
 //            TODO: разве игнор необходим в таких кейсах?
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "flightsFrom",    ignore = true),
-            @Mapping(target = "flightsTo",      ignore = true)})
+            @Mapping(target = "flightsTo",      ignore = true),
+            @Mapping(target = "deleted",    ignore = true)})
     Airport mapAirport(AirportRequest requestDto);
 
 }

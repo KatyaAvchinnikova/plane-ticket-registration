@@ -21,6 +21,7 @@ public interface FlightMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "airportFrom", ignore = true),
             @Mapping(target = "airportTo", ignore = true),
-            @Mapping(target = "tickets", ignore = true)})
+            @Mapping(target = "tickets", ignore = true),
+            @Mapping(target = "deleted",    ignore = true)})
     Flight mapToFlight(FlightRequest requestDto);
 }

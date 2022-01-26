@@ -10,20 +10,19 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDate;
 import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class FlightService {
-//TODO: нэйминг
-    private static final String RESOURSENAME = "Flight";
 
-    private static final String FIELDNAME = "Id";
+    private static final String RESOURCE_NAME = "Flight";
+
+    private static final String FIELD_NAME = "Id";
 
     private final FlightRepository flightRepository;
 
@@ -42,7 +41,7 @@ public class FlightService {
     @Cacheable(value = "flights")
     public Flight getById(Long id) {
         return flightRepository.findById(id)
-                               .orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id));
+                               .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
 
     public Page<Flight> getAll(Pageable pageable) {
@@ -57,28 +56,34 @@ public class FlightService {
         if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
             throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
                     flight.getAirportTo().getName());
-//            TODO: у тебя метод возващает опшнл, тут не мб налл
         }
-        if (flightRepository.findById(id) == null) {
-            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
-        } else {
-            flight.setId(id);
-        }
-        return flightRepository.save(flight);
+        return flightRepository.findById(id)
+                               .map(dbFlight -> buildOnUpdate(dbFlight, flight))
+                               .map(flightRepository::save)
+                               .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
 
     @Transactional
     @CacheEvict(value = "flights")
     public void delete(Long id) {
-//        TODO: опшнл из репы
-//        var d = flightRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURSENAME, FIELDNAME,
-//                id))
-//                .
-        if (flightRepository.findById(id) == null) {
-            throw new ResourceNotFoundException(RESOURSENAME, FIELDNAME, id);
-        } else {
-            flightRepository.deleteById(id);
-        }
+        flightRepository.findById(id)
+                        .map(this::setDeleted)
+                        .map(flightRepository::save)
+                        .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
+    }
+
+    public Flight buildOnUpdate(Flight dbFlight, Flight requestFlight) {
+        dbFlight.setArrivalTime(requestFlight.getArrivalTime());
+        dbFlight.setDepartureTime(requestFlight.getDepartureTime());
+        dbFlight.setAirportFromId(requestFlight.getAirportFromId());
+        dbFlight.setAirportToId(requestFlight.getAirportToId());
+        dbFlight.setNumberOfFreeSeats(requestFlight.getNumberOfFreeSeats());
+        return dbFlight;
+    }
+
+    public Flight setDeleted(Flight flight) {
+        flight.setDeleted(LocalDate.now());
+        return flight;
     }
 
 }

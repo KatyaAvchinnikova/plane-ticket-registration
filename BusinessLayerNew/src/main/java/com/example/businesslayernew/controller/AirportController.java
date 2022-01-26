@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AirportController {
 
     private final AirportService airportService;
+
     private final AirportMapper airportMapper;
 
     @InitBinder
@@ -63,11 +64,8 @@ public class AirportController {
     @GetMapping("/{id}")
     @ApiOperation("Read airport by id")
     @ResponseStatus(HttpStatus.OK)
-
     public ResponseEntity<AirportDto> readById(@PathVariable Long id) {
-//        TODO: выглядит не очень. Либо дто в переменную и ее в конструктор, либо в одну строку
-        return new ResponseEntity<>(airportMapper
-                .mapAirportDto(airportService.getById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(airportMapper.mapAirportDto(airportService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
@@ -79,7 +77,6 @@ public class AirportController {
     }
 
     @DeleteMapping("/{id}")
-//    TODO: описания методов с большой буквы
     @ApiOperation("Delete airport")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AirportDto> delete(@PathVariable Long id) {
