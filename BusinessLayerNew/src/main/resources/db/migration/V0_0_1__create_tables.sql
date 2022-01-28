@@ -1,11 +1,11 @@
-create table airport
+create table IF NOT EXISTS airport
 (
     id                          bigserial       primary key                  not null,
     name                        varchar                                      not null,
     deleted                     timestamp
 );
 
-create table "user"
+create table IF NOT EXISTS "user"
 (
     id                          bigserial        primary key                 not null,
     first_name                  varchar                                      not null,
@@ -14,15 +14,16 @@ create table "user"
     email                       varchar(50)                                  not null        unique,
     password                    varchar(50)                                  not null,
     deleted                     timestamp,
-    role                        varchar(20)                                  not null
+    role                        varchar(20)     references role(role)        not null
 );
 -- TODO: зачем таблица?
--- create table role
--- (
---     role                varchar         primary key         not null
--- );
+-- в ней хранятся authorities
+create table role
+(
+    role                        varchar(20)      primary key                 not null
+);
 
-create table flight
+create table IF NOT EXISTS flight
 (
     id                          bigserial        primary key                 not null,
     airport_from_id             bigint           references  airport (id)    not null,
@@ -33,7 +34,7 @@ create table flight
     deleted                     timestamp
 );
 
-create table ticket
+create table IF NOT EXISTS ticket
 (
     id                          bigserial        primary key                 not null,
     flight_id                   bigint           references flight(id)       not null,

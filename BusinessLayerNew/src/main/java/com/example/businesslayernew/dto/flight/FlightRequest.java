@@ -13,10 +13,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class FlightRequest {
 
-    @NotNull
+    @NotNull(message = "Airport to id cannot be empty")
     private Long airportToId;
 
-    @NotNull
+    @NotNull(message = "Airport from id cannot be empty")
     private Long airportFromId;
 
     private ZonedDateTime departureTime;

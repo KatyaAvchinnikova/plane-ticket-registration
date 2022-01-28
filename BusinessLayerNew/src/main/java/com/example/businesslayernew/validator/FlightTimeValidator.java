@@ -1,11 +1,15 @@
 package com.example.businesslayernew.validator;
 
 import com.example.businesslayernew.dto.flight.FlightRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.time.LocalDateTime;
 
+@Component
+@Slf4j
 public class FlightTimeValidator implements Validator {
 
     @Override

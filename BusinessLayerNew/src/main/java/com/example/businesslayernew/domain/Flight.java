@@ -1,5 +1,6 @@
 package com.example.businesslayernew.domain;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,11 +26,10 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="flight")
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "departure_time", nullable = false)
     private LocalDateTime departureTime;
@@ -43,7 +44,6 @@ public class Flight {
     @JoinColumn(name = "airport_from_id", insertable = false, updatable = false)
     private Airport airportFrom;
 
-//    TODO: доступность сеттера - NONE для таких полей
     @Column(name = "airport_from_id", nullable = false)
     private Long airportFromId;
 
@@ -54,8 +54,9 @@ public class Flight {
     @Column(name = "airport_to_id", nullable = false)
     private Long airportToId;
 
-    @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Ticket> tickets;
 
+    @Column
     private LocalDate deleted;
 }

@@ -1,5 +1,8 @@
-package com.example.businesslayernew.exception;
+package com.example.businesslayernew.handlers;
 
+import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
+import com.example.businesslayernew.exception.NoFreeSeatsException;
+import com.example.businesslayernew.exception.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +20,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
             ResourceNotFoundException.class, NoFreeSeatsException.class,
             ArrivalTimeBeforeDepartureTimeException.class
     })
-    protected ResponseEntity<Object> handleConflict(ResourceNotFoundException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }

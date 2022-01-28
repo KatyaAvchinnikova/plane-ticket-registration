@@ -1,7 +1,9 @@
 package com.example.businesslayernew.controller;
 
+import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.dto.flight.FlightDto;
 import com.example.businesslayernew.dto.flight.FlightRequest;
+import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
 import com.example.businesslayernew.mapper.FlightMapper;
 import com.example.businesslayernew.service.FlightService;
 import com.example.businesslayernew.validator.FlightTimeValidator;
@@ -16,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,31 +55,42 @@ public class FlightController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new flight")
-    public FlightDto create(@Valid @RequestBody FlightRequest request) {
-        return flightMapper.mapToFlightDto(flightService.create(
-                flightMapper.mapToFlight(request)));
+    public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ArrivalTimeBeforeDepartureTimeException(request.getAirportFromId().toString(),
+                    request.getAirportFromId().toString());
+        }
+        Flight flight = flightMapper.mapToFlight(request);
+
+        FlightDto flightDto = flightMapper.mapToFlightDto(flightService.create(
+                flight));
+        return new ResponseEntity<>(flightDto, HttpStatus.OK);
     }
 
     @GetMapping
     @ApiOperation("Read all flights")
-    public Page<FlightDto> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return flightService.getAll(pageable)
-                            .map(flightMapper::mapToFlightDto);
+    public ResponseEntity<Page<FlightDto>> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        Page<FlightDto> flightDtoList = flightService.getAll(pageable)
+                                                     .map(flightMapper::mapToFlightDto);
+        return new ResponseEntity<>(flightDtoList, HttpStatus.OK);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     @ApiOperation("Read flight by id")
-    public FlightDto readById(@PathVariable Long id) {
-        return flightMapper.mapToFlightDto(flightService.getById(id));
+    public ResponseEntity<FlightDto> readById(@PathVariable Long id) {
+        Flight byId = flightService.getById(id);
+        FlightDto flightDto = flightMapper.mapToFlightDto(byId);
+        return new ResponseEntity<>(flightDto, HttpStatus.OK);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{id}")
     @ApiOperation("Update flight")
-    public FlightDto update(@PathVariable Long id, @Valid @RequestBody FlightRequest request) {
-        return flightMapper.mapToFlightDto(flightService.update(id,
-                flightMapper.mapToFlight(request)));
+    public ResponseEntity<FlightDto> update(@PathVariable Long id, @Valid @RequestBody FlightRequest request) {
+        Flight flight = flightMapper.mapToFlight(request);
+        FlightDto flightDto = flightMapper.mapToFlightDto(flightService.update(id, flight));
+        return new ResponseEntity<>(flightDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

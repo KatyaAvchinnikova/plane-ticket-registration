@@ -43,32 +43,30 @@ public class UserController {
     //    TODO: допустимо ли создание без регистрации?
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Valid @RequestBody UserRequest request) {
-        return userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
+    public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request) {
+        UserDto userDto = userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
     @GetMapping(params = {"page", "size", "isDeleted"})
     @ApiOperation("Read all users")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<UserDto> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
+    public ResponseEntity<Page> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
             @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return userService.getAll(isDeleted, pageable).map(userMapper::mapToUserDto);
+        Page<UserDto> userDtoList = userService.getAll(isDeleted, pageable).map(userMapper::mapToUserDto);
+        return new ResponseEntity<>(userDtoList, HttpStatus.OK);
     }
 
     @GetMapping("*/{id}")
     @ApiOperation("Read user by id")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserDto> readById(@PathVariable Long id) {
         return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Update user")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
-        return userMapper.mapToUserDto(userService.update(id,
-                userMapper.mapToUser(request)));
+    public ResponseEntity<UserDto> update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
+        UserDto userDto = userMapper.mapToUserDto(userService.update(id, userMapper.mapToUser(request)));
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

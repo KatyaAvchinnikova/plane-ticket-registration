@@ -9,10 +9,10 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class TicketRequest {
 
-    @NotNull
+    @NotNull(message = "Field flight id cannot be empty")
     private Long flightId;
 
-    @NotNull
+    @NotNull(message = "User id cannot be empty")
     private Long userId;
 
 }

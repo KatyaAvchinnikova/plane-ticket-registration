@@ -43,23 +43,22 @@ public class AirportController {
     public ResponseEntity<AirportDto> create(@RequestBody AirportRequest request) {
         Airport airport = airportMapper.mapAirport(request);
         AirportDto airportResponseDto = airportMapper.mapAirportDto(airportService.create(airport));
-        return new ResponseEntity(airportResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(airportResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping
     @ApiOperation("Read all airports")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<AirportDto> readAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
-
-        return airportService.getAll(pageable)
-                             .map(airportMapper::mapAirportDto);
+    public ResponseEntity<Page<AirportDto>> readAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        Page<AirportDto> airportDtoList = airportService.getAll(pageable)
+                                                        .map(airportMapper::mapAirportDto);
+        return new ResponseEntity<>(airportDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Read airport by id")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AirportDto> readById(@PathVariable Long id) {
-        return new ResponseEntity<>(airportMapper.mapAirportDto(airportService.getById(id)), HttpStatus.OK);
+        AirportDto airportDto = airportMapper.mapAirportDto(airportService.getById(id));
+        return new ResponseEntity<>(airportDto, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
@@ -72,7 +71,6 @@ public class AirportController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete airport")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AirportDto> delete(@PathVariable Long id) {
         airportService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

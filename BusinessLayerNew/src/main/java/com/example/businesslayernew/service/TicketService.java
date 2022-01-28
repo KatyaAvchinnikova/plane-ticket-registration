@@ -86,8 +86,8 @@ public class TicketService {
     }
 
     public Ticket buildOnUpdate(Ticket dbTicket, Ticket requestTicket) {
-        dbTicket.setFlightId(requestTicket.getFlightId());
-        dbTicket.setUserId(requestTicket.getUserId());
+        dbTicket.setFlight(requestTicket.getFlight());
+        dbTicket.setUser(requestTicket.getUser());
         return dbTicket;
     }
 

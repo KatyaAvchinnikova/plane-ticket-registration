@@ -41,33 +41,33 @@ public class TicketController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new ticket")
-    @ResponseStatus(HttpStatus.CREATED)
-    public TicketDto create(@Valid @RequestBody TicketRequest request) {
-        return ticketMapper.mapToTicketDto(ticketService.create(ticketMapper.mapToTicket(request)));
+    public ResponseEntity<TicketDto> create(@Valid @RequestBody TicketRequest request) {
+        TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.create(ticketMapper.mapToTicket(request)));
+        return new ResponseEntity<>(ticketDto, HttpStatus.CREATED);
     }
 
-    //    Возвращаем респонсЕнтити, на вход Pageable с аннотацией @PageableDefault
     @GetMapping(params = {"page", "size"})
     @ApiOperation("Read all tickets")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<TicketDto> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return ticketService.readAll(pageable)
-                            .map((ticketMapper::mapToTicketDto));
+    public ResponseEntity<Page<TicketDto>> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        Page<TicketDto> ticketDtoList = ticketService.readAll(pageable)
+                                                     .map((ticketMapper::mapToTicketDto));
+        return new ResponseEntity<>(ticketDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Read ticket by id")
-    @ResponseStatus(HttpStatus.OK)
-    public TicketDto readById(@PathVariable Long id) {
-        return ticketMapper.mapToTicketDto(ticketService.readById(id));
+    public ResponseEntity<TicketDto> readById(@PathVariable Long id) {
+        TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.readById(id));
+        return new ResponseEntity<>(ticketDto, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("update ticket")
-    public TicketDto update(@Valid @PathVariable Long id,
+    public ResponseEntity<TicketDto> update(@Valid @PathVariable Long id,
             @RequestBody TicketRequest request) {
-        return ticketMapper.mapToTicketDto(ticketService.update(id,
+        TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.update(id,
                 ticketMapper.mapToTicket(request)));
+        return new ResponseEntity<>(ticketDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

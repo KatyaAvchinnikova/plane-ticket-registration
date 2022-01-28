@@ -9,12 +9,12 @@ import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface TicketMapper {
-    @Mappings({
-            @Mapping(target = "id",         ignore = true),
-            @Mapping(target = "flight",     ignore = true),
-            @Mapping(target = "user",       ignore = true),
-            @Mapping(target = "deleted",    ignore = true)
-    })
+//    @Mappings({
+//            @Mapping(target = "id",         ignore = true),
+//            @Mapping(target = "flight",     ignore = true),
+//            @Mapping(target = "user",       ignore = true),
+//            @Mapping(target = "deleted",    ignore = true)
+//    })
     Ticket mapToTicket(TicketRequest ticketRequestDto);
 
     @Mappings({
@@ -23,8 +23,7 @@ public interface TicketMapper {
             @Mapping(target = "userFirstName",      source = "user.firstName"),
             @Mapping(target = "userLastName",       source = "user.lastName"),
             @Mapping(target = "departureTime",      source = "flight.departureTime"),
-            @Mapping(target = "arrivalTime",        source = "flight.arrivalTime"),
-            @Mapping(target = "deleted",            ignore = true)
-    })
+            @Mapping(target = "arrivalTime",        source = "flight.arrivalTime")
+       })
     TicketDto mapToTicketDto(Ticket ticket);
 }

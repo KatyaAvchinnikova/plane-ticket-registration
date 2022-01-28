@@ -9,12 +9,12 @@ import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    @Mappings({
-            @Mapping(target = "id",         ignore = true),
-            @Mapping(target = "tickets",    ignore = true),
-            @Mapping(target = "deleted",    ignore = true),
-            @Mapping(target = "role",       ignore = true)
-    })
+//    @Mappings({
+//            @Mapping(target = "id",         ignore = true),
+//            @Mapping(target = "tickets",    ignore = true),
+//            @Mapping(target = "deleted",    ignore = true),
+//            @Mapping(target = "role",       ignore = true)
+//    })
     User mapToUser(UserRequest requestDto);
 
     UserDto mapToUserDto(User user);

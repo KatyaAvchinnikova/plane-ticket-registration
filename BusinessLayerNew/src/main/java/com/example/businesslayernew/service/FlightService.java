@@ -2,7 +2,6 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
-import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
 import com.example.businesslayernew.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -28,14 +27,10 @@ public class FlightService {
 
     @Transactional
 //    TODO: точно та анноташка?
+    //Точно
     @Cacheable(value = "flights")
     public Flight create(Flight flight) {
-        if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
-            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
-                    flight.getAirportTo().getName());
-        }//TODO: пустая строка, читабельность иф-блока+код после - околонулевая
-        flightRepository.save(flight);
-        return flight;
+        return flightRepository.save(flight);
     }
 
     @Cacheable(value = "flights")
@@ -45,18 +40,12 @@ public class FlightService {
     }
 
     public Page<Flight> getAll(Pageable pageable) {
-
         return flightRepository.findAll(pageable);
     }
 
     @Transactional
     @CachePut(value = "flights", key = "#flight.id")
     public Flight update(Long id, @NotNull Flight flight) {
-//        TODO: валидация должна быт ьна уровне контроллера
-        if (flight.getDepartureTime().isAfter(flight.getArrivalTime())) {
-            throw new ArrivalTimeBeforeDepartureTimeException(flight.getAirportFrom().getName(),
-                    flight.getAirportTo().getName());
-        }
         return flightRepository.findById(id)
                                .map(dbFlight -> buildOnUpdate(dbFlight, flight))
                                .map(flightRepository::save)
@@ -64,7 +53,7 @@ public class FlightService {
     }
 
     @Transactional
-    @CacheEvict(value = "flights")
+    @CacheEvict(value = "flights", key = "#flight.id")
     public void delete(Long id) {
         flightRepository.findById(id)
                         .map(this::setDeleted)
@@ -75,8 +64,8 @@ public class FlightService {
     public Flight buildOnUpdate(Flight dbFlight, Flight requestFlight) {
         dbFlight.setArrivalTime(requestFlight.getArrivalTime());
         dbFlight.setDepartureTime(requestFlight.getDepartureTime());
-        dbFlight.setAirportFromId(requestFlight.getAirportFromId());
-        dbFlight.setAirportToId(requestFlight.getAirportToId());
+        dbFlight.setAirportFrom(requestFlight.getAirportFrom());
+        dbFlight.setAirportFrom(requestFlight.getAirportTo());
         dbFlight.setNumberOfFreeSeats(requestFlight.getNumberOfFreeSeats());
         return dbFlight;
     }
