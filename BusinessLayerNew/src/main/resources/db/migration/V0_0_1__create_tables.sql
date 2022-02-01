@@ -5,6 +5,14 @@ create table IF NOT EXISTS airport
     deleted                     timestamp
 );
 
+-- TODO: зачем таблица?
+-- в ней хранятся authorities
+create table role
+(
+    id                          bigserial        primary key                 not null,
+    role                        varchar(25)
+);
+
 create table IF NOT EXISTS "user"
 (
     id                          bigserial        primary key                 not null,
@@ -14,13 +22,7 @@ create table IF NOT EXISTS "user"
     email                       varchar(50)                                  not null        unique,
     password                    varchar(50)                                  not null,
     deleted                     timestamp,
-    role                        varchar(20)     references role(role)        not null
-);
--- TODO: зачем таблица?
--- в ней хранятся authorities
-create table role
-(
-    role                        varchar(20)      primary key                 not null
+    role_id                     bigint           references role(id)         not null
 );
 
 create table IF NOT EXISTS flight

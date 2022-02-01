@@ -1,13 +1,13 @@
 package com.example.businesslayernew.security;
 
 import com.example.businesslayernew.domain.User;
+import com.example.businesslayernew.service.UserDetailsService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class SecurityUser implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private final User user;
 
@@ -36,7 +36,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+         return true;
     }
 
     @Override
