@@ -2,17 +2,20 @@ server:
   port: 7777
 
 spring:
-    datasource:
-      username: postgres
-      password: 123
-  #    TODO:ticket_base х2
-      url: jdbc:postgresql://localhost:5432/ticketbase
-      driver-class-name: org.postgresql.Driver
+  datasource:
+    username: postgres
+    password: 123
+    #    TODO:ticket_base х2
+    url: jdbc:postgresql://localhost:5432/ticketbase
+    driver-class-name: org.postgresql.Driver
 
-    flyway:
-      url: jdbc:postgresql://localhost:5432/ticketbase
-      user: postgres
-      password: 123
-      driver-class-name: org.postgresql.Driver
+  flyway:
+    url: jdbc:postgresql://localhost:5432/ticketbase
+    user: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+
+
+
 
 

@@ -1,7 +1,8 @@
-package com.example.businesslayernew.handlers;
+package com.example.businesslayernew.exceptionHandler;
 
 import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
 import com.example.businesslayernew.exception.NoFreeSeatsException;
+import com.example.businesslayernew.exception.NoUserEmailException;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler({
             ResourceNotFoundException.class, NoFreeSeatsException.class,
             ArrivalTimeBeforeDepartureTimeException.class,
-            UsernameNotFoundException.class
+            NoUserEmailException.class
     })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
@@ -33,7 +34,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                                                            WebRequest request) {
         StringBuffer bodyOfResponse = new StringBuffer();
         for (ConstraintViolation violation : ex.getConstraintViolations()) {
-            bodyOfResponse = bodyOfResponse.append(violation.getPropertyPath() + " " + violation.getMessage());
+            bodyOfResponse.append(violation.getPropertyPath() + " " + violation.getMessage());
         }
         return handleExceptionInternal(ex, bodyOfResponse.toString(), new HttpHeaders(), HttpStatus.BAD_REQUEST,
                 request);

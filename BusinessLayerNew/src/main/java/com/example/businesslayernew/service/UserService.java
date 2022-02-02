@@ -2,6 +2,7 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.Role;
 import com.example.businesslayernew.domain.User;
+import com.example.businesslayernew.exception.NoUserEmailException;
 import com.example.businesslayernew.exception.ResourceNotFoundException;
 import com.example.businesslayernew.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import javax.transaction.Transactional;
 
 @Service
@@ -71,6 +73,10 @@ public class UserService {
     public User setDeleted(User user) {
         user.setDeleted(LocalDate.now());
         return user;
+    }
+
+    public User findByEmail(String email){
+       return userRepository.findByEmail(email).orElseThrow(() -> new NoUserEmailException(email));
     }
 
 }

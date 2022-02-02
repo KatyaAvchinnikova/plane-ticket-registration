@@ -48,10 +48,10 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
-    @GetMapping(params = {"page", "size", "isDeleted"})
+    @GetMapping
     @ApiOperation("Read all users")
     public ResponseEntity<Page> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
-            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+                                        @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<UserDto> userDtoList = userService.getAll(isDeleted, pageable).map(userMapper::mapToUserDto);
         return new ResponseEntity<>(userDtoList, HttpStatus.OK);
     }

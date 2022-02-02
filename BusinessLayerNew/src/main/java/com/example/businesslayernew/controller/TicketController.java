@@ -46,7 +46,7 @@ public class TicketController {
         return new ResponseEntity<>(ticketDto, HttpStatus.CREATED);
     }
 
-    @GetMapping(params = {"page", "size"})
+    @GetMapping
     @ApiOperation("Read all tickets")
     public ResponseEntity<Page<TicketDto>> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<TicketDto> ticketDtoList = ticketService.readAll(pageable)
