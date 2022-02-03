@@ -10,8 +10,12 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,12 +32,13 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
     @Cacheable(value = "users")
     public User create(User user) {
-        if (user.getRole() == null) {
-            user.setRole(Role.USER);
-        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
         return user;
     }
@@ -78,5 +83,11 @@ public class UserService {
     public User findByEmail(String email){
        return userRepository.findByEmail(email).orElseThrow(() -> new NoUserEmailException(email));
     }
+
+    public User findByUserName(String userName){
+        return userRepository.findUserByUserName(userName)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username: " + userName + " is not found"));
+    }
+
 
 }

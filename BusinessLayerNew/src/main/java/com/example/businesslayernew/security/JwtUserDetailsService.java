@@ -1,14 +1,13 @@
-package com.example.businesslayernew.service;
+package com.example.businesslayernew.security;
 
 import com.example.businesslayernew.repository.UserRepository;
-import com.example.businesslayernew.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class JwtUserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     private final UserRepository userRepository;
 

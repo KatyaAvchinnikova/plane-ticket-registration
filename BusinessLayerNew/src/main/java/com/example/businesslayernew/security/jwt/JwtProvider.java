@@ -1,7 +1,7 @@
 package com.example.businesslayernew.security.jwt;
 
 import com.example.businesslayernew.domain.User;
-import com.example.businesslayernew.service.UserDetailsService;
+import com.example.businesslayernew.security.JwtUserDetailsService;
 import com.example.businesslayernew.service.UserService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Date;
 public class JwtProvider {
     private static final String KEY = "secret-key";
 
-    private final UserDetailsService userDetailsService;
+    private final JwtUserDetailsService userDetailsService;
 
     private final UserService userService;
 

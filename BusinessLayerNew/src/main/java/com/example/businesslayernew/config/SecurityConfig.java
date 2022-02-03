@@ -24,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationProviderService authenticationProvider;
 
-    private final JwtFilter jwtFilter;
+    //private final JwtFilter jwtFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -48,10 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
 
                 .anyRequest()
-                .permitAll()
+                .permitAll();
 
-                .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//                .and()
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -60,8 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder(15);
+    public PasswordEncoder encoder(){
+        return new BCryptPasswordEncoder(10);
     }
-
 }

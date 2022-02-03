@@ -1,6 +1,7 @@
 package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.security.CustomUserDetails;
+import com.example.businesslayernew.security.JwtUserDetailsService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Setter
 public class AuthenticationProviderService implements AuthenticationProvider {
 
-    private UserDetailsService userDetailsService;
+    private JwtUserDetailsService userDetailsService;
 
     private PasswordEncoder passwordEncoder;
 

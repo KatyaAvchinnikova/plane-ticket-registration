@@ -26,7 +26,7 @@ public class UserRequest {
     @Past(message = "Date of birth cannot be in future or now")
     private Date dateOfBirth;
 
-    @NotBlank(message = "Field email cannot be empty")
+    @NotBlank(message = "Field email cannot be   empty")
     @Email
     private String email;
 

@@ -1,7 +1,6 @@
 package com.example.businesslayernew.security;
 
 import com.example.businesslayernew.domain.User;
-import com.example.businesslayernew.service.UserDetailsService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
