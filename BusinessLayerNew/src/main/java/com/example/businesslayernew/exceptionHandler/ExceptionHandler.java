@@ -1,9 +1,6 @@
 package com.example.businesslayernew.exceptionHandler;
 
-import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
-import com.example.businesslayernew.exception.NoFreeSeatsException;
-import com.example.businesslayernew.exception.NoUserEmailException;
-import com.example.businesslayernew.exception.ResourceNotFoundException;
+import com.example.businesslayernew.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +19,8 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler({
             ResourceNotFoundException.class, NoFreeSeatsException.class,
             ArrivalTimeBeforeDepartureTimeException.class,
-            NoUserEmailException.class
+            NoUserEmailException.class,
+            UserBadCredentialsException.class
     })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
@@ -32,9 +30,10 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<Object> onValidationException(ConstraintViolationException ex,
                                                            WebRequest request) {
-        StringBuffer bodyOfResponse = new StringBuffer();
+        StringBuilder bodyOfResponse = new StringBuilder();
         for (ConstraintViolation violation : ex.getConstraintViolations()) {
-            bodyOfResponse.append(violation.getPropertyPath() + " " + violation.getMessage());
+            bodyOfResponse.append(violation.getPropertyPath())
+                    .append(violation.getMessage());
         }
         return handleExceptionInternal(ex, bodyOfResponse.toString(), new HttpHeaders(), HttpStatus.BAD_REQUEST,
                 request);

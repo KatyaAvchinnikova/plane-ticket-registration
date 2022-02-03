@@ -2,6 +2,7 @@ package com.example.businesslayernew.controller;
 
 import com.example.businesslayernew.dto.user.UserDto;
 import com.example.businesslayernew.dto.user.UserRequest;
+import com.example.businesslayernew.exception.UserBadCredentialsException;
 import com.example.businesslayernew.mapper.UserMapper;
 import com.example.businesslayernew.service.UserService;
 import io.swagger.annotations.Api;
@@ -15,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -40,7 +41,10 @@ public class UserController {
 
     private final UserMapper userMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     //    TODO: допустимо ли создание без регистрации?
+    //Доступно. У меня открытая регистрация.
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
     public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request) {
@@ -74,6 +78,17 @@ public class UserController {
     public ResponseEntity<UserDto> delete(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void validatePassword(String password, String passwordConfirm) {
+        if (!password.equals(passwordConfirm)) {
+            throw new UserBadCredentialsException("User passwords does not match. Password: " + password
+                    + ". PasswordConfirm: " + passwordConfirm);
+        }
+    }
+
+    public String passwordEncryption(String password) {
+        return passwordEncoder.encode(password);
     }
 
 }

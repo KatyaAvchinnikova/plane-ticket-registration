@@ -1,11 +1,10 @@
 package com.example.businesslayernew.security.jwt;
 
-import com.example.businesslayernew.domain.User;
 import com.example.businesslayernew.exception.JwtAuthenticationException;
 import com.example.businesslayernew.security.JwtUserDetailsService;
-import com.example.businesslayernew.service.UserService;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +12,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
+
 public class JwtProvider {
     private static final String KEY = "secret-key";
 
@@ -27,9 +24,12 @@ public class JwtProvider {
 
     private final JwtUserDetailsService userDetailsService;
 
-    private final UserService userService;
-
     private String secret;
+
+    @Autowired
+    public JwtProvider(@Lazy JwtUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secret)
@@ -79,7 +79,6 @@ public class JwtProvider {
         String login = getLogin(token);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-        User user = userService.findByUserName(login);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
