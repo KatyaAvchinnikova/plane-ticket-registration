@@ -1,7 +1,7 @@
 create table IF NOT EXISTS airport
 (
     id                          bigserial       primary key                  not null,
-    name                        varchar                                      not null,
+    name                        varchar(50)                                  not null,
     deleted                     timestamp
 );
 
@@ -16,8 +16,9 @@ create table role
 create table IF NOT EXISTS "user"
 (
     id                          bigserial        primary key                 not null,
-    first_name                  varchar                                      not null,
-    last_name                   varchar                                      not null,
+    user_name                   varchar(50)                                    not null,
+    first_name                  varchar(50)                                  not null,
+    last_name                   varchar(50)                                  not null,
     date_of_birth               date                                         not null,
     email                       varchar(50)                                  not null        unique,
     password                    varchar(50)                                  not null,

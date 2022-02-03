@@ -14,6 +14,9 @@ import javax.validation.constraints.Size;
 @Setter
 public class UserRequest {
 
+    @NotBlank(message = "Field user name cannot be empty")
+    private String userName;
+
     @NotBlank(message = "Field first name cannot be empty")
     private String firstName;
 
@@ -27,8 +30,12 @@ public class UserRequest {
     @Email
     private String email;
 
-    @NotBlank(message = "Field password name cannot be empty")
+    @NotBlank(message = "Field password cannot be empty")
     @Size(min = 8)
     private String password;
+
+    @NotBlank(message = "Field confirm password cannot be empty")
+    @Size(min = 8)
+    private String ConfirmPassword;
 
 }
