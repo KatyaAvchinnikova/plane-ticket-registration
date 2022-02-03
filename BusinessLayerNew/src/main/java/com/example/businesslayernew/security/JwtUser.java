@@ -14,23 +14,29 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class CustomUserDetails implements UserDetails {
+public class JwtUser implements UserDetails {
 
-    private final User user;
+    private final Long id;
+    private final String username;
+    private final String firstName;
+    private final String lastName;
+    private final String password;
+    private final String email;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().toString()));
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return email;
     }
 
     @Override

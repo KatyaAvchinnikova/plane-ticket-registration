@@ -1,6 +1,7 @@
 package com.example.businesslayernew.security;
 
-import com.example.businesslayernew.repository.UserRepository;
+import com.example.businesslayernew.domain.User;
+import com.example.businesslayernew.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -9,14 +10,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
-    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (userRepository.findByEmail(username).isEmpty()) {
-            throw new UsernameNotFoundException("Email is not found");
-        }
-        return new CustomUserDetails(userRepository.findByEmail(username).get());
+    public JwtUser loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByUserName(username);
+        return JwtUserFactory.create(user);
     }
 
 }

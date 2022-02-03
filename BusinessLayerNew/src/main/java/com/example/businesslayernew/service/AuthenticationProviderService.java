@@ -1,6 +1,6 @@
 package com.example.businesslayernew.service;
 
-import com.example.businesslayernew.security.CustomUserDetails;
+import com.example.businesslayernew.security.JwtUser;
 import com.example.businesslayernew.security.JwtUserDetailsService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class AuthenticationProviderService implements AuthenticationProvider {
 
         String password = authentication.getCredentials().toString();
 
-        CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(userName);
+        JwtUser customUserDetails = userDetailsService.loadUserByUsername(userName);
 
         return checkPassword(customUserDetails, password, passwordEncoder);
     }
@@ -41,7 +41,7 @@ public class AuthenticationProviderService implements AuthenticationProvider {
                 .isAssignableFrom(authentication);
     }
 
-    private Authentication checkPassword(CustomUserDetails user,
+    private Authentication checkPassword(JwtUser user,
                                          String rawPassword,
                                          PasswordEncoder encoder) {
         if (encoder.matches(rawPassword, user.getPassword())) {
