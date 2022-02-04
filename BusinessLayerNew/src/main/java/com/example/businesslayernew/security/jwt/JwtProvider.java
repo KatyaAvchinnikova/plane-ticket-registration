@@ -14,13 +14,18 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 
 public class JwtProvider {
+
     private static final String KEY = "secret-key";
 
-    private static final long VALIDITY_IN_MILLISECONDS = 3600000;
+    private static final long ACCESS_TOKEN_LIFETIME = 60 * 60 * 1000L;
+    private static final long REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000L;
 
     private final JwtUserDetailsService userDetailsService;
 
@@ -33,24 +38,49 @@ public class JwtProvider {
 
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                   .parseClaimsJws(token)
+                   .getBody()
+                   .getSubject();
     }
 
-    public String createToken(String username, String role) {
+    public String createAccessToken(String username, String role) {
+        Map<String, Object> header = new HashMap<>();
+        header.put("alg", "HS256");
+        header.put("typ", "JWT");
+
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("role", role);
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + VALIDITY_IN_MILLISECONDS);
+        Date validity = new Date(now.getTime() + ACCESS_TOKEN_LIFETIME);
 
-        return Jwts.builder()//
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secret)//
-                .compact();
+        return Jwts.builder()
+                   .setHeader(header)
+                   .setClaims(claims)
+                   .setIssuedAt(now)
+                   .setExpiration(validity)
+                   .signWith(SignatureAlgorithm.HS256, secret)
+                   .compact();
+    }
+
+    public String createRefreshToken(String username) {
+        Map<String, Object> header = new HashMap<>();
+        header.put("alg", "HS512");
+        header.put("typ", "JWT");
+
+        Claims claims = Jwts.claims().setId(UUID.randomUUID().toString())
+                            .setSubject(username);
+
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + REFRESH_TOKEN_LIFETIME);
+
+        return Jwts.builder()
+                   .setHeader(header)
+                   .setClaims(claims)
+                   .setIssuedAt(now)
+                   .setExpiration(validity)
+                   .signWith(SignatureAlgorithm.HS512, secret)
+                   .compact();
     }
 
     public boolean validateToken(String token) {
@@ -70,7 +100,7 @@ public class JwtProvider {
 
     String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
         return null;
@@ -86,6 +116,11 @@ public class JwtProvider {
 
     private String getLogin(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getTokenId(String token) {
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+        return claimsJws.getBody().getId();
     }
 
     @PostConstruct

@@ -17,7 +17,6 @@ import java.io.IOException;
 
 
 @RequiredArgsConstructor
-@Component
 public class JwtFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;

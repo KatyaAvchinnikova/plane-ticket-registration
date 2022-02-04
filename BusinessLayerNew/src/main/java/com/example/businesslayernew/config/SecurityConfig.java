@@ -31,33 +31,41 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .mvcMatchers(HttpMethod.POST, "/api/airports").hasAuthority(Role.ADMIN.getRole())
-                .mvcMatchers(HttpMethod.PATCH, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())
-                .mvcMatchers(HttpMethod.DELETE, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .mvcMatchers(HttpMethod.POST, "/api/airports").hasAuthority(Role.ADMIN.getRole())
+            .mvcMatchers(HttpMethod.PATCH, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())
+            .mvcMatchers(HttpMethod.DELETE, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())
 
-                .mvcMatchers(HttpMethod.POST, "/api/flights").hasAuthority(Role.ADMIN.getRole())
-                .mvcMatchers(HttpMethod.PATCH, "/api/flights/*").hasAuthority(Role.ADMIN.getRole())
-                .mvcMatchers(HttpMethod.DELETE, "/api/flights/*").hasAuthority(Role.ADMIN.getRole())
+            .mvcMatchers(HttpMethod.POST, "/api/flights").hasAuthority(Role.ADMIN.getRole())
+            .mvcMatchers(HttpMethod.PATCH, "/api/flights/*").hasAuthority(Role.ADMIN.getRole())
+            .mvcMatchers(HttpMethod.DELETE, "/api/flights/*").hasAuthority(Role.ADMIN.getRole())
 
-                .mvcMatchers(HttpMethod.POST, "/api/tickets").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-                .mvcMatchers(HttpMethod.PATCH, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-                .mvcMatchers(HttpMethod.DELETE, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-                .mvcMatchers(HttpMethod.GET, "/api/tickets").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-                .mvcMatchers(HttpMethod.GET, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
+            .mvcMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority(Role.ADMIN.getRole())
+            .mvcMatchers(HttpMethod.GET, "/api/users/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
+            .mvcMatchers(HttpMethod.PATCH, "/api/users/*")
+            .hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
+            .mvcMatchers(HttpMethod.DELETE, "/api/users/*")
+            .hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
 
-                .anyRequest()
-                .permitAll()
+            .mvcMatchers(HttpMethod.POST, "/api/tickets").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
+            .mvcMatchers(HttpMethod.PATCH, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
+            .mvcMatchers(HttpMethod.DELETE, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
+            .mvcMatchers(HttpMethod.GET, "/api/tickets").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
+            .mvcMatchers(HttpMethod.GET, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
 
-                .and()
-                .apply(new JwtConfigurer(jwtProvider));
+            .anyRequest()
+            .permitAll()
+
+            .and()
+            .apply(new JwtConfigurer(jwtProvider));
     }
 
     @Bean
-    public PasswordEncoder encoder(){
+    public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(10);
     }
+
 }

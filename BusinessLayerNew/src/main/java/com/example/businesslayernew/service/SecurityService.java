@@ -2,13 +2,16 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.User;
 import com.example.businesslayernew.dto.user.UserAuthRequest;
+import com.example.businesslayernew.exception.NotValidTokenException;
 import com.example.businesslayernew.exception.UserBadCredentialsException;
+import com.example.businesslayernew.repository.UserRepository;
+import com.example.businesslayernew.security.JwtDto;
 import com.example.businesslayernew.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,22 +23,51 @@ public class SecurityService {
 
     private final JwtProvider jwtProvider;
 
-    public String authenticate(UserAuthRequest auth) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(auth.getUserName(),
-                    auth.getPassword()));
+    private final UserRepository userRepository;
 
-            User user = userService.findByUserName(auth.getUserName());
+    private final PasswordEncoder passwordEncoder;
 
-            if (user == null) {
-                throw new UserBadCredentialsException("Incorrect user password or login");
-            }
+    @Transactional
+    public JwtDto authenticate(UserAuthRequest auth) {
 
-            return jwtProvider.createToken(auth.getUserName(), user.getRole().getRole());
+        UserBadCredentialsException ex =
+                new UserBadCredentialsException("Incorrect user password or login");
 
-        } catch (BadCredentialsException e) {
-            throw new UserBadCredentialsException("Incorrect user password or login");
+        User user = userService.findByUserName(auth.getUserName(), ex);
+
+        boolean validPassword = passwordEncoder.matches(auth.getPassword(), user.getPassword());
+
+        if (!validPassword) {
+            throw ex;
         }
+
+        String accessToken = jwtProvider.createAccessToken(auth.getUserName(), user.getRole().getRole());
+
+        String refreshToken = jwtProvider.createRefreshToken(auth.getUserName());
+
+        String tokenId = jwtProvider.getTokenId(refreshToken);
+        user.setRefreshId(tokenId);
+
+        return new JwtDto(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public JwtDto updateRefreshToken(String refreshToken) {
+
+        String tokenId = jwtProvider.getTokenId(refreshToken);
+
+        User user = userRepository.findUserByRefreshId(tokenId)
+                                  .orElseThrow(() -> new NotValidTokenException("Your token is invalid"));
+
+        String accessToken = jwtProvider.createAccessToken(user.getUserName(), user.getRole().getRole());
+
+        String refreshTokenNew = jwtProvider.createRefreshToken(user.getUserName());
+
+        String tokenIdNew = jwtProvider.getTokenId(refreshTokenNew);
+
+        user.setRefreshId(tokenIdNew);
+
+        return new JwtDto(accessToken, refreshTokenNew);
     }
 
 }

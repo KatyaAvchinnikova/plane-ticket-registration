@@ -50,6 +50,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "refresh_id")
+    private String refreshId;
+
     private LocalDate deleted;
 
     @Enumerated(EnumType.STRING)

@@ -59,9 +59,6 @@ public class UserService {
     @CachePut(value = "users", key = "#user.id")
     public User update(Long id, @NotNull User user) {
         user.setId(id);
-        if (user.getRole() == null) {
-            user.setRole(Role.USER);
-        }
         userRepository.save(user);
         return user;
     }
@@ -87,6 +84,11 @@ public class UserService {
     public User findByUserName(String userName){
         return userRepository.findUserByUserName(userName)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username: " + userName + " is not found"));
+    }
+
+    public User findByUserName(String userName, RuntimeException ex){
+        return userRepository.findUserByUserName(userName)
+                             .orElseThrow(() -> ex);
     }
 
 

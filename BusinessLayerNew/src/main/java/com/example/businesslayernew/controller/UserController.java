@@ -59,7 +59,7 @@ public class UserController {
         return new ResponseEntity<>(userDtoList, HttpStatus.OK);
     }
 
-    @GetMapping("*/{id}")
+    @GetMapping("/{id}")
     @ApiOperation("Read user by id")
     public ResponseEntity<UserDto> readById(@PathVariable Long id) {
         return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);

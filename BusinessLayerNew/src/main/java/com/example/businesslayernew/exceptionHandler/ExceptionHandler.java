@@ -20,7 +20,8 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
             ResourceNotFoundException.class, NoFreeSeatsException.class,
             ArrivalTimeBeforeDepartureTimeException.class,
             NoUserEmailException.class,
-            UserBadCredentialsException.class
+            UserBadCredentialsException.class,
+            NotValidTokenException.class
     })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
