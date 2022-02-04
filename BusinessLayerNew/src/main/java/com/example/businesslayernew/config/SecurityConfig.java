@@ -2,6 +2,7 @@ package com.example.businesslayernew.config;
 
 import com.example.businesslayernew.domain.Role;
 import com.example.businesslayernew.security.jwt.JwtConfigurer;
+import com.example.businesslayernew.security.jwt.JwtFilter;
 import com.example.businesslayernew.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtProvider jwtProvider;
+    private final JwtConfigurer jwtConfigurer;
 
     @Bean
     @Override
@@ -60,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
 
             .and()
-            .apply(new JwtConfigurer(jwtProvider));
+            .apply(jwtConfigurer);
     }
 
     @Bean
