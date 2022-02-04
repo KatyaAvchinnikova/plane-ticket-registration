@@ -7,11 +7,11 @@ create table IF NOT EXISTS airport
 
 -- TODO: зачем таблица?
 -- в ней хранятся authorities
-create table role
-(
-    id                          bigserial        primary key                 not null,
-    role                        varchar(25)
-);
+-- create table role
+-- (
+--     id                          bigserial        primary key                 not null,
+--     role                        varchar(25)
+-- );
 
 create table IF NOT EXISTS "user"
 (
@@ -23,7 +23,7 @@ create table IF NOT EXISTS "user"
     email                       varchar(50)                                  not null        unique,
     password                    varchar(50)                                  not null,
     deleted                     timestamp,
-    role_id                     bigint           references role(id)         not null
+    role                        varchar(25)                                  not null
 );
 
 create table IF NOT EXISTS flight
