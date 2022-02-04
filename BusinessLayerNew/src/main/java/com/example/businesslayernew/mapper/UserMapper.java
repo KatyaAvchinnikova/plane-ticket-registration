@@ -4,8 +4,6 @@ import com.example.businesslayernew.domain.User;
 import com.example.businesslayernew.dto.user.UserDto;
 import com.example.businesslayernew.dto.user.UserRequest;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

@@ -3,7 +3,6 @@ package com.example.businesslayernew.dto.flight;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

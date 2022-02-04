@@ -1,7 +1,5 @@
 package com.example.businesslayernew.controller;
 
-//TODO: всегда перед коммитов приводи код в соответствие с код-стайлом и чисти импорты. ctrl+alt+L
-
 import com.example.businesslayernew.domain.Airport;
 import com.example.businesslayernew.dto.airport.AirportDto;
 import com.example.businesslayernew.dto.airport.AirportRequest;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-//TODO: здесь и далее: зачем геттеры и сеттеры для классов бизнес-логики?
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/airports")
