@@ -19,7 +19,7 @@ public class PasswordValidator implements Validator {
         if (password.equals("") || password.equals(" ")) {
             errors.rejectValue("password", "Password shouldn't be empty or blank");
         }
-
+//TODO: регулярку в константу
         if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
             errors.rejectValue("password", "Password must contain: one upper-case symbol, one lower-case symbol, one number and one special symbol. Password length cannot be less than 8 symbols");
         }

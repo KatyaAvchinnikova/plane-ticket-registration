@@ -27,6 +27,7 @@ public class FlightTimeValidator implements Validator {
                 errors.reject("Time departure should be before time arrival");
             }
         }else{
+//            TODO: пробелы после фигурных скобок. В каком случае у тебя вообще может отработать этот кейс? Если ни в каком - зачем он?
             errors.reject("Failed target object");
         }
 

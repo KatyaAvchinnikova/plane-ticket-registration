@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class FlightRequest {
-
+//TODO: В чем смысл кастомных месседжей?
     @NotNull(message = "Airport to id cannot be empty")
     private Long airportToId;
 

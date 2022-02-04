@@ -82,6 +82,7 @@ public class UserController {
 
     private void validatePassword(String password, String passwordConfirm) {
         if (!password.equals(passwordConfirm)) {
+//            TODO: зачем подтверждение пароля проверять на бэке? Я бы его на бэк вообще не отправлял
             throw new UserBadCredentialsException("User passwords does not match. Password: " + password
                     + ". PasswordConfirm: " + passwordConfirm);
         }

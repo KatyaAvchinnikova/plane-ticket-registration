@@ -26,11 +26,11 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
-
+//TODO: что с испортами? @org.springframework.web.bind.annotation.ExceptionHandler ?
     @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<Object> onValidationException(ConstraintViolationException ex,
                                                            WebRequest request) {
-        StringBuilder bodyOfResponse = new StringBuilder();
+        StringBuilder bodyOfResponse = new StringBuilder();//TODO: пустая строка перед циклом. Чем не угодил forEach?
         for (ConstraintViolation violation : ex.getConstraintViolations()) {
             bodyOfResponse.append(violation.getPropertyPath())
                     .append(violation.getMessage());

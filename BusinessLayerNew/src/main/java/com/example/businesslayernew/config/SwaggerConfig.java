@@ -12,6 +12,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 
+//TODO: убрать пустые строки после объявления класса, после последнего метода в классе, в методах, где return - первая строчка
 @Configuration
 public class SwaggerConfig {
 

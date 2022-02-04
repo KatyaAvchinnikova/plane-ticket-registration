@@ -14,7 +14,7 @@ public class UserDto {
     private String firstName;
 
     private String lastName;
-
+//TODO: DATE?
     private Date dateOfBirth;
 
     private String email;

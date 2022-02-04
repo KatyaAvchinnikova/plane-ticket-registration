@@ -50,7 +50,7 @@ public class SecurityService {
 
         return new JwtDto(accessToken, refreshToken);
     }
-
+//TODO: Везде отдаем энтити, а здесь - дто?
     @Transactional
     public JwtDto updateRefreshToken(String refreshToken) {
 

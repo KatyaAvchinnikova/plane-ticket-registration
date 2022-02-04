@@ -41,7 +41,7 @@ public class Flight {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airport_from_id", insertable = false, updatable = false)
     private Airport airportFrom;
-
+//TODO: Уже писал. Доступность сеттера - NONE
     @Column(name = "airport_from_id", nullable = false)
     private Long airportFromId;
 

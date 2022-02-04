@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
+//                TODO: Это слишком. Аннотация HasAnyRole в контроллере для таких штук
             .mvcMatchers(HttpMethod.POST, "/api/airports").hasAuthority(Role.ADMIN.getRole())
             .mvcMatchers(HttpMethod.PATCH, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())
             .mvcMatchers(HttpMethod.DELETE, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())

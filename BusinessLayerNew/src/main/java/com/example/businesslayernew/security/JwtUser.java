@@ -12,6 +12,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Getter
 @Setter
+//TODO: лишние импорты
 public class JwtUser implements UserDetails {
 
     private final Long id;

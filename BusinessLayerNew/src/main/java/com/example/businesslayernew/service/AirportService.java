@@ -59,7 +59,8 @@ public class AirportService {
                          .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
 
     }
-
+//TODO: Предлоги в названии методов - фу. buildUpdated, buildAirport?
+//    TODO: зачем public?
     public Airport buildOnUpdate(Airport dbAirport, Airport requestAirport) {
         dbAirport.setName(requestAirport.getName());
         return dbAirport;

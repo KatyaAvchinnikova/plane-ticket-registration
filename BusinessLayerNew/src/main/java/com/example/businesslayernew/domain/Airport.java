@@ -26,6 +26,8 @@ public class Airport {
 
     private String name;
 
+//    TODO: Если связанных сущностей нет, поле будет null или пустая коллекция? Если первое - добавить инициализацию по дефолту
+//    не рекомендую использование КаскадТайпа
     @OneToMany(mappedBy = "airportFrom", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Flight> flightsFrom;
 

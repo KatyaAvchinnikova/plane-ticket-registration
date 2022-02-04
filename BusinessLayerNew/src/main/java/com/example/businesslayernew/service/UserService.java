@@ -68,7 +68,7 @@ public class UserService {
                       .map(userRepository::save)
                       .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
-
+//TODO: не забывай про модификаторы доступа. И не забывай ранжировать порядок методов в классе с учетом модификатора
     public User setDeleted(User user) {
         user.setDeleted(LocalDate.now());
         return user;

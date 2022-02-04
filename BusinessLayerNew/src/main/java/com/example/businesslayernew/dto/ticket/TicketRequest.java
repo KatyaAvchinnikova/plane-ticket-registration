@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
+//TODO: откуда такая любовь к лишним пустым строкам?
 public class TicketRequest {
 
     @NotNull(message = "Field flight id cannot be empty")

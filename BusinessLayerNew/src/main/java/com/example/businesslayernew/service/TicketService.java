@@ -29,6 +29,7 @@ public class TicketService {
     private final FlightRepository flightRepository;
 
     @Transactional
+//    TODO: Имеет смысл сделать класс константами, хранящими названия кэшей и использовать константы
     @Cacheable(value = "tickets")
     public Ticket create(Ticket ticket) {
 

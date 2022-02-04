@@ -57,9 +57,10 @@ public class FlightController {
     @ApiOperation("Create new flight")
     public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightRequest request, BindingResult result) {
         if (result.hasErrors()) {
+//            TODO: ошибки биндинга и так вернет на фронт, кастомный эксепшн рекомендую вообще удалить
             throw new ArrivalTimeBeforeDepartureTimeException(request.getAirportFromId().toString(),
                     request.getAirportFromId().toString());
-        }
+        }//TODO: пустая строка после if-блока
         Flight flight = flightMapper.mapToFlight(request);
 
         FlightDto flightDto = flightMapper.mapToFlightDto(flightService.create(
