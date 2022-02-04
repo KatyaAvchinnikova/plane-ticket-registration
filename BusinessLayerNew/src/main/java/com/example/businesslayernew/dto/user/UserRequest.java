@@ -34,8 +34,4 @@ public class UserRequest {
     @Size(min = 8)
     private String password;
 
-    @NotBlank(message = "Field confirm password cannot be empty")
-    @Size(min = 8)
-    private String ConfirmPassword;
-
 }

@@ -44,7 +44,6 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     //    TODO: допустимо ли создание без регистрации?
-    //Доступно. У меня открытая регистрация.
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new user")
     public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request) {
