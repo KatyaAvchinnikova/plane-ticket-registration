@@ -1,27 +1,29 @@
 package com.example.businesslayernew.config;
 
-import com.example.businesslayernew.domain.Role;
 import com.example.businesslayernew.security.jwt.JwtConfigurer;
-import com.example.businesslayernew.security.jwt.JwtFilter;
-import com.example.businesslayernew.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigurer jwtConfigurer;
+    private final AuthenticationEntryPoint appAuthenticationEntryPoint;
+    private final AccessDeniedHandler appAccessDeniedHandler;
 
     @Bean
     @Override
@@ -36,31 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-//                TODO: Это слишком. Аннотация HasAnyRole в контроллере для таких штук
-            .mvcMatchers(HttpMethod.POST, "/api/airports").hasAuthority(Role.ADMIN.getRole())
-            .mvcMatchers(HttpMethod.PATCH, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())
-            .mvcMatchers(HttpMethod.DELETE, "/api/airports/*").hasAuthority(Role.ADMIN.getRole())
-
-            .mvcMatchers(HttpMethod.POST, "/api/flights").hasAuthority(Role.ADMIN.getRole())
-            .mvcMatchers(HttpMethod.PATCH, "/api/flights/*").hasAuthority(Role.ADMIN.getRole())
-            .mvcMatchers(HttpMethod.DELETE, "/api/flights/*").hasAuthority(Role.ADMIN.getRole())
-
-            .mvcMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority(Role.ADMIN.getRole())
-            .mvcMatchers(HttpMethod.GET, "/api/users/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-            .mvcMatchers(HttpMethod.PATCH, "/api/users/*")
-            .hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-            .mvcMatchers(HttpMethod.DELETE, "/api/users/*")
-            .hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-
-            .mvcMatchers(HttpMethod.POST, "/api/tickets").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-            .mvcMatchers(HttpMethod.PATCH, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-            .mvcMatchers(HttpMethod.DELETE, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-            .mvcMatchers(HttpMethod.GET, "/api/tickets").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-            .mvcMatchers(HttpMethod.GET, "/api/tickets/*").hasAnyAuthority(Role.ADMIN.getRole(), Role.USER.getRole())
-
             .anyRequest()
             .permitAll()
-
+            .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(appAuthenticationEntryPoint)
+                .accessDeniedHandler(appAccessDeniedHandler)
             .and()
             .apply(jwtConfigurer);
     }

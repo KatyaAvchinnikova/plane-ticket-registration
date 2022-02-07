@@ -29,25 +29,17 @@ public class SecurityService {
 
     @Transactional
     public JwtDto authenticate(UserAuthRequest auth) {
-
-        UserBadCredentialsException ex =
-                new UserBadCredentialsException("Incorrect user password or login");
-
+        UserBadCredentialsException ex = new UserBadCredentialsException("Incorrect user password or login");
         User user = userService.findByUserName(auth.getUserName(), ex);
-
         boolean validPassword = passwordEncoder.matches(auth.getPassword(), user.getPassword());
-
         if (!validPassword) {
             throw ex;
         }
 
-        String accessToken = jwtProvider.createAccessToken(auth.getUserName(), user.getRole().getRole());
-
+        String accessToken = jwtProvider.createAccessToken(auth.getUserName(), user.getRole().name());
         String refreshToken = jwtProvider.createRefreshToken(auth.getUserName());
-
         String tokenId = jwtProvider.getTokenId(refreshToken);
         user.setRefreshId(tokenId);
-
         return new JwtDto(accessToken, refreshToken);
     }
 //TODO: Везде отдаем энтити, а здесь - дто?
@@ -59,7 +51,7 @@ public class SecurityService {
         User user = userRepository.findUserByRefreshId(tokenId)
                                   .orElseThrow(() -> new NotValidTokenException("Your token is invalid"));
 
-        String accessToken = jwtProvider.createAccessToken(user.getUserName(), user.getRole().getRole());
+        String accessToken = jwtProvider.createAccessToken(user.getUserName(), user.getRole().name());
 
         String refreshTokenNew = jwtProvider.createRefreshToken(user.getUserName());
 

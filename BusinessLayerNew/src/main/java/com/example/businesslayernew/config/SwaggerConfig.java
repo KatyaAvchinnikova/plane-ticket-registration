@@ -12,10 +12,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 
-//TODO: убрать пустые строки после объявления класса, после последнего метода в классе, в методах, где return - первая строчка
 @Configuration
 public class SwaggerConfig {
-
     private ApiKey apiKey() {
         return new ApiKey("JWT", "Authorization", "header");
     }
@@ -28,7 +26,6 @@ public class SwaggerConfig {
     }
 
     private List<SecurityReference> defaultAuth() {
-
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
 
         return List.of(new SecurityReference("JWT", new AuthorizationScope[]{authorizationScope}));
@@ -47,8 +44,6 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .build();
+        return new ApiInfoBuilder().build();
     }
-
 }
