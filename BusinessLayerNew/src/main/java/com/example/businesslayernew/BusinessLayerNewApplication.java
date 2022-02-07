@@ -11,5 +11,4 @@ public class BusinessLayerNewApplication {
     public static void main(String[] args) {
         SpringApplication.run(BusinessLayerNewApplication.class, args);
     }
-
 }

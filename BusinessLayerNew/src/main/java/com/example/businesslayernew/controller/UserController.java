@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,7 @@ public class UserController {
 
     @GetMapping
     @ApiOperation("Read all users")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Page> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
                                         @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<UserDto> userDtoList = userService.getAll(isDeleted, pageable).map(userMapper::mapToUserDto);
@@ -62,12 +64,14 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ApiOperation("Read user by id")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> readById(@PathVariable Long id) {
         return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Update user")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
         UserDto userDto = userMapper.mapToUserDto(userService.update(id, userMapper.mapToUser(request)));
         return new ResponseEntity<>(userDto, HttpStatus.OK);
@@ -75,21 +79,9 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete user")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> delete(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    private void validatePassword(String password, String passwordConfirm) {
-        if (!password.equals(passwordConfirm)) {
-//            TODO: зачем подтверждение пароля проверять на бэке? Я бы его на бэк вообще не отправлял
-            throw new UserBadCredentialsException("User passwords does not match. Password: " + password
-                    + ". PasswordConfirm: " + passwordConfirm);
-        }
-    }
-
-    public String passwordEncryption(String password) {
-        return passwordEncoder.encode(password);
-    }
-
-}
+ }

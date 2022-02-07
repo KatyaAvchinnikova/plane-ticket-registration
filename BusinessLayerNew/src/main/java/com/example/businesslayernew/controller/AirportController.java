@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,6 +38,7 @@ public class AirportController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Create new airport")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AirportDto> create(@RequestBody AirportRequest request) {
         Airport airport = airportMapper.mapAirport(request);
         AirportDto airportResponseDto = airportMapper.mapAirportDto(airportService.create(airport));
@@ -60,6 +62,7 @@ public class AirportController {
 
     @PatchMapping("/{id}")
     @ApiOperation("Update airport")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AirportDto> update(@PathVariable Long id, @RequestBody AirportRequest request) {
         Airport requestAirport = airportMapper.mapAirport(request);
         Airport dbAirport = airportService.update(id, requestAirport);
@@ -68,6 +71,7 @@ public class AirportController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete airport")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AirportDto> delete(@PathVariable Long id) {
         airportService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

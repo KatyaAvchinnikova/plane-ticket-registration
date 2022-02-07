@@ -24,7 +24,7 @@ public class JwtProvider {
 
     private static final String KEY = "secret-key";
 
-    private static final long ACCESS_TOKEN_LIFETIME = 60 * 60 * 1000L;
+    private static final long ACCESS_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000L;
     private static final long REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000L;
 
     private final JwtUserDetailsService userDetailsService;
@@ -87,11 +87,7 @@ public class JwtProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 //TODO: return claims.getBody().getExpiration().before(new Date()). Читай подсказки идеи
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-
-            return true;
+            return !claims.getBody().getExpiration().before(new Date());
 
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtAuthenticationException("JWT token is expired or invalid");

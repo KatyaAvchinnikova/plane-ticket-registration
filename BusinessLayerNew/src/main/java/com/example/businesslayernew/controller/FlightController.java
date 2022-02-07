@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,12 +56,14 @@ public class FlightController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new flight")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightRequest request, BindingResult result) {
         if (result.hasErrors()) {
 //            TODO: ошибки биндинга и так вернет на фронт, кастомный эксепшн рекомендую вообще удалить
             throw new ArrivalTimeBeforeDepartureTimeException(request.getAirportFromId().toString(),
-                    request.getAirportFromId().toString());
-        }//TODO: пустая строка после if-блока
+                    request.getAirportToId().toString());
+        }
+
         Flight flight = flightMapper.mapToFlight(request);
 
         FlightDto flightDto = flightMapper.mapToFlightDto(flightService.create(
@@ -88,6 +91,7 @@ public class FlightController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{id}")
     @ApiOperation("Update flight")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FlightDto> update(@PathVariable Long id, @Valid @RequestBody FlightRequest request) {
         Flight flight = flightMapper.mapToFlight(request);
         FlightDto flightDto = flightMapper.mapToFlightDto(flightService.update(id, flight));
@@ -96,6 +100,7 @@ public class FlightController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("Delete flight")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FlightDto> delete(@PathVariable Long id) {
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

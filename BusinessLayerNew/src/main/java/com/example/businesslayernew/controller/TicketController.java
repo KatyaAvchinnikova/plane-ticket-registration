@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,6 +41,7 @@ public class TicketController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new ticket")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> create(@Valid @RequestBody TicketRequest request) {
         TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.create(ticketMapper.mapToTicket(request)));
         return new ResponseEntity<>(ticketDto, HttpStatus.CREATED);
@@ -47,6 +49,7 @@ public class TicketController {
 
     @GetMapping
     @ApiOperation("Read all tickets")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<Page<TicketDto>> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<TicketDto> ticketDtoList = ticketService.readAll(pageable)
                                                      .map((ticketMapper::mapToTicketDto));
@@ -55,6 +58,7 @@ public class TicketController {
 
     @GetMapping("/{id}")
     @ApiOperation("Read ticket by id")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> readById(@PathVariable Long id) {
         TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.readById(id));
         return new ResponseEntity<>(ticketDto, HttpStatus.OK);
@@ -62,6 +66,7 @@ public class TicketController {
 
     @PatchMapping("/{id}")
     @ApiOperation("update ticket")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> update(@Valid @PathVariable Long id,
             @RequestBody TicketRequest request) {
         TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.update(id,
@@ -71,6 +76,7 @@ public class TicketController {
 
     @DeleteMapping("/{id}")
     @ApiOperation("delete ticket")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> delete(@PathVariable Long id) {
         ticketService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
