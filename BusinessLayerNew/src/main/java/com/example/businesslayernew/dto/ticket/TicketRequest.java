@@ -9,11 +9,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 //TODO: откуда такая любовь к лишним пустым строкам?
 public class TicketRequest {
-
     @NotNull(message = "Field flight id cannot be empty")
     private Long flightId;
-
     @NotNull(message = "User id cannot be empty")
     private Long userId;
-
 }
