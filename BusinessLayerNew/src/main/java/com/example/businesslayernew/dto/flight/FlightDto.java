@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class FlightDto {
-
     private LocalDateTime arrivalTime;
     private LocalDateTime departureTime;
     private String airportTo;
