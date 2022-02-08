@@ -3,7 +3,6 @@ package com.example.businesslayernew.controller;
 import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.dto.flight.FlightDto;
 import com.example.businesslayernew.dto.flight.FlightRequest;
-import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
 import com.example.businesslayernew.mapper.FlightMapper;
 import com.example.businesslayernew.service.FlightService;
 import com.example.businesslayernew.validator.FlightTimeValidator;
@@ -19,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,9 +41,7 @@ import javax.validation.Valid;
 public class FlightController {
 
     private final FlightService flightService;
-
     private final FlightMapper flightMapper;
-
     private final FlightTimeValidator flightTimeValidator;
 
     @InitBinder("flightRequest")
@@ -57,17 +53,9 @@ public class FlightController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create new flight")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-//            TODO: ошибки биндинга и так вернет на фронт, кастомный эксепшн рекомендую вообще удалить
-            throw new ArrivalTimeBeforeDepartureTimeException(request.getAirportFromId().toString(),
-                    request.getAirportToId().toString());
-        }
-
+    public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightRequest request) {
         Flight flight = flightMapper.mapToFlight(request);
-
-        FlightDto flightDto = flightMapper.mapToFlightDto(flightService.create(
-                flight));
+        FlightDto flightDto = flightMapper.mapToFlightDto(flightService.create(flight));
         return new ResponseEntity<>(flightDto, HttpStatus.OK);
     }
 

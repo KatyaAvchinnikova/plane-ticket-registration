@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AirportController {
 
     private final AirportService airportService;
-
     private final AirportMapper airportMapper;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -76,5 +75,4 @@ public class AirportController {
         airportService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
