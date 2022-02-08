@@ -39,9 +39,7 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-
     private final UserMapper userMapper;
-
     private final PasswordEncoder passwordEncoder;
 
     //    TODO: допустимо ли создание без регистрации?

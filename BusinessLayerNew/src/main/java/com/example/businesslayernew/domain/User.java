@@ -25,7 +25,6 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Table(name = "\"user\"")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,5 +57,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Ticket> tickets;
-
 }

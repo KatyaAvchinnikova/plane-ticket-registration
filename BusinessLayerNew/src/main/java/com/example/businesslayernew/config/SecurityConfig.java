@@ -19,7 +19,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final JwtConfigurer jwtConfigurer;
     private final AuthenticationEntryPoint appAuthenticationEntryPoint;
     private final AccessDeniedHandler appAccessDeniedHandler;
@@ -51,5 +50,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(10);
     }
-
 }

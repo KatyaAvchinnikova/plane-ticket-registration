@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/airports")
 @Api("Airport controller")
 public class AirportController {
-
     private final AirportService airportService;
     private final AirportMapper airportMapper;
 

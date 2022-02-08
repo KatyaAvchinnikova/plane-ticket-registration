@@ -14,12 +14,12 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+
     private ApiKey apiKey() {
         return new ApiKey("JWT", "Authorization", "header");
     }
 
     private SecurityContext securityContext() {
-
         return SecurityContext.builder()
                               .securityReferences(defaultAuth())
                               .build();
@@ -27,7 +27,6 @@ public class SwaggerConfig {
 
     private List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-
         return List.of(new SecurityReference("JWT", new AuthorizationScope[]{authorizationScope}));
     }
 

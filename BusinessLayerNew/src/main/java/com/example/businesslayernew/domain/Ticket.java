@@ -24,7 +24,6 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Table(name="ticket")
 public class Ticket {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,5 +46,4 @@ public class Ticket {
 
     @Column(name = "deleted")
     private LocalDate deleted;
-
 }

@@ -34,9 +34,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/tickets")
 @Api("Tickets controller")
 public class TicketController {
-
     private final TicketService ticketService;
-
     private final TicketMapper ticketMapper;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,5 +79,4 @@ public class TicketController {
         ticketService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

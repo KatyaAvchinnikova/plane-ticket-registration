@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/authentication")
 @RequiredArgsConstructor
 public class AuthenticationController {
-
     private final SecurityService securityService;
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)

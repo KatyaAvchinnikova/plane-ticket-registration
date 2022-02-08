@@ -39,7 +39,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/flights")
 @Api("Flights controller")
 public class FlightController {
-
     private final FlightService flightService;
     private final FlightMapper flightMapper;
     private final FlightTimeValidator flightTimeValidator;
@@ -93,5 +92,4 @@ public class FlightController {
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
