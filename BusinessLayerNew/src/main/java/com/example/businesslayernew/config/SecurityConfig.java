@@ -18,7 +18,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigurer jwtConfigurer;
