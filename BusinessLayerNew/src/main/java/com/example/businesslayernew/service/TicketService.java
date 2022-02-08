@@ -19,13 +19,9 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class TicketService {
-
     private static final String RESOURCE_NAME = "Ticket";
-
     private static final String FIELD_NAME = "Id";
-
     private final TicketRepository ticketRepository;
-
     private final FlightRepository flightRepository;
 
     @Transactional

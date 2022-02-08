@@ -22,13 +22,9 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private static final String RESOURCE_NAME = "User";
-
     private static final String FIELD_NAME = "Id";
-
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -42,7 +38,6 @@ public class UserService {
 
     @Cacheable(value = "users")
     public User getById(Long id) {
-
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME,
                 FIELD_NAME, id));
     }

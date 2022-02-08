@@ -3,20 +3,14 @@ package com.example.businesslayernew.dto.user;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 public class UserDto {
-
     private String userName;
-
     private String firstName;
-
     private String lastName;
-//TODO: DATE?
-    private Date dateOfBirth;
-
+    private LocalDate birthDate;
     private String email;
-
 }

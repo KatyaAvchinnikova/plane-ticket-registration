@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
     Page<User> findAllByDeletedIsNull(Pageable pageable);
 
     Page<User> findAllByDeletedNotNull(Pageable pageable);
@@ -20,5 +19,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUserName(String userName);
 
     Optional<User> findUserByRefreshId(String tokenId);
-
 }

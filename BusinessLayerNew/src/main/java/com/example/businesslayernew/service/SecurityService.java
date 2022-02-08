@@ -16,15 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
-
     private final AuthenticationManager authenticationManager;
-
     private final UserService userService;
-
     private final JwtProvider jwtProvider;
-
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -43,23 +38,16 @@ public class SecurityService {
         return new JwtDto(accessToken, refreshToken);
     }
 //TODO: Везде отдаем энтити, а здесь - дто?
+// Да, здесь дто
     @Transactional
     public JwtDto updateRefreshToken(String refreshToken) {
-
         String tokenId = jwtProvider.getTokenId(refreshToken);
-
         User user = userRepository.findUserByRefreshId(tokenId)
                                   .orElseThrow(() -> new NotValidTokenException("Your token is invalid"));
-
         String accessToken = jwtProvider.createAccessToken(user.getUserName(), user.getRole().name());
-
         String refreshTokenNew = jwtProvider.createRefreshToken(user.getUserName());
-
         String tokenIdNew = jwtProvider.getTokenId(refreshTokenNew);
-
         user.setRefreshId(tokenIdNew);
-
         return new JwtDto(accessToken, refreshTokenNew);
     }
-
 }

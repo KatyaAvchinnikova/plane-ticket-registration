@@ -21,14 +21,10 @@ import java.util.UUID;
 @Component
 
 public class JwtProvider {
-
     private static final String KEY = "secret-key";
-
     private static final long ACCESS_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000L;
     private static final long REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000L;
-
     private final JwtUserDetailsService userDetailsService;
-
     private String secret;
 
     @Autowired
@@ -86,9 +82,7 @@ public class JwtProvider {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-//TODO: return claims.getBody().getExpiration().before(new Date()). Читай подсказки идеи
             return !claims.getBody().getExpiration().before(new Date());
-
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtAuthenticationException("JWT token is expired or invalid");
         }
@@ -104,9 +98,7 @@ public class JwtProvider {
 
     public Authentication getAuthentication(String token) {
         String login = getLogin(token);
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
@@ -123,5 +115,4 @@ public class JwtProvider {
     protected void init() {
         secret = Base64.getEncoder().encodeToString(KEY.getBytes());
     }
-
 }

@@ -17,11 +17,8 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AirportService {
-
     private final AirportRepository airportRepository;
-
     private static final String RESOURCE_NAME = "Airport";
-
     private static final String FIELD_NAME = "Id";
 
     @Transactional
@@ -37,7 +34,6 @@ public class AirportService {
     }
 
     public Page<Airport> getAll(Pageable pageable) {
-
         return airportRepository.findAll(pageable);
     }
 
@@ -45,7 +41,7 @@ public class AirportService {
     @Transactional
     public Airport update(Long id, Airport airport) {
         return airportRepository.findById(id)
-                                .map(dbAirport -> buildOnUpdate(dbAirport, airport))
+                                .map(dbAirport -> buildRequestAirport(dbAirport, airport))
                                 .map(airportRepository::save)
                                 .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
     }
@@ -59,9 +55,8 @@ public class AirportService {
                          .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
 
     }
-//TODO: Предлоги в названии методов - фу. buildUpdated, buildAirport?
-//    TODO: зачем public?
-    public Airport buildOnUpdate(Airport dbAirport, Airport requestAirport) {
+
+    private Airport buildRequestAirport(Airport dbAirport, Airport requestAirport) {
         dbAirport.setName(requestAirport.getName());
         return dbAirport;
     }

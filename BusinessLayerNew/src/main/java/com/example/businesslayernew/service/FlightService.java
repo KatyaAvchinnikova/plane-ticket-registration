@@ -18,11 +18,8 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class FlightService {
-
     private static final String RESOURCE_NAME = "Flight";
-
     private static final String FIELD_NAME = "Id";
-
     private final FlightRepository flightRepository;
 
     @Transactional
@@ -74,5 +71,4 @@ public class FlightService {
         flight.setDeleted(LocalDate.now());
         return flight;
     }
-
 }

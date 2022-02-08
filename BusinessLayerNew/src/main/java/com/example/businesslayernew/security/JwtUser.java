@@ -1,6 +1,5 @@
 package com.example.businesslayernew.security;
 
-import com.example.businesslayernew.domain.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -12,9 +11,8 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Getter
 @Setter
-//TODO: лишние импорты
-public class JwtUser implements UserDetails {
 
+public class JwtUser implements UserDetails {
     private final Long id;
     private final String username;
     private final String firstName;
@@ -57,5 +55,4 @@ public class JwtUser implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
-
 }

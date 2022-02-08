@@ -23,10 +23,7 @@ public class JwtUserFactory {
         );
     }
 
-//    TODO: return List.of(new SimpleGrantedAuthority(userRole.getRole()))
     private static List<GrantedAuthority> mapToGrantedAuthorities(Role userRole) {
-        List<GrantedAuthority> list = new ArrayList<>();
-        list.add(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
-        return list;
+        return List.of(new SimpleGrantedAuthority(userRole.name()));
     }
 }

@@ -8,10 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-//TODO: я буду удалять лишнее наследование?)
-public interface FlightRepository extends JpaRepository<Flight, Long>,
-        PagingAndSortingRepository<Flight, Long> {
-
+public interface FlightRepository extends JpaRepository<Flight, Long>{
     Page<Flight> findAll(Pageable pageable);
-
 }
