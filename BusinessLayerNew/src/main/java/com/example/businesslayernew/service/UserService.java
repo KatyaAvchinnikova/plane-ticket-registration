@@ -30,7 +30,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    @Cacheable(value = "users")
+    @Cacheable(value = CachePropertyValue.USERS)
     public User create(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
