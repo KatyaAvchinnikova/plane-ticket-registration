@@ -30,7 +30,6 @@ public class TicketService {
     private final FlightRepository flightRepository;
 
     @Transactional
-//    TODO: Имеет смысл сделать класс константами, хранящими названия кэшей и использовать константы
     @Cacheable(value = CachePropertyValue.TICKETS)
     public Ticket create(Ticket ticket) {
         AppException appException = new AppException("Flight with id " + ticket.getFlightId()
