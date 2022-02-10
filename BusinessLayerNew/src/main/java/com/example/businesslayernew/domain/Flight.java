@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -55,7 +58,7 @@ public class Flight {
     private Long airportToId;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Ticket> tickets;
+    private List<Ticket> tickets = new ArrayList<>();
 
     @Column
     private LocalDate deleted;

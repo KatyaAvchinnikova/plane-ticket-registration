@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -29,10 +32,10 @@ public class Airport {
 //    TODO: Если связанных сущностей нет, поле будет null или пустая коллекция? Если первое - добавить инициализацию по дефолту
 //    Будет пустая коллекция, проверила!
     @OneToMany(mappedBy = "airportFrom")
-    private Set<Flight> flightsFrom;
+    private List<Flight> flightsFrom = new ArrayList<>();
 
     @OneToMany(mappedBy = "airportTo")
-    private Set<Flight> flightsTo;
+    private List<Flight> flightsTo = new ArrayList<>();
 
     private LocalDate deleted;
 }
