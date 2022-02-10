@@ -1,5 +1,7 @@
 package com.example.businesslayernew.service;
 
+import com.example.businesslayernew.cacheProperty.CachePropertyKey;
+import com.example.businesslayernew.cacheProperty.CachePropertyValue;
 import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.exception.AppException;
 import com.example.businesslayernew.repository.AirportRepository;
@@ -29,7 +31,7 @@ public class FlightService {
     @Transactional
 //    TODO: точно та анноташка?
     //Точно
-    @Cacheable(value = "flights")
+    @Cacheable(value = CachePropertyValue.FLIGHTS)
     public Flight create(Flight flight) {
         flight.setAirportFrom(
                 airportRepository.findById(flight.getAirportFromId()).orElseThrow(
@@ -42,7 +44,7 @@ public class FlightService {
         return flightRepository.save(flight);
     }
 
-    @Cacheable(value = "flights")
+    @Cacheable(value = CachePropertyValue.FLIGHTS)
     public Flight getById(Long id) {
         return flightRepository.findById(id)
                                .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
@@ -54,7 +56,7 @@ public class FlightService {
     }
 
     @Transactional
-    @CachePut(value = "flights", key = "#flight.id")
+    @CachePut(value = "flights", key = CachePropertyKey.FLIGHT_ID)
     public Flight update(Long id, @NotNull Flight flight) {
         return flightRepository.findById(id)
                                .map(dbFlight -> buildOnUpdate(dbFlight, flight))
@@ -64,7 +66,7 @@ public class FlightService {
     }
 
     @Transactional
-    @CacheEvict(value = "flights", key = "#flight.id")
+    @CacheEvict(value = CachePropertyValue.FLIGHTS, key = CachePropertyKey.FLIGHT_ID)
     public void delete(Long id) {
         flightRepository.findById(id)
                         .map(this::setDeleted)

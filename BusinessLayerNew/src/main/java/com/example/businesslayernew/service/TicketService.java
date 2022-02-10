@@ -1,5 +1,7 @@
 package com.example.businesslayernew.service;
 
+import com.example.businesslayernew.cacheProperty.CachePropertyKey;
+import com.example.businesslayernew.cacheProperty.CachePropertyValue;
 import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.domain.Ticket;
 import com.example.businesslayernew.exception.AppException;
@@ -21,6 +23,7 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class TicketService {
+
     private static final String RESOURCE_NAME = "Ticket";
     private static final String FIELD_NAME = "Id";
     private final TicketRepository ticketRepository;
@@ -28,7 +31,7 @@ public class TicketService {
 
     @Transactional
 //    TODO: Имеет смысл сделать класс константами, хранящими названия кэшей и использовать константы
-    @Cacheable(value = "tickets")
+    @Cacheable(value = CachePropertyValue.TICKETS)
     public Ticket create(Ticket ticket) {
         AppException appException = new AppException("Flight with id " + ticket.getFlightId()
                 + " is not found.", HttpStatus.NOT_FOUND);
@@ -43,7 +46,7 @@ public class TicketService {
         return ticket;
     }
 
-    @Cacheable(value = "tickets")
+    @Cacheable(value = CachePropertyValue.TICKETS)
     public Ticket readById(Long id) {
         return ticketRepository.findById(id)
                                .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
@@ -55,7 +58,7 @@ public class TicketService {
     }
 
     @Transactional
-    @CachePut(value = "tickets", key = "#ticket.id")
+    @CachePut(value = CachePropertyValue.TICKETS, key = CachePropertyKey.TICKET_ID)
     public Ticket update(Long id, Ticket ticket) {
         return ticketRepository.findById(id)
                                .map(this::increaseNumberOfFreeSeats)
@@ -67,7 +70,7 @@ public class TicketService {
     }
 
     @Transactional
-    @CacheEvict(value = "tickets")
+    @CacheEvict(value = CachePropertyValue.TICKETS, key = CachePropertyKey.TICKET_ID)
     public void delete(Long id) {
         ticketRepository.findById(id)
                         .map(this::setDeleted)
@@ -78,14 +81,17 @@ public class TicketService {
 
     @Transactional
     public Ticket decreaseNumberOfFreeSeats(Ticket ticket) {
-        Flight flight = flightRepository.findById(ticket.getFlightId()).get();
+        Flight flight = flightRepository.findById(ticket.getFlightId())
+                                        .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                                "Flight", "id", ticket.getFlightId()), HttpStatus.NOT_FOUND));
         String airportFrom = flight.getAirportFrom().getName();
         String airportTo = flight.getAirportFrom().getName();
         String timeDeparture = flight.getDepartureTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        if (flight.getNumberOfFreeSeats() == 0){
-            throw new AppException(String.format("No free seats on flight from %s to %s time departure: %s", airportFrom,
-                    airportTo, timeDeparture), HttpStatus.BAD_REQUEST);
+        if (flight.getNumberOfFreeSeats() == 0) {
+            throw new AppException(
+                    String.format("No free seats on flight from %s to %s time departure: %s", airportFrom,
+                            airportTo, timeDeparture), HttpStatus.BAD_REQUEST);
         }
 
         flight.setNumberOfFreeSeats(flight.getNumberOfFreeSeats() - 1);

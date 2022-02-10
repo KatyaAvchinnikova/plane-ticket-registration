@@ -1,5 +1,7 @@
 package com.example.businesslayernew.service;
 
+import com.example.businesslayernew.cacheProperty.CachePropertyKey;
+import com.example.businesslayernew.cacheProperty.CachePropertyValue;
 import com.example.businesslayernew.domain.Airport;
 import com.example.businesslayernew.exception.AppException;
 import com.example.businesslayernew.repository.AirportRepository;
@@ -29,7 +31,7 @@ public class AirportService {
         return airportRepository.save(airport);
     }
 
-    @Cacheable(value = "airports")
+    @Cacheable(value = CachePropertyValue.AIRPORTS)
     public Airport getById(Long id) {
         return airportRepository.findById(id)
                                 .orElseThrow(
@@ -41,7 +43,7 @@ public class AirportService {
         return airportRepository.findAll(pageable);
     }
 
-    @CachePut(value = "airports", key = "#airport.id")
+    @CachePut(value = CachePropertyValue.AIRPORTS, key = CachePropertyKey.AIRPORTS_ID)
     @Transactional
     public Airport update(Long id, Airport airport) {
         return airportRepository.findById(id)
@@ -52,7 +54,7 @@ public class AirportService {
     }
 
     @Transactional
-    @CacheEvict(value = "airports")
+    @CacheEvict(value = CachePropertyValue.AIRPORTS)
     public void delete(Long id) {
         airportRepository.findById(id)
                          .map(this::setDeleted)

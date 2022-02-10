@@ -1,5 +1,7 @@
 package com.example.businesslayernew.service;
 
+import com.example.businesslayernew.cacheProperty.CachePropertyKey;
+import com.example.businesslayernew.cacheProperty.CachePropertyValue;
 import com.example.businesslayernew.domain.Role;
 import com.example.businesslayernew.domain.User;
 import com.example.businesslayernew.exception.AppException;
@@ -36,7 +38,7 @@ public class UserService {
         return user;
     }
 
-    @Cacheable(value = "users")
+    @Cacheable(value = CachePropertyValue.USERS)
     public User getById(Long id) {
         return userRepository.findById(id)
                              .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
@@ -49,7 +51,7 @@ public class UserService {
     }
 
     @Transactional
-    @CachePut(value = "users", key = "#user.id")
+    @CachePut(value = CachePropertyValue.USERS, key = CachePropertyKey.USER_ID)
     public User update(Long id, @NotNull User user) {
         user.setId(id);
         userRepository.save(user);
@@ -57,7 +59,7 @@ public class UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "users")
+    @CacheEvict(value = CachePropertyValue.USERS, key = CachePropertyKey.USER_ID)
     public void delete(Long id) {
         userRepository.findById(id)
                       .map(this::setDeleted)
