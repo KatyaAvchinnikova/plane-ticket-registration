@@ -2,7 +2,7 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.domain.Ticket;
-import com.example.businesslayernew.exception.ResourceNotFoundException;
+import com.example.businesslayernew.exception.AppException;
 import com.example.businesslayernew.repository.FlightRepository;
 import com.example.businesslayernew.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +11,11 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.transaction.Transactional;
 
 @Service
@@ -38,8 +40,9 @@ public class TicketService {
 
     @Cacheable(value = "tickets")
     public Ticket readById(Long id) {
-        return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME,
-                FIELD_NAME, id));
+        return ticketRepository.findById(id)
+                               .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                       RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
     public Page<Ticket> readAll(Pageable pageable) {
@@ -54,7 +57,8 @@ public class TicketService {
                                .map(t -> buildOnUpdate(t, ticket))
                                .map(ticketRepository::save)
                                .map(this::decreaseNumberOfFreeSeats)
-                               .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
+                               .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                       RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -63,12 +67,22 @@ public class TicketService {
         ticketRepository.findById(id)
                         .map(this::setDeleted)
                         .map(ticketRepository::save)
-                        .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
+                        .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
     @Transactional
     public Ticket decreaseNumberOfFreeSeats(Ticket ticket) {
         Flight flight = flightRepository.findById(ticket.getFlightId()).get();
+        String airportFrom = flight.getAirportFrom().getName();
+        String airportTo = flight.getAirportFrom().getName();
+        String timeDeparture = flight.getDepartureTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        if (flight.getNumberOfFreeSeats() == 0){
+            throw new AppException(String.format("No free seats on flight from %s to %s time departure: %s", airportFrom,
+                    airportTo, timeDeparture), HttpStatus.BAD_REQUEST);
+        }
+
         flight.setNumberOfFreeSeats(flight.getNumberOfFreeSeats() - 1);
         flightRepository.save(flight);
         return ticket;
@@ -92,5 +106,4 @@ public class TicketService {
         ticket.setDeleted(LocalDate.now());
         return ticket;
     }
-
 }

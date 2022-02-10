@@ -1,7 +1,8 @@
 package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.Flight;
-import com.example.businesslayernew.exception.ResourceNotFoundException;
+import com.example.businesslayernew.exception.AppException;
+import com.example.businesslayernew.repository.AirportRepository;
 import com.example.businesslayernew.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +11,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,22 +20,31 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class FlightService {
+
     private static final String RESOURCE_NAME = "Flight";
     private static final String FIELD_NAME = "Id";
     private final FlightRepository flightRepository;
+    private final AirportRepository airportRepository;
 
     @Transactional
 //    TODO: точно та анноташка?
     //Точно
     @Cacheable(value = "flights")
     public Flight create(Flight flight) {
+        flight.setAirportFrom(
+                airportRepository.findById(flight.getAirportFromId()).orElseThrow(() -> new AppException("Airport "
+                        + "from is not found", HttpStatus.NOT_FOUND)));
+        flight.setAirportTo(
+                airportRepository.findById(flight.getAirportToId()).orElseThrow(() -> new AppException("Airport "
+                        + "from is not found", HttpStatus.NOT_FOUND)));
         return flightRepository.save(flight);
     }
 
     @Cacheable(value = "flights")
     public Flight getById(Long id) {
         return flightRepository.findById(id)
-                               .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
+                               .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                       RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
     public Page<Flight> getAll(Pageable pageable) {
@@ -46,7 +57,8 @@ public class FlightService {
         return flightRepository.findById(id)
                                .map(dbFlight -> buildOnUpdate(dbFlight, flight))
                                .map(flightRepository::save)
-                               .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
+                               .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                       RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -55,7 +67,8 @@ public class FlightService {
         flightRepository.findById(id)
                         .map(this::setDeleted)
                         .map(flightRepository::save)
-                        .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
+                        .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
     public Flight buildOnUpdate(Flight dbFlight, Flight requestFlight) {
@@ -71,4 +84,5 @@ public class FlightService {
         flight.setDeleted(LocalDate.now());
         return flight;
     }
+
 }

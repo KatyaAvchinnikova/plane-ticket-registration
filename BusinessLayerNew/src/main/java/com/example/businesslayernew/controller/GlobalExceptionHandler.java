@@ -1,9 +1,6 @@
 package com.example.businesslayernew.controller;
 
-import com.example.businesslayernew.exception.NoFreeSeatsException;
-import com.example.businesslayernew.exception.NoUserEmailException;
-import com.example.businesslayernew.exception.ResourceNotFoundException;
-import com.example.businesslayernew.exception.UserBadCredentialsException;
+import com.example.businesslayernew.exception.AppException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -21,14 +18,18 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
-            ResourceNotFoundException.class, NoFreeSeatsException.class,
-            NoUserEmailException.class,
-            UserBadCredentialsException.class,
+            AppException.class,
             RuntimeException.class
     })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        if(ex instanceof AppException){
+            status = ((AppException) ex).getStatus();
+        }
+
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), status, request);
     }
 
     @Override

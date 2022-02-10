@@ -6,9 +6,7 @@ import com.example.businesslayernew.mapper.TicketMapper;
 import com.example.businesslayernew.service.TicketService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,6 +30,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/tickets")
 @Api("Tickets controller")
 public class TicketController {
+
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
 
@@ -77,4 +76,5 @@ public class TicketController {
         ticketService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

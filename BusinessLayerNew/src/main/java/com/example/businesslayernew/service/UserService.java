@@ -2,8 +2,7 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.Role;
 import com.example.businesslayernew.domain.User;
-import com.example.businesslayernew.exception.NoUserEmailException;
-import com.example.businesslayernew.exception.ResourceNotFoundException;
+import com.example.businesslayernew.exception.AppException;
 import com.example.businesslayernew.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +11,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,7 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private static final String RESOURCE_NAME = "User";
     private static final String FIELD_NAME = "Id";
     private final UserRepository userRepository;
@@ -38,8 +38,9 @@ public class UserService {
 
     @Cacheable(value = "users")
     public User getById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME,
-                FIELD_NAME, id));
+        return userRepository.findById(id)
+                             .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                                     RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
     public Page<User> getAll(Boolean isDeleted, Pageable pageable) {
@@ -61,27 +62,30 @@ public class UserService {
         userRepository.findById(id)
                       .map(this::setDeleted)
                       .map(userRepository::save)
-                      .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, FIELD_NAME, id));
-    }
-//TODO: не забывай про модификаторы доступа. И не забывай ранжировать порядок методов в классе с учетом модификатора
-    public User setDeleted(User user) {
-        user.setDeleted(LocalDate.now());
-        return user;
+                      .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
+                              RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
-    public User findByEmail(String email){
-       return userRepository.findByEmail(email).orElseThrow(() -> new NoUserEmailException(email));
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                             .orElseThrow(() -> new AppException(String.format("Email %s is not found", email),
+                                     HttpStatus.NOT_FOUND));
     }
 
-    public User findByUserName(String userName){
+    public User findByUserName(String userName) {
         return userRepository.findUserByUserName(userName)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username: " + userName + " is not found"));
+                             .orElseThrow(() -> new AppException(
+                                     "User with username: " + userName + " is not found", HttpStatus.NOT_FOUND));
     }
 
-    public User findByUserName(String userName, RuntimeException ex){
+    public User findByUserName(String userName, RuntimeException ex) {
         return userRepository.findUserByUserName(userName)
                              .orElseThrow(() -> ex);
     }
 
+    public User setDeleted(User user) {
+        user.setDeleted(LocalDate.now());
+        return user;
+    }
 
 }

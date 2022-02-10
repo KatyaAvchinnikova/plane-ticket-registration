@@ -1,6 +1,5 @@
 package com.example.businesslayernew.security.jwt;
 
-import com.example.businesslayernew.exception.NotValidTokenException;
 import com.example.businesslayernew.security.JwtUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

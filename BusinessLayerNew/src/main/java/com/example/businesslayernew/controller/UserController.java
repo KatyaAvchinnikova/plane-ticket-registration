@@ -2,14 +2,11 @@ package com.example.businesslayernew.controller;
 
 import com.example.businesslayernew.dto.user.UserDto;
 import com.example.businesslayernew.dto.user.UserRequest;
-import com.example.businesslayernew.exception.UserBadCredentialsException;
 import com.example.businesslayernew.mapper.UserMapper;
 import com.example.businesslayernew.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
