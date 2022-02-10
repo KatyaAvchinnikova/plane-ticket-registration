@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.time.LocalDateTime;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 //TODO: Зачем тебе этот эксепшн?
+//Эксепшн возникает при попытке купить билет на рейс, на который нет уже билетов
+//Если есть альтернатива, то я готова к диалогу
 public class NoFreeSeatsException extends RuntimeException {
     public NoFreeSeatsException(String FlightFrom, String FlightTo, LocalDateTime flightTime) {
         super(String.format("No free seats on flight from %s to %s time departure: %s", FlightFrom,

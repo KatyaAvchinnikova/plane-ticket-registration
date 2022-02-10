@@ -6,6 +6,7 @@ spring:
     username: postgres
     password: 123
     #    TODO:ticket_base х2
+    #    требование понятно, необходимо придерживаться конвенции по нэймингу, но я это сделаю в следующий раз)
     url: jdbc:postgresql://localhost:5432/ticketbase
     driver-class-name: org.postgresql.Driver
 

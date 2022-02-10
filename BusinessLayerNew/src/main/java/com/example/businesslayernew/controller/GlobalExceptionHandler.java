@@ -1,6 +1,5 @@
 package com.example.businesslayernew.controller;
 
-import com.example.businesslayernew.exception.ArrivalTimeBeforeDepartureTimeException;
 import com.example.businesslayernew.exception.NoFreeSeatsException;
 import com.example.businesslayernew.exception.NoUserEmailException;
 import com.example.businesslayernew.exception.NotValidTokenException;
@@ -25,26 +24,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             ResourceNotFoundException.class, NoFreeSeatsException.class,
-            ArrivalTimeBeforeDepartureTimeException.class,
             NoUserEmailException.class,
             UserBadCredentialsException.class,
-            NotValidTokenException.class
+            NotValidTokenException.class,
+            RuntimeException.class
     })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    protected ResponseEntity<Object> onValidationException(ConstraintViolationException ex,
-                                                           WebRequest request) {
-        String responseBody = ex.getConstraintViolations().stream()
-                                .map(e -> String.join(", ", e.getPropertyPath().toString(), e.getMessage()))
-                                .collect(Collectors.joining("; "));
-
-        return handleExceptionInternal(ex, responseBody, new HttpHeaders(), HttpStatus.BAD_REQUEST,
-                request);
-    }
+//    @ExceptionHandler(ConstraintViolationException.class)
+//    protected ResponseEntity<Object> onValidationException(ConstraintViolationException ex,
+//                                                           WebRequest request) {
+//        String responseBody = ex.getConstraintViolations().stream()
+//                                .map(e -> String.join(", ", e.getPropertyPath().toString(), e.getMessage()))
+//                                .collect(Collectors.joining("; "));
+//
+//        return handleExceptionInternal(ex, responseBody, new HttpHeaders(), HttpStatus.BAD_REQUEST,
+//                request);
+//    }
 
     @Override
     protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
