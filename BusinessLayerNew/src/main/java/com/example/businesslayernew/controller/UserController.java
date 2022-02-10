@@ -32,12 +32,9 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@Getter
-@Setter
 @RequestMapping("/api/users")
 @Api("Users controller")
 public class UserController {
-
     private final UserService userService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;

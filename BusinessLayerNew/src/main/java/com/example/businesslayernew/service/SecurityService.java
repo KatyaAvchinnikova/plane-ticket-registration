@@ -2,7 +2,6 @@ package com.example.businesslayernew.service;
 
 import com.example.businesslayernew.domain.User;
 import com.example.businesslayernew.dto.user.UserAuthRequest;
-import com.example.businesslayernew.exception.NotValidTokenException;
 import com.example.businesslayernew.exception.UserBadCredentialsException;
 import com.example.businesslayernew.repository.UserRepository;
 import com.example.businesslayernew.security.JwtDto;
@@ -43,7 +42,7 @@ public class SecurityService {
     public JwtDto updateRefreshToken(String refreshToken) {
         String tokenId = jwtProvider.getTokenId(refreshToken);
         User user = userRepository.findUserByRefreshId(tokenId)
-                                  .orElseThrow(() -> new NotValidTokenException("Your token is invalid"));
+                                  .orElseThrow(() -> new RuntimeException("Your token is invalid"));
         String accessToken = jwtProvider.createAccessToken(user.getUserName(), user.getRole().name());
         String refreshTokenNew = jwtProvider.createRefreshToken(user.getUserName());
         String tokenIdNew = jwtProvider.getTokenId(refreshTokenNew);

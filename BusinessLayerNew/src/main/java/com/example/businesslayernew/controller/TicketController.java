@@ -29,8 +29,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@Getter
-@Setter
 @RequestMapping("/api/tickets")
 @Api("Tickets controller")
 public class TicketController {

@@ -34,8 +34,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@Getter
-@Setter
 @RequestMapping("/api/flights")
 @Api("Flights controller")
 public class FlightController {

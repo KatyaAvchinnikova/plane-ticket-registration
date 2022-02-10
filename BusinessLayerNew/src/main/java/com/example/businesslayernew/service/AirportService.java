@@ -65,5 +65,4 @@ public class AirportService {
         airport.setDeleted(LocalDate.now());
         return airport;
     }
-
 }
