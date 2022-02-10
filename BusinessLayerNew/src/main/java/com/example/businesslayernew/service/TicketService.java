@@ -30,6 +30,11 @@ public class TicketService {
 //    TODO: Имеет смысл сделать класс константами, хранящими названия кэшей и использовать константы
     @Cacheable(value = "tickets")
     public Ticket create(Ticket ticket) {
+        AppException appException = new AppException("Flight with id " + ticket.getFlightId()
+                + " is not found.", HttpStatus.NOT_FOUND);
+
+        ticket.setFlight(
+                flightRepository.findById(ticket.getFlightId()).orElseThrow(() -> appException));
 
         decreaseNumberOfFreeSeats(ticket);
 

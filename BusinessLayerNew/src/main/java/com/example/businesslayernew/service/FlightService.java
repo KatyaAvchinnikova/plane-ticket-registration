@@ -32,11 +32,13 @@ public class FlightService {
     @Cacheable(value = "flights")
     public Flight create(Flight flight) {
         flight.setAirportFrom(
-                airportRepository.findById(flight.getAirportFromId()).orElseThrow(() -> new AppException("Airport "
-                        + "from is not found", HttpStatus.NOT_FOUND)));
+                airportRepository.findById(flight.getAirportFromId()).orElseThrow(
+                        () -> new AppException("Airport from with id: " + flight.getAirportFromId()
+                                + " is not found", HttpStatus.NOT_FOUND)));
         flight.setAirportTo(
-                airportRepository.findById(flight.getAirportToId()).orElseThrow(() -> new AppException("Airport "
-                        + "from is not found", HttpStatus.NOT_FOUND)));
+                airportRepository.findById(flight.getAirportToId()).orElseThrow(
+                        () -> new AppException("Airport to with id: " + flight.getAirportToId()
+                                + " is not found", HttpStatus.NOT_FOUND)));
         return flightRepository.save(flight);
     }
 

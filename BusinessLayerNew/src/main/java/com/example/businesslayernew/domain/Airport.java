@@ -23,12 +23,16 @@ public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
 //    TODO: Если связанных сущностей нет, поле будет null или пустая коллекция? Если первое - добавить инициализацию по дефолту
-//    Будет пустая коллекция
+//    Будет пустая коллекция, проверила!
     @OneToMany(mappedBy = "airportFrom")
     private Set<Flight> flightsFrom;
+
     @OneToMany(mappedBy = "airportTo")
     private Set<Flight> flightsTo;
+
     private LocalDate deleted;
 }

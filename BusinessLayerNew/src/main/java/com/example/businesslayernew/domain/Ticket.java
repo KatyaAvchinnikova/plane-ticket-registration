@@ -27,18 +27,23 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id", insertable = false, updatable = false)
     private Flight flight;
+
     @Column(name = "flight_id", nullable = false)
     @Setter(AccessLevel.NONE)
     private Long flightId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
+
     @Column(name = "user_id")
     @Setter(AccessLevel.NONE)
     private Long userId;
+
     @Column(name = "deleted")
     private LocalDate deleted;
 }
