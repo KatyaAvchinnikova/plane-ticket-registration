@@ -33,7 +33,7 @@ public class AirportController {
     private final AirportService airportService;
     private final AirportMapper airportMapper;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Create new airport")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

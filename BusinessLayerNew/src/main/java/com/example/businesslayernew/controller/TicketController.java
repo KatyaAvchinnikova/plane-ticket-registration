@@ -34,7 +34,7 @@ public class TicketController {
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ApiOperation("Create new ticket")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> create(@Valid @RequestBody TicketRequest request) {

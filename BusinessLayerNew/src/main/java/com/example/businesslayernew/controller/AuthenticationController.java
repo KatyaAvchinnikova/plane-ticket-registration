@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final SecurityService securityService;
 
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/login")
     public ResponseEntity<JwtDto> signIn(@RequestBody UserAuthRequest auth){
         JwtDto token = securityService.authenticate(auth);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/refresh")
     public ResponseEntity<JwtDto> updateRefresh(@RequestBody String refreshToken){
         JwtDto jwtDtoTokens = securityService.updateRefreshToken(refreshToken);
         return new ResponseEntity<>(jwtDtoTokens, HttpStatus.OK);

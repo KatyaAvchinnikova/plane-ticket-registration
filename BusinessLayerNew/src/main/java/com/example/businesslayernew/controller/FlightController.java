@@ -45,7 +45,7 @@ public class FlightController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @ApiOperation("Create new flight")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightRequest request) {
