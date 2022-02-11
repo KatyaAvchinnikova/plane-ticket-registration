@@ -1,7 +1,7 @@
 package com.example.businesslayernew.service;
 
-import com.example.businesslayernew.cacheProperty.CachePropertyKey;
-import com.example.businesslayernew.cacheProperty.CachePropertyValue;
+import com.example.businesslayernew.cacheProperty.CacheKey;
+import com.example.businesslayernew.cacheProperty.CacheName;
 import com.example.businesslayernew.domain.Flight;
 import com.example.businesslayernew.domain.Ticket;
 import com.example.businesslayernew.exception.AppException;
@@ -30,7 +30,7 @@ public class TicketService {
     private final FlightRepository flightRepository;
 
     @Transactional
-    @Cacheable(value = CachePropertyValue.TICKETS)
+    @Cacheable(value = CacheName.TICKETS)
     public Ticket create(Ticket ticket) {
         AppException appException = new AppException("Flight with id " + ticket.getFlightId()
                 + " is not found.", HttpStatus.NOT_FOUND);
@@ -45,7 +45,7 @@ public class TicketService {
         return ticket;
     }
 
-    @Cacheable(value = CachePropertyValue.TICKETS)
+    @Cacheable(value = CacheName.TICKETS)
     public Ticket readById(Long id) {
         return ticketRepository.findById(id)
                                .orElseThrow(() -> new AppException(String.format("%s not found with %s : '%s'",
@@ -57,7 +57,7 @@ public class TicketService {
     }
 
     @Transactional
-    @CachePut(value = CachePropertyValue.TICKETS, key = CachePropertyKey.TICKET_ID)
+    @CachePut(value = CacheName.TICKETS, key = CacheKey.TICKET_ID)
     public Ticket update(Long id, Ticket ticket) {
         return ticketRepository.findById(id)
                                .map(this::increaseNumberOfFreeSeats)
@@ -69,7 +69,7 @@ public class TicketService {
     }
 
     @Transactional
-    @CacheEvict(value = CachePropertyValue.TICKETS, key = CachePropertyKey.TICKET_ID)
+    @CacheEvict(value = CacheName.TICKETS, key = CacheKey.TICKET_ID)
     public void delete(Long id) {
         ticketRepository.findById(id)
                         .map(this::setDeleted)

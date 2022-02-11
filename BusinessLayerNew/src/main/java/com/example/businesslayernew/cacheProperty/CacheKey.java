@@ -1,6 +1,6 @@
 package com.example.businesslayernew.cacheProperty;
 
-public class CachePropertyKey {
+public class CacheKey {
 
     public static final String AIRPORTS_ID = "#airport.id";
     public static final String FLIGHT_ID = "#flight.id";
