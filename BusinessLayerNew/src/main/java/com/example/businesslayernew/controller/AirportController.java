@@ -33,6 +33,7 @@ public class AirportController {
     private final AirportService airportService;
     private final AirportMapper airportMapper;
 
+    //MediaType
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Create new airport")
