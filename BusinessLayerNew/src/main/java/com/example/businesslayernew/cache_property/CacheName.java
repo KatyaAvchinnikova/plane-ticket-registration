@@ -1,4 +1,4 @@
-package com.example.businesslayernew.cacheProperty;
+package com.example.businesslayernew.cache_property;
 
 public class CacheName {
 

@@ -1,7 +1,7 @@
 package com.example.businesslayernew.service;
 
-import com.example.businesslayernew.cacheProperty.CacheKey;
-import com.example.businesslayernew.cacheProperty.CacheName;
+import com.example.businesslayernew.cache_property.CacheKey;
+import com.example.businesslayernew.cache_property.CacheName;
 import com.example.businesslayernew.domain.Airport;
 import com.example.businesslayernew.exception.AppException;
 import com.example.businesslayernew.repository.AirportRepository;
