@@ -27,7 +27,7 @@ public class AirportService {
 
     @Transactional
     @Cacheable(value = "airports")
-    public Airport create(Airport airport) {
+    public Airport create(Airport airport){
         return airportRepository.save(airport);
     }
 
@@ -39,7 +39,7 @@ public class AirportService {
                                                 RESOURCE_NAME, FIELD_NAME, id), HttpStatus.NOT_FOUND));
     }
 
-    public Page<Airport> getAll(Pageable pageable) {
+    public Page<Airport> getAll(Pageable pageable){
         return airportRepository.findAll(pageable);
     }
 

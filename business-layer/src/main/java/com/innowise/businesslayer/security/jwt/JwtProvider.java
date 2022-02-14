@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-@RequiredArgsConstructor
 public class JwtProvider {
     private static final String KEY = "secret-key";
     private static final long ACCESS_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000L;
@@ -31,6 +30,11 @@ public class JwtProvider {
 
     private final JwtUserDetailsService userDetailsService;
     private String secret;
+
+    @Autowired
+    public JwtProvider(@Lazy JwtUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostConstruct
     protected void init() {
