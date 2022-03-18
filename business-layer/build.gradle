@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.testng:testng:7.1.0'
     compileOnly "org.projectlombok:lombok"
     compileOnly "org.mapstruct:mapstruct:1.4.2.Final"
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
