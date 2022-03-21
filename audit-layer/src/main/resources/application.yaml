@@ -6,3 +6,6 @@ spring:
     url: mongodb://localhost:27017/ticket-reg-info
     username: test
     password: test
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

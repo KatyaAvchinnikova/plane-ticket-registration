@@ -1,3 +1,5 @@
 rootProject.name = 'plane-ticket-registration'
 
 include 'business-layer'
+include 'audit-layer'
+include 'message'

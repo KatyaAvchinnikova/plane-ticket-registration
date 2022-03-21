@@ -14,10 +14,6 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     compileOnly 'org.projectlombok:lombok'
@@ -25,6 +21,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
 }
