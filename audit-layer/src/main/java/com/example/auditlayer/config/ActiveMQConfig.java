@@ -23,6 +23,7 @@ public class ActiveMQConfig {
         return factory;
     }
 
+    @Bean
     public DefaultJmsListenerContainerFactory defaultJmsListenerContainerFactory(){
         var defaultJmsListenerContainerFactory = new DefaultJmsListenerContainerFactory();
 

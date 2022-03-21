@@ -11,7 +11,6 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Getter
 @Setter
-
 public class JwtUser implements UserDetails {
     private final Long id;
     private final String username;
