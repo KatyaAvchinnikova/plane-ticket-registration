@@ -4,9 +4,8 @@ import com.innowise.businesslayer.domain.User;
 import com.innowise.businesslayer.dto.user.UserDto;
 import com.innowise.businesslayer.dto.user.UserRequest;
 import com.innowise.businesslayer.mapper.UserMapper;
-import com.innowise.businesslayer.messaging.MessageProducer;
+import com.innowise.businesslayer.service.MessagingService;
 import com.innowise.businesslayer.service.UserService;
-import com.innowise.message.AuditInfoMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,22 +32,15 @@ import javax.validation.Valid;
 @RequestMapping("/api/users")
 @Api("Users controller")
 public class UserController {
+
     private final UserService userService;
     private final UserMapper userMapper;
-    private final MessageProducer producer;
-
+    private final MessagingService messagingService;
     @PostMapping
     @ApiOperation("Create new user")
     public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request) {
         User user = userService.create(userMapper.mapToUser(request));
-        AuditInfoMessage message = AuditInfoMessage.builder()
-                                                   .birthDate(user.getBirthDate())
-                                                   .email(user.getEmail())
-                                                   .firstName(user.getFirstName())
-                                                   .lastName(user.getLastName())
-                                                   .userName(user.getUserName())
-                                                   .build();
-        producer.send(message);
+        messagingService.send(user);
         UserDto userDto = userMapper.mapToUserDto(user);
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
@@ -58,7 +49,7 @@ public class UserController {
     @ApiOperation("Read all users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserDto>> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
-                                        @PageableDefault(page = 0, size = 10) Pageable pageable) {
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<UserDto> userDtoList = userService.getAll(isDeleted, pageable).map(userMapper::mapToUserDto);
         return new ResponseEntity<>(userDtoList, HttpStatus.OK);
     }
@@ -74,7 +65,8 @@ public class UserController {
     @ApiOperation("Update user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
-        UserDto userDto = userMapper.mapToUserDto(userService.update(id, userMapper.mapToUser(request)));
+        User user = userMapper.mapToUser(request);
+        UserDto userDto = userMapper.mapToUserDto(userService.update(id, user));
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
@@ -85,4 +77,5 @@ public class UserController {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
- }
+
+}
