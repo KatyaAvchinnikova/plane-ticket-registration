@@ -2,10 +2,6 @@ server:
   port: 9999
 
 spring:
-  datasource:
-    url: mongodb://localhost:27017/ticket-reg-info
-    username: test
-    password: test
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -17,6 +13,12 @@ spring:
       trust-all: true
     pool:
       enabled: true
-      max-connections: 5
-
+      max-connections: 50
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: ticket_reg_info
+      username: admin
+      password: test
 

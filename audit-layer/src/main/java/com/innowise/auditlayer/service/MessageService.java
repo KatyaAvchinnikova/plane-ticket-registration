@@ -1,7 +1,7 @@
-package com.example.auditlayer.service;
+package com.innowise.auditlayer.service;
 
-import com.example.auditlayer.repository.MessageRepository;
-import com.example.message.AuditInfoMessage;
+import com.innowise.auditlayer.repository.MessageRepository;
+import com.innowise.message.AuditInfoMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.innowise.businesslayer.messaging;
 
-import com.example.message.AuditInfoMessage;
+import com.innowise.message.AuditInfoMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
@@ -14,8 +14,8 @@ public class MessageProducer {
 
     public void send(AuditInfoMessage message){
         log.info("Sending...");
-        jmsTemplate.convertAndSend("audit-queue", message);
-        log.info(message.getEmail());
+        jmsTemplate.convertAndSend("queue1", message);
+        log.info(message.getUserName());
     }
 
 }

@@ -22,5 +22,7 @@ spring:
       trust-all: true
     pool:
       enabled: true
-      max-connections: 5
+      max-connections: 50
+
+
 

@@ -1,9 +1,12 @@
 package com.innowise.businesslayer.controller;
 
+import com.innowise.businesslayer.domain.User;
 import com.innowise.businesslayer.dto.user.UserDto;
 import com.innowise.businesslayer.dto.user.UserRequest;
 import com.innowise.businesslayer.mapper.UserMapper;
+import com.innowise.businesslayer.messaging.MessageProducer;
 import com.innowise.businesslayer.service.UserService;
+import com.innowise.message.AuditInfoMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +36,21 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final MessageProducer producer;
 
-    //    TODO: допустимо ли создание без регистрации?
-    // У меня открытая регистрация, для создания пользователя аутентификация не нужна
     @PostMapping
     @ApiOperation("Create new user")
     public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request) {
-        UserDto userDto = userMapper.mapToUserDto(userService.create(userMapper.mapToUser(request)));
+        User user = userService.create(userMapper.mapToUser(request));
+        AuditInfoMessage message = AuditInfoMessage.builder()
+                                                   .birthDate(user.getBirthDate())
+                                                   .email(user.getEmail())
+                                                   .firstName(user.getFirstName())
+                                                   .lastName(user.getLastName())
+                                                   .userName(user.getUserName())
+                                                   .build();
+        producer.send(message);
+        UserDto userDto = userMapper.mapToUserDto(user);
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 

@@ -3,6 +3,7 @@ package com.innowise.businesslayer.controller;
 import com.innowise.businesslayer.dto.user.UserAuthRequest;
 import com.innowise.businesslayer.security.JwtDto;
 import com.innowise.businesslayer.service.SecurityService;
+import com.innowise.businesslayer.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final SecurityService securityService;
+    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtDto> signIn(@RequestBody UserAuthRequest auth) {

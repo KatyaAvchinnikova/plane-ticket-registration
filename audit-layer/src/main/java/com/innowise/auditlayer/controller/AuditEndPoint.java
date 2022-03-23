@@ -1,7 +1,8 @@
-package com.example.auditlayer.controller;
+package com.innowise.auditlayer.controller;
 
-import com.example.auditlayer.service.MessageService;
-import com.example.message.AuditInfoMessage;
+import com.innowise.auditlayer.service.MessageService;
+import com.innowise.message.AuditInfoMessage;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/flights")
+@RequestMapping("/api/audit")
+@Api("Audit controller")
 public class AuditEndPoint {
     private final MessageService messageService;
 

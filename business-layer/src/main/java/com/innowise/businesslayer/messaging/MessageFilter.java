@@ -1,6 +1,6 @@
 package com.innowise.businesslayer.messaging;
 
-import com.example.message.AuditInfoMessage;
+import com.innowise.message.AuditInfoMessage;
 import com.innowise.businesslayer.security.JwtUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -24,17 +24,17 @@ public class MessageFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if(auth != null && auth.getPrincipal() instanceof JwtUser){
-            producer.send(AuditInfoMessage
-                    .builder()
-                    .email(((JwtUser) auth.getPrincipal()).getEmail())
-                    .endpoint(request.getServletContext().getContextPath())
-                    .requestTime(LocalDateTime.now())
-                    .responseCode(((HttpServletResponse)response).getStatus())
-                    .build());
-        }
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if(auth != null && auth.getPrincipal() instanceof JwtUser){
+//            producer.send(AuditInfoMessage
+//                    .builder()
+//                    .email(((JwtUser) auth.getPrincipal()).getEmail())
+//                    .endpoint(request.getServletContext().getContextPath())
+//                    .requestTime(LocalDateTime.now())
+//                    .responseCode(((HttpServletResponse)response).getStatus())
+//                    .build());
+//        }
 
         chain.doFilter(request, response);
 

@@ -18,7 +18,7 @@ public class ActiveMQConfig {
     @Bean
     public ConnectionFactory connectionFactory(){
         var factory = new ActiveMQConnectionFactory();
-        factory.setBrokerURL("tcp://localhost:8161");
+        factory.setBrokerURL("tcp://localhost:61616");
         return factory;
     }
 

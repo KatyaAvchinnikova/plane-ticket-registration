@@ -1,4 +1,4 @@
-package com.example.auditlayer.config;
+package com.innowise.auditlayer.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
