@@ -26,7 +26,6 @@ public class MessageConsumer implements MessageListener {
             log.info("consuming...message: " + message.toString());
             ObjectMessage objectMessage = (ObjectMessage) message;
             AuditInfoMessage auditInfoMessage = (AuditInfoMessage) objectMessage.getObject();
-            //LocalDate birthDate = LocalDate.of(auditInfoMessage.);
             messageService.save(auditInfoMessage);
         } catch (Exception e) {
             log.error("Receiving exception: " + Arrays.toString(e.getStackTrace()));
