@@ -1,0 +1,14 @@
+server:
+  port: 5555
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: ticket_reg_info
+      username: admin
+      password: test

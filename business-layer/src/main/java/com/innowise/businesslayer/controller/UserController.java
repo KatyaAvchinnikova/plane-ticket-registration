@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.http.HttpResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -65,8 +66,7 @@ public class UserController {
     @ApiOperation("Update user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
-        User user = userMapper.mapToUser(request);
-        UserDto userDto = userMapper.mapToUserDto(userService.update(id, user));
+        UserDto userDto = userMapper.mapToUserDto(userService.update(id, userMapper.mapToUser(request)));
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
