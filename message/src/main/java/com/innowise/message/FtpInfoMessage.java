@@ -5,32 +5,30 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
+@Document(collection = "Scans")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "Emails")
-public class AuditInfoMessage implements Serializable {
+public class FtpInfoMessage implements Serializable {
 
     @Id
     private String id;
-
-    @Indexed(unique = true)
-    @Field(value = "email")
+    private String title;
+    private Binary image;
     private String email;
+    private String mimeType;
 
-    private String userName;
-    private String firstName;
-    private String lastName;
-    private LocalDate birthDate;
+    public FtpInfoMessage(String title, String email) {
+        this.title = title;
+        this.email = email;
+    }
 
 }

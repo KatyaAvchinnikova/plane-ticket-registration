@@ -5,6 +5,15 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  activemq:
+    user: admin
+    password: admin
+    broker-url: tcp://127.0.0.1:8161
+    packages:
+      trust-all: true
+    pool:
+      enabled: true
+      max-connections: 50
   data:
     mongodb:
       host: localhost

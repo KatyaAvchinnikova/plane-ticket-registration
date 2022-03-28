@@ -1,6 +1,5 @@
 package com.innowise.ftplayer.controller;
 
-import com.innowise.ftplayer.domain.Photo;
 import com.innowise.ftplayer.service.FtpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,26 +28,24 @@ public class FtpController {
 
     private final FtpService ftpService;
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiOperation("Store file")
-    public ResponseEntity<String> store(@RequestParam("title") String title,
-            @RequestPart("image") MultipartFile image, Model model) throws IOException {
-        String id = ftpService.storeImage(title, image);
-        return new ResponseEntity<>("Your file is stored successfully", HttpStatus.CREATED);
-    }
+//    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+//    @ApiOperation("Store file")
+//    public ResponseEntity<String> store(@RequestParam("title") String title,
+//            @RequestPart("image") MultipartFile image, @RequestParam String email) throws IOException {
+//        String id = ftpService.storeImage(title, image, email);
+//        return new ResponseEntity<>("Your file is stored successfully", HttpStatus.CREATED);
+//    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<String> getPhoto(@PathVariable String id, Model model) {
-        Photo photo = ftpService.getPhoto(id);
-        model.addAttribute("title", photo.getTitle());
-        model.addAttribute("image", Base64.getEncoder().encodeToString(photo.getImage().getData()));
-        return new ResponseEntity<>(Base64.getEncoder().encodeToString(photo.getImage().getData()), HttpStatus.OK);
-//        return ResponseEntity.ok()
-//                             .contentType(MediaType.parseMediaType(photo.getTitle()))
-//                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
-//                                     + photo.getTitle() +
-//                                     "\"")
-//                             .body(new ByteArrayResource(photo.getImage().getData()));
+    @GetMapping(value = "/{id}")
+    @ApiOperation("Download file")
+    public ResponseEntity<?> getPhoto(@PathVariable String id) throws IOException {
+        var photo = ftpService.getPhoto(id);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType("image/x-png"))
+                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
+                                     + photo.getTitle() +
+                                     "\"")
+                             .body(new ByteArrayResource(photo.getImage().getData()));
     }
 
 }
