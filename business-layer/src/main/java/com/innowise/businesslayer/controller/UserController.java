@@ -7,15 +7,18 @@ import com.innowise.businesslayer.mapper.UserMapper;
 import com.innowise.businesslayer.service.MessagingService;
 import com.innowise.businesslayer.service.SecurityService;
 import com.innowise.businesslayer.service.UserService;
+import com.innowise.message.EmailMessage;
 import com.innowise.message.FtpInfoMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 import javax.validation.Valid;
 
 @RestController
@@ -90,12 +94,13 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/files", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+                                     produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiOperation("Store files")
     public ResponseEntity<String> store(@RequestParam("title") String title,
             @RequestPart("image") MultipartFile image) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = userService.findByUserName(authentication.getName()).getEmail();
+        String email = authentication.getName();
         FtpInfoMessage message = FtpInfoMessage.builder()
                                                .email(email)
                                                .image(new Binary(BsonBinarySubType.BINARY, image.getBytes()))
@@ -108,6 +113,22 @@ public class UserController {
         }
         messagingService.store(message);
         return new ResponseEntity<>("Your file is stored successfully", HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/files")
+    @ApiOperation("Download file")
+    public ResponseEntity<?> download() throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        EmailMessage message = new EmailMessage(authentication.getName());
+        messagingService.download(message);
+//        var photo = ftpService.getPhoto(id);
+//        return ResponseEntity.ok()
+//                             .contentType(MediaType.parseMediaType("image/x-png"))
+//                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
+//                                     + photo.getTitle() +
+//                                     "\"")
+//                             .body(new ByteArrayResource(photo.getImage().getData()));
+        return null;
     }
 
 }

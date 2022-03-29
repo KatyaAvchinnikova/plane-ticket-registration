@@ -3,6 +3,7 @@ package com.innowise.businesslayer.service;
 import com.innowise.businesslayer.domain.User;
 import com.innowise.businesslayer.messaging.MessageProducer;
 import com.innowise.message.AuditInfoMessage;
+import com.innowise.message.EmailMessage;
 import com.innowise.message.FtpInfoMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,10 @@ public class MessagingService {
 
     public void store(FtpInfoMessage message) {
         producer.store(message);
+    }
+
+    public void download(EmailMessage message) {
+        producer.download(message);
     }
 
 }

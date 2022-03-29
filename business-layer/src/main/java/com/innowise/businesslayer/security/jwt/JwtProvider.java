@@ -99,11 +99,12 @@ public class JwtProvider {
     }
 
     String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
+        String bearerToken = req.getHeader("authorization");
+
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
-        return null;
+        return bearerToken;
     }
 
     public Authentication getAuthentication(String token) {
