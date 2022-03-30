@@ -29,7 +29,7 @@ public class MessagingService {
         producer.store(message);
     }
 
-    public void download(EmailMessage message) {
+    public void sendEmail(EmailMessage message) {
         producer.download(message);
     }
 

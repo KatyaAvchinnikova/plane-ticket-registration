@@ -1,7 +1,6 @@
-package com.innowise.ftplayer.messaging;
+package com.innowise.businesslayer.messaging;
 
-import com.innowise.ftplayer.service.FtpService;
-import com.innowise.message.EmailMessage;
+import com.innowise.message.FtpInfoMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
@@ -15,18 +14,16 @@ import javax.jms.ObjectMessage;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class EmailMessageConsumer implements MessageListener {
-
-    private final FtpService ftpService;
+public class MessageConsumer implements MessageListener {
 
     @Override
-    @JmsListener(destination = "queue3")
+    @JmsListener(destination = "queue4")
     public void onMessage(Message message) {
         try {
             log.info("consuming...message: " + message.toString());
             ObjectMessage objectMessage = (ObjectMessage) message;
-            EmailMessage emailMessage = (EmailMessage) objectMessage.getObject();
-            ftpService.download(emailMessage);
+            FtpInfoMessage auditInfoMessage = (FtpInfoMessage) objectMessage.getObject();
+            //ftpService.storeImage(auditInfoMessage);
         } catch (Exception e) {
             log.error("Receiving exception: " + Arrays.toString(e.getStackTrace()));
         }

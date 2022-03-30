@@ -14,11 +14,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Optional;
 import javax.validation.Valid;
 
 @RestController
@@ -120,7 +117,7 @@ public class UserController {
     public ResponseEntity<?> download() throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         EmailMessage message = new EmailMessage(authentication.getName());
-        messagingService.download(message);
+        messagingService.sendEmail(message);
 //        var photo = ftpService.getPhoto(id);
 //        return ResponseEntity.ok()
 //                             .contentType(MediaType.parseMediaType("image/x-png"))
