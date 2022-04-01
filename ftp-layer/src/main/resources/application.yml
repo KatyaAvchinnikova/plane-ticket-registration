@@ -21,3 +21,7 @@ spring:
       database: ticket_reg_info
       username: admin
       password: test
+
+eureka:
+  client:
+    service-url: http://localhost:8761/

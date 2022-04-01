@@ -117,7 +117,7 @@ public class UserController {
     public ResponseEntity<?> download() throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         EmailMessage message = new EmailMessage(authentication.getName());
-        messagingService.sendEmail(message);
+        //messagingService.sendEmail(message);
 //        var photo = ftpService.getPhoto(id);
 //        return ResponseEntity.ok()
 //                             .contentType(MediaType.parseMediaType("image/x-png"))

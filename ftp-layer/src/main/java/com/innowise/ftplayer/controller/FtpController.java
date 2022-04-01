@@ -1,6 +1,7 @@
 package com.innowise.ftplayer.controller;
 
 import com.innowise.ftplayer.service.FtpService;
+import com.innowise.message.FtpInfoMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,16 +38,16 @@ public class FtpController {
 //        return new ResponseEntity<>("Your file is stored successfully", HttpStatus.CREATED);
 //    }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}/files")
     @ApiOperation("Download file")
-    public ResponseEntity<?> getPhoto(@PathVariable String id) throws IOException {
-        var photo = ftpService.getPhoto(id);
-        return ResponseEntity.ok()
-                             .contentType(MediaType.parseMediaType("image/x-png"))
-                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
-                                     + photo.getTitle() +
-                                     "\"")
-                             .body(new ByteArrayResource(photo.getImage().getData()));
+    public List<FtpInfoMessage> getPhoto(@PathVariable String id, String email) throws IOException {
+        return ftpService.download(email);
+//        return ResponseEntity.ok()
+//                             .contentType(MediaType.parseMediaType("image/x-png"))
+//                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
+//                                     + photo.getTitle() +
+//                                     "\"")
+//                             .body(new ByteArrayResource(photo.getImage().getData()));
     }
 
 }

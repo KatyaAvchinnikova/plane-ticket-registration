@@ -30,13 +30,9 @@ public class FtpService {
         return photoRepo.findById(id).orElseThrow(() -> new RuntimeException(""));
     }
 
-    public void download(EmailMessage emailMessage) {
+    public List<FtpInfoMessage> download(String email) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("email").is(emailMessage.getEmail()));
-        List<FtpInfoMessage> photos = template.find(query, FtpInfoMessage.class);
-        for (FtpInfoMessage photo : photos) {
-            producer.store(photo);
-        }
+        query.addCriteria(Criteria.where("email").is(email));
+        return template.find(query, FtpInfoMessage.class);
     }
-
 }
