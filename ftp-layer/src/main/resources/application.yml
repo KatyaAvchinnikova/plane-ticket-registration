@@ -1,6 +1,5 @@
 server:
   port: 5555
-
 spring:
   mvc:
     pathmatch:
@@ -21,7 +20,6 @@ spring:
       database: ticket_reg_info
       username: admin
       password: test
-
 eureka:
   client:
-    service-url: http://localhost:8761/
+    service-url: http://localhost:8761/eureka

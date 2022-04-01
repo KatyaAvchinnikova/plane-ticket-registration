@@ -3,6 +3,7 @@ package com.innowise.businesslayer.controller;
 import com.innowise.businesslayer.domain.User;
 import com.innowise.businesslayer.dto.user.UserDto;
 import com.innowise.businesslayer.dto.user.UserRequest;
+import com.innowise.businesslayer.feigns.ImageConsumer;
 import com.innowise.businesslayer.mapper.UserMapper;
 import com.innowise.businesslayer.service.MessagingService;
 import com.innowise.businesslayer.service.SecurityService;
@@ -49,6 +50,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final MessagingService messagingService;
     private final SecurityService securityService;
+    private final ImageConsumer consumer;
 
     @PostMapping
     @ApiOperation("Create new user")
@@ -112,11 +114,12 @@ public class UserController {
         return new ResponseEntity<>("Your file is stored successfully", HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/files")
-    @ApiOperation("Download file")
-    public ResponseEntity<?> download() throws IOException {
+    @GetMapping(value = "/{id}/files")
+    @ApiOperation("Download file belongs to user")
+    public ResponseEntity<?> download(@PathVariable Long id) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        EmailMessage message = new EmailMessage(authentication.getName());
+        String email = authentication.getName();
+        consumer.download(id, email);
         //messagingService.sendEmail(message);
 //        var photo = ftpService.getPhoto(id);
 //        return ResponseEntity.ok()

@@ -40,7 +40,7 @@ public class FtpController {
 
     @GetMapping(value = "/{id}/files")
     @ApiOperation("Download file")
-    public List<FtpInfoMessage> getPhoto(@PathVariable String id, String email) throws IOException {
+    public List<FtpInfoMessage> getPhoto(@PathVariable Long id, String email) throws IOException {
         return ftpService.download(email);
 //        return ResponseEntity.ok()
 //                             .contentType(MediaType.parseMediaType("image/x-png"))

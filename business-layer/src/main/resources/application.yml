@@ -24,5 +24,8 @@ spring:
       enabled: true
       max-connections: 50
 
+eureka:
+  client:
+    service-url: http://localhost:8761/eureka
 
 
