@@ -8,16 +8,17 @@ import com.innowise.businesslayer.mapper.UserMapper;
 import com.innowise.businesslayer.service.MessagingService;
 import com.innowise.businesslayer.service.SecurityService;
 import com.innowise.businesslayer.service.UserService;
-import com.innowise.message.EmailMessage;
 import com.innowise.message.FtpInfoMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,6 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final MessagingService messagingService;
-    private final SecurityService securityService;
     private final ImageConsumer consumer;
 
     @PostMapping
@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/files", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
-                                     produces = {MediaType.APPLICATION_JSON_VALUE})
+                 produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiOperation("Store files")
     public ResponseEntity<String> store(@RequestParam("title") String title,
             @RequestPart("image") MultipartFile image) throws IOException {
@@ -115,20 +115,21 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/files")
-    @ApiOperation("Download file belongs to user")
-    public ResponseEntity<?> download(@PathVariable Long id) throws IOException {
+    @ApiOperation("Show files belong to user")
+    public ResponseEntity<?> download(@PathVariable Long id){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        consumer.download(id, email);
-        //messagingService.sendEmail(message);
-//        var photo = ftpService.getPhoto(id);
-//        return ResponseEntity.ok()
-//                             .contentType(MediaType.parseMediaType("image/x-png"))
-//                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
-//                                     + photo.getTitle() +
-//                                     "\"")
-//                             .body(new ByteArrayResource(photo.getImage().getData()));
-        return null;
+        return new ResponseEntity<>(consumer.download(id, email), HttpStatus.OK);
+    }
+
+    @GetMapping("/file/")
+    public ResponseEntity<?> downloadImage(@RequestParam String id) {
+        var image = consumer.downloadImage(id);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType(image.getMimeType()))
+                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
+                             + image.getTitle() + "\"")
+                             .body(new ByteArrayResource(image.getImage().getData()));
     }
 
 }

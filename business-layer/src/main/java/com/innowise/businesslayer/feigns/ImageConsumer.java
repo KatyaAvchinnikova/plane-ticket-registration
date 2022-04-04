@@ -4,13 +4,17 @@ import com.innowise.message.FtpInfoMessage;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient("business-layer")
+@FeignClient("ftp-client")
 public interface ImageConsumer {
 
     @GetMapping("/api/users/{id}/files")
-    public List<FtpInfoMessage> download(@PathVariable Long id, String email);
+    List<String> download(@PathVariable Long id, @RequestParam String email);
+
+    @GetMapping("/api/users/file/")
+    FtpInfoMessage downloadImage(@RequestParam String id);
 
 }

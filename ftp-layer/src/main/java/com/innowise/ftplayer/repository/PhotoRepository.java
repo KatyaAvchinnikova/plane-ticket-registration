@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PhotoRepository extends MongoRepository<FtpInfoMessage, String> {
-    public List<FtpInfoMessage> findPhotoByEmail(String email);
+   List<FtpInfoMessage> findPhotoByEmail(String email);
+   FtpInfoMessage findFtpInfoMessageById(String id);
 }

@@ -2,7 +2,6 @@ package com.innowise.ftplayer.service;
 
 import com.innowise.ftplayer.messaging.MessageProducer;
 import com.innowise.ftplayer.repository.PhotoRepository;
-import com.innowise.message.EmailMessage;
 import com.innowise.message.FtpInfoMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +19,6 @@ public class FtpService {
 
     private final PhotoRepository photoRepo;
     private final MongoTemplate template;
-    private final MessageProducer producer;
 
     public String storeImage(FtpInfoMessage photo) throws IOException {
         photoRepo.insert(photo);
@@ -27,12 +26,15 @@ public class FtpService {
     }
 
     public FtpInfoMessage getPhoto(String id) {
-        return photoRepo.findById(id).orElseThrow(() -> new RuntimeException(""));
+        return photoRepo.findFtpInfoMessageById(id);
     }
 
-    public List<FtpInfoMessage> download(String email) {
+    public List<String> download(String email) {
         Query query = new Query();
         query.addCriteria(Criteria.where("email").is(email));
-        return template.find(query, FtpInfoMessage.class);
+        return template.find(query, FtpInfoMessage.class).stream()
+                       .map(k -> k.getId())
+                       .collect(Collectors.toList());
     }
+
 }
