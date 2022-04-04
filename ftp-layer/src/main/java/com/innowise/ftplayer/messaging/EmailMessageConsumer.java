@@ -26,7 +26,7 @@ public class EmailMessageConsumer implements MessageListener {
             log.info("consuming...message: " + message.toString());
             ObjectMessage objectMessage = (ObjectMessage) message;
             EmailMessage emailMessage = (EmailMessage) objectMessage.getObject();
-            ftpService.download(emailMessage);
+            ftpService.download(emailMessage.getEmail());
         } catch (Exception e) {
             log.error("Receiving exception: " + Arrays.toString(e.getStackTrace()));
         }

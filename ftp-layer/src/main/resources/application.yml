@@ -1,9 +1,11 @@
 server:
   port: 5555
+
 spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
   activemq:
     user: admin
     password: admin
@@ -13,6 +15,7 @@ spring:
     pool:
       enabled: true
       max-connections: 50
+
   data:
     mongodb:
       host: localhost
@@ -20,6 +23,11 @@ spring:
       database: ticket_reg_info
       username: admin
       password: test
+
+  application:
+    name: ftp-client
+
 eureka:
   client:
-    service-url: http://localhost:8761/eureka
+    service-url:
+      defaultZone: http://localhost:8761/eureka

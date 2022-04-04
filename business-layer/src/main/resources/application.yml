@@ -8,6 +8,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/ticket_base
     driver-class-name: org.postgresql.Driver
 
+
   flyway:
     url: jdbc:postgresql://localhost:5432/ticket_base
     user: postgres
@@ -24,8 +25,16 @@ spring:
       enabled: true
       max-connections: 50
 
+  application:
+    name: business-client
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 eureka:
   client:
-    service-url: http://localhost:8761/eureka
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
 
