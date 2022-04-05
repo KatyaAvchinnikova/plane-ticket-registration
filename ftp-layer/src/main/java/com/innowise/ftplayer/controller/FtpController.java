@@ -1,10 +1,15 @@
 package com.innowise.ftplayer.controller;
 
 import com.innowise.ftplayer.service.FtpService;
+import com.innowise.message.dto.DtoImage;
 import com.innowise.message.FtpInfoMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +34,25 @@ public class FtpController {
 
     @GetMapping("/file/")
     @ApiOperation("Download image")
-    public FtpInfoMessage getPhoto(@RequestParam String id){
-        return ftpService.getPhoto(id);
+    public DtoImage getPhoto(@RequestParam String id) {
+        FtpInfoMessage photo = ftpService.getPhoto(id);
+        return DtoImage.builder().mimeType(photo.getMimeType())
+                       .title(photo.getTitle())
+                       .image(photo.getImage().getData())
+                       .id(photo.getId()).build();
+
+    }
+
+    @GetMapping(value = "/download/", consumes = MediaType.ALL_VALUE,
+                produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperation("Download image")
+    public ResponseEntity<?> getPhotoNew(@RequestParam String id) {
+        var image = ftpService.getPhoto(id);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType(image.getMimeType()))
+                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
+                                     + image.getTitle() + "\"")
+                             .body(new ByteArrayResource(image.getImage().getData()));
     }
 
 }

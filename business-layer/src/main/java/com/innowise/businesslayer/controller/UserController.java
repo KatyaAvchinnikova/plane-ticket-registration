@@ -116,20 +116,21 @@ public class UserController {
 
     @GetMapping(value = "/{id}/files")
     @ApiOperation("Show files belong to user")
-    public ResponseEntity<?> download(@PathVariable Long id){
+    public ResponseEntity<?> download(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return new ResponseEntity<>(consumer.download(id, email), HttpStatus.OK);
     }
 
-    @GetMapping("/file/")
+    @GetMapping(value = "/file/", consumes = MediaType.ALL_VALUE,
+                produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<?> downloadImage(@RequestParam String id) {
         var image = consumer.downloadImage(id);
         return ResponseEntity.ok()
                              .contentType(MediaType.parseMediaType(image.getMimeType()))
                              .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
-                             + image.getTitle() + "\"")
-                             .body(new ByteArrayResource(image.getImage().getData()));
+                                     + image.getTitle() + "\"")
+                             .body(new ByteArrayResource(image.getImage()));
     }
 
 }

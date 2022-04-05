@@ -1,6 +1,6 @@
 package com.innowise.businesslayer.feigns;
 
-import com.innowise.message.FtpInfoMessage;
+import com.innowise.message.dto.DtoImage;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +15,6 @@ public interface ImageConsumer {
     List<String> download(@PathVariable Long id, @RequestParam String email);
 
     @GetMapping("/api/users/file/")
-    FtpInfoMessage downloadImage(@RequestParam String id);
+    DtoImage downloadImage(@RequestParam String id);
 
 }
