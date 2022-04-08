@@ -5,12 +5,12 @@ import com.innowise.businesslayer.dto.airport.AirportDto;
 import com.innowise.businesslayer.dto.airport.AirportRequest;
 import com.innowise.businesslayer.mapper.AirportMapper;
 import com.innowise.businesslayer.service.AirportService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/airports")
-@Api("Airport controller")
+@Tag(name = "Airport controller")
 public class AirportController {
 
     private final AirportService airportService;
@@ -35,7 +35,7 @@ public class AirportController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("Create new airport")
+    @Operation(summary = "Create new airport")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AirportDto> create(@RequestBody AirportRequest request) {
         Airport airport = airportMapper.mapAirport(request);
@@ -44,22 +44,22 @@ public class AirportController {
     }
 
     @GetMapping
-    @ApiOperation("Read all airports")
-    public ResponseEntity<Page<AirportDto>> readAll(@PageableDefault Pageable pageable) {
+    @Operation(summary = "Read all airports")
+    public ResponseEntity<Page<AirportDto>> readAll(@ParameterObject Pageable pageable) {
         Page<AirportDto> airportDtoList = airportService.getAll(pageable)
                                                         .map(airportMapper::mapAirportDto);
         return new ResponseEntity<>(airportDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @ApiOperation("Read airport by id")
+    @Operation(summary = "Read airport by id")
     public ResponseEntity<AirportDto> readById(@PathVariable Long id) {
         AirportDto airportDto = airportMapper.mapAirportDto(airportService.getById(id));
         return new ResponseEntity<>(airportDto, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    @ApiOperation("Update airport")
+    @Operation(summary = "Update airport")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AirportDto> update(@PathVariable Long id, @RequestBody AirportRequest request) {
         Airport requestAirport = airportMapper.mapAirport(request);
@@ -68,10 +68,11 @@ public class AirportController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("Delete airport")
+    @Operation(summary = "Delete airport")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AirportDto> delete(@PathVariable Long id) {
         airportService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

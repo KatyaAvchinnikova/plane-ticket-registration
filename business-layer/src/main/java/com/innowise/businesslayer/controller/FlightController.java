@@ -6,12 +6,12 @@ import com.innowise.businesslayer.dto.flight.FlightRequest;
 import com.innowise.businesslayer.mapper.FlightMapper;
 import com.innowise.businesslayer.service.FlightService;
 import com.innowise.businesslayer.validator.FlightTimeValidator;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +32,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/flights")
-@Api("Flights controller")
+@Tag(name = "Flights controller")
 public class FlightController {
 
     private final FlightService flightService;
@@ -46,7 +46,7 @@ public class FlightController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    @ApiOperation("Create new flight")
+    @Operation(summary = "Create new flight")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightRequest request) {
         Flight flight = flightMapper.mapToFlight(request);
@@ -55,8 +55,8 @@ public class FlightController {
     }
 
     @GetMapping
-    @ApiOperation("Read all flights")
-    public ResponseEntity<Page<FlightDto>> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    @Operation(summary = "Read all flights")
+    public ResponseEntity<Page<FlightDto>> readAll(@ParameterObject Pageable pageable) {
         Page<FlightDto> flightDtoList = flightService.getAll(pageable)
                                                      .map(flightMapper::mapToFlightDto);
         return new ResponseEntity<>(flightDtoList, HttpStatus.OK);
@@ -64,7 +64,7 @@ public class FlightController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    @ApiOperation("Read flight by id")
+    @Operation(summary = "Read flight by id")
     public ResponseEntity<FlightDto> readById(@PathVariable Long id) {
         Flight byId = flightService.getById(id);
         FlightDto flightDto = flightMapper.mapToFlightDto(byId);
@@ -73,7 +73,7 @@ public class FlightController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{id}")
-    @ApiOperation("Update flight")
+    @Operation(summary = "Update flight")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FlightDto> update(@PathVariable Long id, @Valid @RequestBody FlightRequest request) {
         Flight flight = flightMapper.mapToFlight(request);
@@ -82,10 +82,11 @@ public class FlightController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("Delete flight")
+    @Operation(summary = "Delete flight")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<FlightDto> delete(@PathVariable Long id) {
         flightService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

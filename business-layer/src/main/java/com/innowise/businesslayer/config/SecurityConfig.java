@@ -4,6 +4,7 @@ import com.innowise.businesslayer.security.jwt.JwtConfigurer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,9 +19,15 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final JwtConfigurer jwtConfigurer;
     private final AuthenticationEntryPoint appAuthenticationEntryPoint;
     private final AccessDeniedHandler appAccessDeniedHandler;
+
+    private static final String USER_ENDPOINTS = "/api/user/**";
+    private static final String AIRPORT_ENDPOINTS = "/api/user/airports/**";
+    private static final String FLIGHT_ENDPOINTS = "/api/user/flights/**";
+    private static final String TICKET_ENDPOINTS = "/api/user/tickets/**";
 
     @Bean
     @Override
@@ -35,12 +42,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
+            .antMatchers(USER_ENDPOINTS).authenticated()
+            .antMatchers(HttpMethod.DELETE, AIRPORT_ENDPOINTS).authenticated()
+            .antMatchers(HttpMethod.POST, AIRPORT_ENDPOINTS).authenticated()
+            .antMatchers(HttpMethod.PATCH, AIRPORT_ENDPOINTS).authenticated()
+            .antMatchers(HttpMethod.DELETE, FLIGHT_ENDPOINTS).authenticated()
+            .antMatchers(HttpMethod.POST, FLIGHT_ENDPOINTS).authenticated()
+            .antMatchers(HttpMethod.PATCH, FLIGHT_ENDPOINTS).authenticated()
+            .antMatchers(TICKET_ENDPOINTS).authenticated()
             .anyRequest()
             .permitAll()
             .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(appAuthenticationEntryPoint)
-                .accessDeniedHandler(appAccessDeniedHandler)
+            .exceptionHandling()
+            .authenticationEntryPoint(appAuthenticationEntryPoint)
+            .accessDeniedHandler(appAccessDeniedHandler)
             .and()
             .apply(jwtConfigurer);
     }
@@ -49,4 +64,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(10);
     }
+
 }

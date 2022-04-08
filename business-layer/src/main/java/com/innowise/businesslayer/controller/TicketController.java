@@ -4,12 +4,12 @@ import com.innowise.businesslayer.dto.ticket.TicketDto;
 import com.innowise.businesslayer.dto.ticket.TicketRequest;
 import com.innowise.businesslayer.mapper.TicketMapper;
 import com.innowise.businesslayer.service.TicketService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,14 +27,14 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tickets")
-@Api("Tickets controller")
+@Tag(name = "Tickets controller")
 public class TicketController {
 
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
 
     @PostMapping
-    @ApiOperation("Create new ticket")
+    @Operation(summary = "Create new ticket")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> create(@Valid @RequestBody TicketRequest request) {
         TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.create(ticketMapper.mapToTicket(request)));
@@ -42,16 +42,16 @@ public class TicketController {
     }
 
     @GetMapping
-    @ApiOperation("Read all tickets")
+    @Operation(summary = "Read all tickets")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<Page<TicketDto>> readAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Page<TicketDto>> readAll(@ParameterObject Pageable pageable) {
         Page<TicketDto> ticketDtoList = ticketService.readAll(pageable)
                                                      .map((ticketMapper::mapToTicketDto));
         return new ResponseEntity<>(ticketDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @ApiOperation("Read ticket by id")
+    @Operation(summary = "Read ticket by id")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> readById(@PathVariable Long id) {
         TicketDto ticketDto = ticketMapper.mapToTicketDto(ticketService.readById(id));
@@ -59,7 +59,7 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}")
-    @ApiOperation("update ticket")
+    @Operation(summary = "update ticket")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> update(@Valid @PathVariable Long id,
             @RequestBody TicketRequest request) {
@@ -69,7 +69,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("delete ticket")
+    @Operation(summary = "delete ticket")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<TicketDto> delete(@PathVariable Long id) {
         ticketService.delete(id);

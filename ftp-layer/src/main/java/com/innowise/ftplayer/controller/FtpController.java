@@ -1,10 +1,10 @@
 package com.innowise.ftplayer.controller;
 
 import com.innowise.ftplayer.service.FtpService;
-import com.innowise.message.dto.DtoImage;
 import com.innowise.message.FtpInfoMessage;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.innowise.message.dto.DtoImage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -21,19 +21,19 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
-@Api("FTP controller")
+@Tag(name = "FTP controller")
 public class FtpController {
 
     private final FtpService ftpService;
 
     @GetMapping("/{id}/files")
-    @ApiOperation("Show list of images belong to user")
+    @Operation(summary = "Show list of images belong to user")
     public List<String> download(@PathVariable Long id, @RequestParam String email) {
         return ftpService.download(email);
     }
 
     @GetMapping("/file/")
-    @ApiOperation("Download image")
+    @Operation(summary = "Download image")
     public DtoImage getPhoto(@RequestParam String id) {
         FtpInfoMessage photo = ftpService.getPhoto(id);
         return DtoImage.builder().mimeType(photo.getMimeType())
@@ -45,7 +45,7 @@ public class FtpController {
 
     @GetMapping(value = "/download/", consumes = MediaType.ALL_VALUE,
                 produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperation("Download image")
+    @Operation(summary = "Download image")
     public ResponseEntity<?> getPhotoNew(@RequestParam String id) {
         var image = ftpService.getPhoto(id);
         return ResponseEntity.ok()

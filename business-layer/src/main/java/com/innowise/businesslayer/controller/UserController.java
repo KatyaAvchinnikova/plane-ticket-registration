@@ -6,14 +6,15 @@ import com.innowise.businesslayer.dto.user.UserRequest;
 import com.innowise.businesslayer.feigns.ImageConsumer;
 import com.innowise.businesslayer.mapper.UserMapper;
 import com.innowise.businesslayer.service.MessagingService;
-import com.innowise.businesslayer.service.SecurityService;
 import com.innowise.businesslayer.service.UserService;
 import com.innowise.message.FtpInfoMessage;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +45,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
-@Api("Users controller")
+@Tag(name = "Users controller")
 public class UserController {
 
     private final UserService userService;
@@ -53,7 +54,7 @@ public class UserController {
     private final ImageConsumer consumer;
 
     @PostMapping
-    @ApiOperation("Create new user")
+    @Operation(summary = "Create new user")
     public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request) {
         User user = userService.create(userMapper.mapToUser(request));
         messagingService.send(user);
@@ -62,23 +63,23 @@ public class UserController {
     }
 
     @GetMapping
-    @ApiOperation("Read all users")
+    @Operation(summary = "Read all users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserDto>> readAll(@RequestParam(name = "isDeleted") boolean isDeleted,
-            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         Page<UserDto> userDtoList = userService.getAll(isDeleted, pageable).map(userMapper::mapToUserDto);
         return new ResponseEntity<>(userDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @ApiOperation("Read user by id")
+    @Operation(summary = "Read user by id")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> readById(@PathVariable Long id) {
         return new ResponseEntity<>(userMapper.mapToUserDto(userService.getById(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    @ApiOperation("Update user")
+    @Operation(summary = "Update user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> update(@Valid @PathVariable Long id, @RequestBody UserRequest request) {
         UserDto userDto = userMapper.mapToUserDto(userService.update(id, userMapper.mapToUser(request)));
@@ -86,7 +87,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("Delete user")
+    @Operation(summary = "Delete user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDto> delete(@PathVariable Long id) {
         userService.delete(id);
@@ -95,7 +96,7 @@ public class UserController {
 
     @PostMapping(value = "/files", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
                  produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiOperation("Store files")
+    @Operation(summary = "Store files")
     public ResponseEntity<String> store(@RequestParam("title") String title,
             @RequestPart("image") MultipartFile image) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -115,7 +116,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/files")
-    @ApiOperation("Show files belong to user")
+    @Operation(summary = "Show files belong to user", security = @SecurityRequirement(name = "basicAuth"))
     public ResponseEntity<?> download(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -124,6 +125,7 @@ public class UserController {
 
     @GetMapping(value = "/file/", consumes = MediaType.ALL_VALUE,
                 produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @Operation(summary = "Download image")
     public ResponseEntity<?> downloadImage(@RequestParam String id) {
         var image = consumer.downloadImage(id);
         return ResponseEntity.ok()

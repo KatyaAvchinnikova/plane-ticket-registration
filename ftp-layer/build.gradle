@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.4'
+    id 'org.springframework.boot' version '2.6.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -23,10 +23,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-activemq'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    //implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.6'
+    //implementation group: 'org.springdoc', name: 'springdoc-openapi-security', version: '1.6.6'
     implementation 'org.jetbrains:annotations:22.0.0'
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtookls'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -36,6 +38,7 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-eureka-client', version:
 '3.1.1'
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.1"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.6.6'
 
 }
 
